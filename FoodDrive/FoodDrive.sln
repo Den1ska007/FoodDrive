@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDrive", "FoodDrive\FoodDrive.csproj", "{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {91C2A4FB-E43D-4183-B2B1-0EC4B559E604}
+	EndGlobalSection
+EndGlobal
