@@ -1,8 +1,9 @@
 ﻿using System;
+using FoodDrive.Interfaces;
 
 namespace FoodDrive.Models
 {
-    public class Review
+    public class Review : IEntity
     {
         public int Id { get; set; }
         public Customer User { get; set; }
@@ -21,4 +22,5 @@ namespace FoodDrive.Models
             Date = date;
         }
     }
+    public class ReviewRepository : Repository<Review> { }
 }

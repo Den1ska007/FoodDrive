@@ -1,9 +1,10 @@
 ﻿using System;
+using FoodDrive.Interfaces;
 
 namespace FoodDrive.Models
 {
     // Абстрактний клас User
-    public abstract class User
+    public abstract class User : IEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }

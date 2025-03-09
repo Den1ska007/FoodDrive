@@ -18,4 +18,5 @@ namespace FoodDrive.Models
             Console.WriteLine($"Customer: {Name}");
         }
     }
+    public class CustomerRepository : Repository<Customer> { }
 }

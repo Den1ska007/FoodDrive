@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using FoodDrive.Interfaces;
 namespace FoodDrive.Models
 {
-    public class Order
+    public class Order : IEntity
     {
         public int Id { get; set; }
         public Customer User { get; set; }
@@ -32,4 +32,5 @@ namespace FoodDrive.Models
             return total;
         }
     }
+    public class OrderRepository : Repository<Order> { }
 }

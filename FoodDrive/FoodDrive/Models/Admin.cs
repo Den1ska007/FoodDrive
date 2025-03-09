@@ -1,4 +1,5 @@
 ﻿using System;
+using FoodDrive.Models;
 
 namespace FoodDrive.Models
 {
@@ -21,4 +22,5 @@ namespace FoodDrive.Models
             Console.WriteLine("Managing products...");
         }
     }
+    public class AdminRepository : Repository<Admin> { }
 }

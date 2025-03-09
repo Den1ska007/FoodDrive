@@ -1,6 +1,8 @@
-﻿namespace FoodDrive.Models
+﻿using FoodDrive.Interfaces;
+
+namespace FoodDrive.Models
 { 
-    public class Category
+    public class Category : IEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -11,4 +13,5 @@
             Name = name;
         }
     }
+    public class CategoryRepository : Repository<Category> { }
 }
