@@ -7,5 +7,6 @@
         InProgress,
         Delivered,
         Completed,
+        Pending,
     }
 }

@@ -7,16 +7,18 @@ namespace FoodDrive.Models
     {
         public List<Order> Orders { get; set; } = new List<Order>();
 
-        public Customer(int id, string name, string password, int mobilenum, string adres)
+        public Customer(int id, string name, string password, int mobilenum, string adres, List<Order> orders)
             : base(id, name, password, "Customer", mobilenum, adres)
         {
            
         }
-
-        public override void DisplayInfo()
+        
+        public override string GetInfo()
         {
-            Console.WriteLine($"Customer: {Name}");
+            return $"{Id}_{Name}_{Password}_{Role}_{Orders.Count}";
         }
     }
+    
     public class CustomerRepository : Repository<Customer> { }
+
 }

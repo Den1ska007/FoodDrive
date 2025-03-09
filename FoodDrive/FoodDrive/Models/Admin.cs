@@ -12,9 +12,9 @@ namespace FoodDrive.Models
            
         }
 
-        public override void DisplayInfo()
+        public override string GetInfo()
         {
-            Console.WriteLine($"Admin: {Name}");
+            return $"{Id}_{Name}_{Password}_{Role}";
         }
 
         public void ManageProducts()

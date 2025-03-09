@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FoodDrive")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7781b6a176a2d405990d9c9f4b3c156f3bbc234d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc1b4fc5b00a1eb6c526c8b3dfe233445b2ad4f6")]
 [assembly: System.Reflection.AssemblyProductAttribute("FoodDrive")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FoodDrive")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

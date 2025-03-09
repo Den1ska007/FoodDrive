@@ -22,6 +22,7 @@ namespace FoodDrive.Models
             Adres = adres;
         }
 
-        public abstract void DisplayInfo(); // Абстрактний метод
+        public abstract string GetInfo(); // Абстрактний метод
     }
+    public class UserRepository : Repository<User> { }
 }
