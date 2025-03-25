@@ -3,7 +3,7 @@ using FoodDrive.Interfaces;
 
 namespace FoodDrive.Models
 {
-    public class Review : IEntity
+    public class Review : BaseEntity
     {
         public int Id { get; set; }
         public Customer User { get; set; }
@@ -12,9 +12,8 @@ namespace FoodDrive.Models
         public byte Rating { get; set; }
         public DateTime Date { get; set; }
 
-        public Review(int id, Customer user, Dish dish, string text, byte rating, DateTime date)
+        public Review(Customer user, Dish dish, string text, byte rating, DateTime date)
         {
-            Id = id;
             User = user;
             Dish = dish;
             Text = text;

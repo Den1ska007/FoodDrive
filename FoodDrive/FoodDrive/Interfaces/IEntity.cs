@@ -2,6 +2,7 @@
 {
     public interface IEntity
     {
-        int Id { get; }
+        int id { get; set; }
+        private static int _latestId = 0;
     }
 }

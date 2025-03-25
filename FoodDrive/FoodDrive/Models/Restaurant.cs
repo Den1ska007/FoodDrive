@@ -2,7 +2,7 @@
 
 namespace FoodDrive.Models
 {
-    public class Restaurant : IEntity
+    public class Restaurant : BaseEntity
     {
         public required string Name { get; set; }
         public required string Location { get; set; }

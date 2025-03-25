@@ -10,7 +10,7 @@ namespace FoodDrive.Models
         public Customer(int id, string name, string password, int mobilenum, string adres, List<Order> orders)
             : base(id, name, password, "Customer", mobilenum, adres)
         {
-           
+            Orders = orders;
         }
         
         public override string GetInfo()

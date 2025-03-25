@@ -6,9 +6,8 @@ using FoodDrive.Interfaces;
 
 namespace FoodDrive.Models
 {
-    public class Dish : IReviewable, IEntity
+    public class Dish : BaseEntity, IReviewable
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
@@ -16,9 +15,8 @@ namespace FoodDrive.Models
         public List<Review> Reviews { get; set; } = new List<Review>();
         public float Rating { get; set; }
          
-        public Dish(int id, string name, string description, decimal price, TypeOfDish TypeOfDish, int stock, List<Review> reviews, float rating )
+        public Dish(string name, string description, decimal price, TypeOfDish TypeOfDish, int stock, List<Review> reviews, float rating )
         {
-            Id = id;
             Name = name;
             Description = description;
             this.TypeOfDish = TypeOfDish;

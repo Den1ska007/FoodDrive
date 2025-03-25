@@ -2,7 +2,7 @@
 namespace FoodDrive.Models;
 using FoodDrive.Interfaces;
 
-public class Repository<T> : IRepository<T> where T : IEntity
+public class Repository<T> : IRepository<T> where T : BaseEntity
 {
     protected List<T> _entities = new List<T>();
 
