@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "+4fkTIyKD9m8oXQQyqSudo3ZnlP82kiwmGPhhHcBcLY=",
+  "Hash": "O/XZzLliV17i5WHA/9grQDDKXTNSMgpEN7STUNlOtoQ=",
   "Source": "FoodDrive",
   "BasePath": "_content/FoodDrive",
   "Mode": "Default",
@@ -57,6 +57,48 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\FoodDrive.bundle.scp.css"
+    },
+    {
+      "Identity": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\original.png",
+      "SourceId": "FoodDrive",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\",
+      "BasePath": "_content/FoodDrive",
+      "RelativePath": "css/original#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ovy423gns1",
+      "Integrity": "lHcPgmZ04xJPVYYDeZAfPXBbsJrYbXNgheCUfnxEXMk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\original.png"
+    },
+    {
+      "Identity": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\originalV2.jpg",
+      "SourceId": "FoodDrive",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\",
+      "BasePath": "_content/FoodDrive",
+      "RelativePath": "css/originalV2#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "wi8w4am03c",
+      "Integrity": "2MD5EQtcL2fpqjKbxXsWkB45KK9RuqExMPagtEEjr+Q=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\originalV2.jpg"
     },
     {
       "Identity": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\site.css",
@@ -1320,6 +1362,170 @@
     }
   ],
   "Endpoints": [
+    {
+      "Route": "css/original.ovy423gns1.png",
+      "AssetFile": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\original.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2155506"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"lHcPgmZ04xJPVYYDeZAfPXBbsJrYbXNgheCUfnxEXMk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 23:46:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ovy423gns1"
+        },
+        {
+          "Name": "label",
+          "Value": "css/original.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-lHcPgmZ04xJPVYYDeZAfPXBbsJrYbXNgheCUfnxEXMk="
+        }
+      ]
+    },
+    {
+      "Route": "css/original.png",
+      "AssetFile": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\original.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2155506"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"lHcPgmZ04xJPVYYDeZAfPXBbsJrYbXNgheCUfnxEXMk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 23:46:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-lHcPgmZ04xJPVYYDeZAfPXBbsJrYbXNgheCUfnxEXMk="
+        }
+      ]
+    },
+    {
+      "Route": "css/originalV2.jpg",
+      "AssetFile": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\originalV2.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "31138"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"2MD5EQtcL2fpqjKbxXsWkB45KK9RuqExMPagtEEjr+Q=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 20:09:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-2MD5EQtcL2fpqjKbxXsWkB45KK9RuqExMPagtEEjr+Q="
+        }
+      ]
+    },
+    {
+      "Route": "css/originalV2.wi8w4am03c.jpg",
+      "AssetFile": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\originalV2.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "31138"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"2MD5EQtcL2fpqjKbxXsWkB45KK9RuqExMPagtEEjr+Q=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 20:09:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "wi8w4am03c"
+        },
+        {
+          "Name": "label",
+          "Value": "css/originalV2.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-2MD5EQtcL2fpqjKbxXsWkB45KK9RuqExMPagtEEjr+Q="
+        }
+      ]
+    },
     {
       "Route": "css/site.c2tiyv64ts.css",
       "AssetFile": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\site.css",

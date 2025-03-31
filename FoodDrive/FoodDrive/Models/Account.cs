@@ -1,4 +1,4 @@
-﻿namespace FoodDrive.Models
+﻿namespace FoodDrive.Models;
 using Microsoft.AspNetCore.Mvc;
 using BCrypt.Net;
 

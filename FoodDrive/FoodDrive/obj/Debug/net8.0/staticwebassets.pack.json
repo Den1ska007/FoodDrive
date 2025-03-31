@@ -5,6 +5,14 @@
       "PackagePath": "staticwebassets\\FoodDrive.tb54hbgr96.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\original.png",
+      "PackagePath": "staticwebassets\\css\\original.png"
+    },
+    {
+      "Id": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\originalV2.jpg",
+      "PackagePath": "staticwebassets\\css\\originalV2.jpg"
+    },
+    {
       "Id": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },

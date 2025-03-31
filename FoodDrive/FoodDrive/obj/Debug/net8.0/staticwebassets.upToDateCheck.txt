@@ -1,3 +1,5 @@
+wwwroot\css\original.png
+wwwroot\css\originalV2.jpg
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\js\site.js

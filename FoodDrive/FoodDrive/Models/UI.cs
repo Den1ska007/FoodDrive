@@ -22,7 +22,10 @@ namespace FoodDrive.Controllers
             _dishRepository = new DishRepository();
             _reviewRepository = new ReviewRepository();
         }
-
+        public IActionResult Contacts()
+        {
+            return View();
+        }
         public IActionResult Index()
         {
             return View();
