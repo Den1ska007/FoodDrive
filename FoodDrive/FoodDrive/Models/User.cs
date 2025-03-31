@@ -1,5 +1,7 @@
 ﻿using System;
+using BCrypt.Net;
 using FoodDrive.Interfaces;
+
 
 namespace FoodDrive.Models
 {
@@ -7,21 +9,31 @@ namespace FoodDrive.Models
     public abstract class User : BaseEntity
     {
         public string Name { get; set; }
-        protected string Password { get; set; }
+        
+        private string _password;
+        public string Password
+        {
+            get => _password;
+            set => _password = BCrypt.Net.BCrypt.HashPassword(value); // Хешуємо пароль перед збереженням
+        }
+
         public string Role { get; protected set; }
-        public int MobileNum { get; set; }
-        public string Adres { get; set; }
-        public User() :base() { }
-        public User(string name, string password, string role, int mobilenum, string adres)
+        public string Address { get; set; }
+        public User() { }
+        public User(string name, string password, string role, string address)
         {
             Name = name;
             Password = password;
             Role = role;
-            MobileNum = mobilenum;
-            Adres = adres;
+            Address = address;
         }
         private static int _latestId = 0;
         public abstract string GetInfo(); // Абстрактний метод
+
+        public bool VerifyPassword(string enteredPassword)
+        {
+            return BCrypt.Net.BCrypt.Verify(enteredPassword, Password);
+        }
     }
     public class UserRepository : Repository<User> { }
 }

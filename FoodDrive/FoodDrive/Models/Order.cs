@@ -10,7 +10,7 @@ namespace FoodDrive.Models
         public decimal TotalPrice { get; set; }
         public Status Status { get; set; }
         public TimeSpan Time { get; set; }
-
+        public Order() { }
         public Order(Customer user, List<Dish> products, Status status, TimeSpan time)
         {
             User = user;

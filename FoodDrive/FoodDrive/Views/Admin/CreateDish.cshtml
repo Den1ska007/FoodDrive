@@ -1,0 +1,62 @@
+﻿@model FoodDrive.Models.Dish
+<head>
+    <title>FoodDrive - Додавання користувачів</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 200px;
+        }
+
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+    </style>
+</head>
+<body>
+
+    <h2>Додати нову страву:</h2>
+    <form method="post">
+        <input type="text" name="Name" placeholder="Ім'я" required />
+        <input type="text" name="Description" placeholder="Опис" required />
+        <input type="number" name="Price" placeholder="Ціна страви" required />
+        <input type="number" name="Stock" placeholder="Кількість страв" required />
+        <input type="number" name="Rate" min="0" max="5" placeholder="Рейтинг" required />
+        <button type="submit">Додати</button>
+    </form>
+    <a href="@Url.Action("ListDishes")">Список страв</a>
+</body>
+

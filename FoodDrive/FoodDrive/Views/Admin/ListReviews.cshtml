@@ -1,0 +1,32 @@
+﻿@model IEnumerable<FoodDrive.Models.Review>
+
+<h2>Список відгуків</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Користувач</th>
+        <th>Страва</th>
+        <th>Оцінка</th>
+        <th>Текст</th>
+        <th>Дата</th>
+        <th>Дії</th>
+    </tr>
+    @foreach (var review in Model)
+    {
+        <tr>
+            <td>@review.Id</td>
+            <td>@review.User?.Name</td>
+            <td>@review.Dish?.Name</td>
+            <td>@review.Rating</td>
+            <td>@review.Text</td>
+            <td>@review.Date.ToShortDateString()</td>
+            <td>
+                <a href="@Url.Action("EditReview", new { id = review.Id })">Редагувати</a>
+            </td>
+        </tr>
+    }
+</table>
+
+<a href="@Url.Action("CreateReview")">Додати відгук</a>
+<li><a href="@Url.Action("Menu")">Назад</a>

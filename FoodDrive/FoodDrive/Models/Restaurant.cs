@@ -9,6 +9,8 @@ namespace FoodDrive.Models
         public TypeOfDish TypeOfDish { get; set; }
         public required string Rating { get; set; }
         public required int Id { get; set; }
+
     }
+
     public class RestaurantRepository : Repository<Restaurant> { }
 }

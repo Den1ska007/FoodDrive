@@ -1,11 +1,6 @@
-﻿@model List<FoodDrive.Models.Customer>
+﻿@model FoodDrive.Models.Customer
 
-<!DOCTYPE html>
-<html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FoodDrive - Додавання користувачів</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -52,14 +47,23 @@
     </style>
 </head>
 <body>
-    
-    <h2>Додати нового користувача:</h2>
-    <form method="post" action="List">
-        <input type="text" name="Name" placeholder="Ім'я" required />
-        <input type="text" name="Password" placeholder="Пароль" required />
-        <input type="number" name="Mobilenum" placeholder="Номер телефону" required />
-        <input type="text" name="Adres" placeholder="Адреса" required />
-        <button type="submit">Додати</button>
+
+    <h2>Створення клієнта</h2>
+
+    <form asp-action="CreateCustomer" method="post">
+        <label>Ім'я:</label>
+        <input type="text" name="Name" value="@Model?.Name" required />
+        <br />
+        <label>Пароль:</label>
+        <input type="text" name="Password" value="@Model?.Password" required />
+        <br />
+        <label>Адрес:</label>
+        <input type="text" name="Address" value="@Model?.Address" required />
+        <br />
+        <button type="submit">Створити</button>
     </form>
+
+    <a href="@Url.Action("List")">Назад до списку користувачів</a>
+
 </body>
-</html>
+

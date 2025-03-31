@@ -67,3 +67,6 @@ C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\refint\FoodDri
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\FoodDrive.pdb
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\FoodDrive.genruntimeconfig.cache
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\ref\FoodDrive.dll
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\FoodDrive.csproj.AssemblyReference.cache
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\FoodDrive.csproj.Up2Date

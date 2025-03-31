@@ -5,16 +5,16 @@ namespace FoodDrive.Models
 {
     public class Admin : User
     {
-        public Admin(int id, string name, string password, int mobilenum, string adres)
+        public Admin(int id, string name, string password, string address)
 
-            : base(id, name, password,"Admin", mobilenum, adres)
+            : base(name, password, "Admin", address)
         {
            
         }
 
         public override string GetInfo()
         {
-            return $"{Id}_{Name}_{Password}_{Role}";
+            return $"{id}_{Name}_{Password}_{Role}";
         }
 
         public void ManageProducts()

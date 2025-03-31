@@ -12,19 +12,20 @@ namespace FoodDrive.Models
         public string Description { get; set; }
         public decimal Price { get; set; }
         public TypeOfDish TypeOfDish { get; set; }
+        public int stock { get; set; }
         public List<Review> Reviews { get; set; } = new List<Review>();
         public float Rating { get; set; }
-         
-        public Dish(string name, string description, decimal price, TypeOfDish TypeOfDish, int stock, List<Review> reviews, float rating )
+        
+        public Dish()
         {
-            Name = name;
-            Description = description;
-            this.TypeOfDish = TypeOfDish;
-            Price = price;
-            Reviews = reviews;
-            Rating = rating;
+            Name = string.Empty;
+            Description = string.Empty;
+            TypeOfDish = TypeOfDish;
+            Price = 0;
+            stock = 0;
+            Reviews = [];
+            Rating = 0;
         }
-
         public void AddReview(Review review)
         {
             Reviews.Add(review);

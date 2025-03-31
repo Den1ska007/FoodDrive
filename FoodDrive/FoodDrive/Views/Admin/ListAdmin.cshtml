@@ -1,0 +1,25 @@
+﻿@model IEnumerable<FoodDrive.Models.Admin>
+
+<h2>Список адміністраторів</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Ім'я</th>
+        <th>Дії</th>
+    </tr>
+    @foreach (var admin in Model)
+    {
+                <tr>
+                    <td>@admin.id</td>
+                    <td>@admin.Name</td>
+                    <td>
+                        <a href="@Url.Action("EditAdmin", new { id = admin.id })">Редагувати</a> |
+                        <a href="@Url.Action("DeleteAdmin", new { id = admin.id })">Видалити</a>
+                    </td>
+                </tr>
+    }
+</table>
+
+<a href="@Url.Action("CreateAdmin")">Додати адміністратора</a>
+<li><a href="@Url.Action("Menu")">Назад</a>

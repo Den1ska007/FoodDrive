@@ -1,0 +1,79 @@
+﻿@model IEnumerable<FoodDrive.Models.Dish>
+<head>
+    <title>FoodDrive - Список страв</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 200px;
+        }
+
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+    </style>
+</head>
+<h2>Список товарів</h2>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Назва</th>
+        <th>Опис</th>
+        <th>Ціна</th>
+        <th>Тип кухні</th>
+        <th>Дії</th>
+    </tr>
+    @foreach (var product in Model)
+    {
+        <tr>
+            <td>@product.id</td>
+            <td>@product.Name</td>
+            <td>@product.Description</td>
+            <td>@product.Price</td>
+            <td>@product.TypeOfDish</td>
+            <td>
+                <a href="@Url.Action("EditProduct", new { id = product.id })">Редагувати</a> |
+                <a href="@Url.Action("DeleteProduct", new { id = product.id })">Видалити</a>
+            </td>
+        </tr>
+    }
+
+</table>
+  
+
+<a href="@Url.Action("CreateDish")">Додати товар</a>
+<a href="@Url.Action("Index")">Назад</a>
+
