@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "r5r9Vk2ufdk=",
+  "dgSpecHash": "8RHYBOgU+yo=",
   "success": true,
   "projectFilePath": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\FoodDrive.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Anatoloii\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512"
+    "C:\\Users\\Anatoloii\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\Anatoloii\\.nuget\\packages\\system.io.pipelines\\9.0.4\\system.io.pipelines.9.0.4.nupkg.sha512",
+    "C:\\Users\\Anatoloii\\.nuget\\packages\\system.text.encodings.web\\9.0.4\\system.text.encodings.web.9.0.4.nupkg.sha512",
+    "C:\\Users\\Anatoloii\\.nuget\\packages\\system.text.json\\9.0.4\\system.text.json.9.0.4.nupkg.sha512"
   ],
   "logs": []
 }

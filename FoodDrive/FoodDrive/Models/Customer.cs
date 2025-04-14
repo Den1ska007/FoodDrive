@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FoodDrive.Interfaces;
 
 namespace FoodDrive.Models
 {
@@ -22,7 +23,11 @@ namespace FoodDrive.Models
             return $"{Name}_{Password}_{Role}_{Orders.Count}";
         }
     }
-    
-    public class CustomerRepository : Repository<Customer> { }
+    public class CustomerRepository : Repository<Customer>
+    {
+        public CustomerRepository(IDataStorage<Customer> storage) : base(storage)
+        {
+        }
+    }
 
 }

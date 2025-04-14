@@ -8,19 +8,29 @@ namespace FoodDrive.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly AdminRepository _adminRepository;
-        private readonly CustomerRepository _customerRepository;
-        private readonly OrderRepository _orderRepository;
-        private readonly DishRepository _dishRepository;
-        private readonly ReviewRepository _reviewRepository;
+        private readonly IRepository<Admin> _adminRepository;
+        private readonly IRepository<Customer> _customerRepository;
+        private readonly IRepository<Dish> _dishRepository;
+        private readonly IRepository<Order> _orderRepository;
+        private readonly IRepository<Review> _reviewRepository;
+        private readonly UserRepository _userRepository;
 
-        public AdminController()
+
+        public AdminController(
+            IRepository<Admin> adminRepository,
+            IRepository<Customer> customerRepository,
+            IRepository<Dish> dishRepository,
+            IRepository<Order> orderRepository,
+            IRepository<Review> reviewRepository,
+            UserRepository userRepository)
         {
-            _adminRepository = new AdminRepository();
-            _customerRepository = new CustomerRepository();
-            _orderRepository = new OrderRepository();
-            _dishRepository = new DishRepository();
-            _reviewRepository = new ReviewRepository();
+            _adminRepository = adminRepository;
+            _customerRepository = customerRepository;
+            _dishRepository = dishRepository;
+            _orderRepository = orderRepository;
+            _reviewRepository = reviewRepository;
+            _userRepository = userRepository;
+          _userRepository = userRepository;
         }
         public IActionResult Contacts()
         {
@@ -39,6 +49,8 @@ namespace FoodDrive.Controllers
         [HttpPost]
         public IActionResult CreateAdmin(Admin admin)
         {
+            admin.id = _adminRepository.GetAll().Any() ?
+                  _adminRepository.GetAll().Max(a => a.id) + 1 : 1;
             _adminRepository.Add(admin);
             return RedirectToAction("ListAdmin");
         }

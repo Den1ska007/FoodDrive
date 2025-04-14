@@ -11,6 +11,11 @@ namespace FoodDrive.Models
         public required int Id { get; set; }
 
     }
+    public class RestaurantRepository : Repository<Restaurant>
+    {
+        public RestaurantRepository(IDataStorage<Restaurant> storage) : base(storage)
+        {
+        }
 
-    public class RestaurantRepository : Repository<Restaurant> { }
+    }
 }

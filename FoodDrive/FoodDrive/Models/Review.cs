@@ -32,5 +32,12 @@ namespace FoodDrive.Models
             Date = date;
         }
     }
-    public class ReviewRepository : Repository<Review> { }
+
+    public class ReviewRepository : Repository<Review>
+    {
+        public ReviewRepository(IDataStorage<Review> storage) : base(storage)
+        {
+        }
+
+    }
 }

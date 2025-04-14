@@ -32,5 +32,13 @@ namespace FoodDrive.Models
             Console.WriteLine($"Review added for {Name}: {review.Text}");
         }
     }
-    public class DishRepository : Repository<Dish> { }
+    
+    public class DishRepository : Repository<Dish>
+    {
+        public DishRepository(IDataStorage<Dish> storage) : base(storage)
+        {
+        }
+
+        
+    }
 }

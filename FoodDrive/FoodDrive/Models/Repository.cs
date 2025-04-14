@@ -1,21 +1,38 @@
-﻿
-namespace FoodDrive.Models;
+﻿// FoodDrive/Models/Repository.cs
 using FoodDrive.Interfaces;
+using FoodDrive.Data;
+using System.Linq;
 
-public class Repository<T> : IRepository<T> where T : IEntity
+namespace FoodDrive.Models
 {
-    protected static List<T> _entities = new List<T>(); // 🟢 Статичний список зберігає дані між запитами
-
-    public void Add(T entity)
+    public class Repository<T> : IRepository<T> where T : IEntity
     {
-        if (!_entities.Any(e => e.id == entity.id)) // 🟢 Перевіряємо унікальність ID
-        {
-            _entities.Add(entity);
-        }
-    }
+        private List<T> _entities;
+        private readonly IDataStorage<T> _storage;
 
-    public void Remove(T entity) => _entities.Remove(entity);
-    public T GetById(int id) => _entities.FirstOrDefault(e => e.id == id);
-    public IEnumerable<T> GetAll() => _entities.ToList(); // 🟢 Повертаємо копію списку
-    public IEnumerable<T> GetSorted() => _entities.OrderBy(e => e.id).ToList(); // 🟢 Сортуємо список
+        public Repository(IDataStorage<T> storage)
+        {
+            _storage = storage;
+            _entities = _storage.Load();
+        }
+
+        public void Add(T entity)
+        {
+            if (!_entities.Any(e => e.id == entity.id))
+            {
+                _entities.Add(entity);
+                _storage.Save(_entities);
+            }
+        }
+
+        public void Remove(T entity)
+        {
+            _entities.Remove(entity);
+            _storage.Save(_entities);
+        }
+
+        public T GetById(int id) => _entities.FirstOrDefault(e => e.id == id);
+        public IEnumerable<T> GetAll() => _entities.ToList();
+        public IEnumerable<T> GetSorted() => _entities.OrderBy(e => e.id).ToList();
+    }
 }

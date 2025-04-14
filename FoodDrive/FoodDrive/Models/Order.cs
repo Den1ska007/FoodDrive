@@ -30,5 +30,10 @@ namespace FoodDrive.Models
             return total;
         }
     }
-    public class OrderRepository : Repository<Order> { }
+    public class OrderRepository : Repository<Order>
+    {
+        public OrderRepository(IDataStorage<Order> storage) : base(storage)
+        {
+        }
+    }
 }

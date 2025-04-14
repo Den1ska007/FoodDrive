@@ -35,5 +35,17 @@ namespace FoodDrive.Models
             return BCrypt.Net.BCrypt.Verify(enteredPassword, Password);
         }
     }
-    public class UserRepository : Repository<User> { }
+
+    public class UserRepository : Repository<User>
+    {
+        public UserRepository(IDataStorage<User> storage) : base(storage)
+        {
+        }
+
+        // Додаткові методи для роботи з користувачами, якщо потрібно
+        public User GetByUsername(string username)
+        {
+            return GetAll().FirstOrDefault(u => u.Name == username);
+        }
+    }
 }

@@ -70,3 +70,13 @@ C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\ref\FoodDrive.
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\BCrypt.Net-Next.dll
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\FoodDrive.csproj.AssemblyReference.cache
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\FoodDrive.csproj.Up2Date
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\System.IO.Pipelines.dll
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\System.Text.Encodings.Web.dll
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\System.Text.Json.dll
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\Data\Admin.json
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\Data\Customer.json
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\Data\Dish.json
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\Data\Order.json
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\Data\Review.json
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\Data\User.json
