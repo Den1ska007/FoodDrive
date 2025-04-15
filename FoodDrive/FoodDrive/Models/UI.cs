@@ -30,7 +30,6 @@ namespace FoodDrive.Controllers
             _orderRepository = orderRepository;
             _reviewRepository = reviewRepository;
             _userRepository = userRepository;
-          _userRepository = userRepository;
         }
         public IActionResult Contacts()
         {
@@ -74,20 +73,32 @@ namespace FoodDrive.Controllers
         [HttpPost]
         public IActionResult CreateCustomer(Customer customer)
         {
-            _customerRepository.Add(customer);
-            return RedirectToAction("List");
+            if (ModelState.IsValid)
+            {
+                // Якщо потрібно встановити ID
+                customer.id = _customerRepository.GetAll().Any() ?
+                            _customerRepository.GetAll().Max(c => c.id) + 1 : 1;
+
+                _customerRepository.Add(customer);
+                return RedirectToAction("List");
+            }
+            return View(customer);
         }
         public IActionResult EditCustomer(int id) => View(_customerRepository.GetById(id));
         [HttpPost]
         public IActionResult EditCustomer(Customer customer)
         {
-            var existingCustomer = _customerRepository.GetById(customer.id);
-            if (existingCustomer != null)
+            if (ModelState.IsValid)
             {
-                _customerRepository.Remove(existingCustomer);
+                var existingCustomer = _customerRepository.GetById(customer.id);
+                if (existingCustomer != null)
+                {
+                    _customerRepository.Remove(existingCustomer);
+                }
+                _customerRepository.Add(customer);
+                return RedirectToAction("List");
             }
-            _customerRepository.Add(customer);
-            return RedirectToAction("List");
+            return View(customer);
         }
         public IActionResult DeleteCustomer(int id)
         {

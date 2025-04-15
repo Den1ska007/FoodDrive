@@ -1,23 +1,9 @@
 [
   {
     "Name": "admin",
-    "Password": "$2a$11$esfB8B5pfE42sNBqdi301uG7JvcVLCqJXDp.85mpW8Yf9FfvVu9Fa",
+    "Password": "$2a$11$BJlAVRD5nAi7BB547qIqbex4XXt7aXzqKQ/Rm5qE4Gdrd1pZ65PH2",
     "Role": "Admin",
-    "Address": "admin",
+    "Address": "default",
     "id": 1
-  },
-  {
-    "Name": "aboba",
-    "Password": "$2a$11$88S91eELaznGBGs/sKf2a.EUAV4KI1P4.gBIxv8FkCQtUI1jeeTx6",
-    "Role": "Admin",
-    "Address": "default",
-    "id": 3
-  },
-  {
-    "Name": "aboba",
-    "Password": "$2a$11$vS6PaMvY6MHhQ8HzQOnH/e7Bt8rDdVbj/U0VMkU.3L./Ur02zoquu",
-    "Role": "Admin",
-    "Address": "default",
-    "id": 4
   }
 ]

@@ -19,7 +19,13 @@ namespace FoodDrive.Models
 
         public string Role { get; protected set; }
         public string Address { get; set; }
-        public User() { }
+        protected User()
+        {
+            Name = string.Empty;
+            Password = string.Empty;
+            Role = string.Empty;
+            Address = string.Empty;
+        }
         public User(string name, string password, string role, string address)
         {
             Name = name;
@@ -27,7 +33,6 @@ namespace FoodDrive.Models
             Role = role;
             Address = address;
         }
-        private static int _latestId = 0;
         public abstract string GetInfo(); // Абстрактний метод
 
         public bool VerifyPassword(string enteredPassword)

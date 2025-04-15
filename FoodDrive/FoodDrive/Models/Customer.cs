@@ -7,10 +7,13 @@ namespace FoodDrive.Models
     public class Customer : User
     {
         public List<Order> Orders { get; set; } = new List<Order>();
-
-        public Customer()
+        public Customer() : base()
         {
-            Orders = [];
+            // 3. Инициализируем коллекцию
+            Orders = new List<Order>();
+
+            // 4. Установим роль по умолчанию
+            Role = "Customer";
         }
         public Customer(string name, string password, string address, List<Order> orders)
             : base(name, password, "Customer", address)
