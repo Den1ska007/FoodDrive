@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Acco\**" />
+    <Content Remove="Views\Acco\**" />
+    <EmbeddedResource Remove="Views\Acco\**" />
+    <None Remove="Views\Acco\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\css\original.png" />
   </ItemGroup>
 

@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using FoodDrive.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace FoodDrive.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IRepository<Admin> _adminRepository;

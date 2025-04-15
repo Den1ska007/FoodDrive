@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Вихід із системи";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning">
+                    <h3 class="card-title">@ViewData["Title"]</h3>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-sign-out-alt fa-5x text-warning"></i>
+                    </div>
+                    <h4>Ви впевнені, що хочете вийти?</h4>
+                    <p>Для продовження роботи вам знову потрібно буде увійти в систему.</p>
+
+                    <form asp-action="Logout" method="post">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger">Так, вийти</button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Скасувати</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

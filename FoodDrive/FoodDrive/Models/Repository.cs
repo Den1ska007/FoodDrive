@@ -30,7 +30,16 @@ namespace FoodDrive.Models
             _entities.Remove(entity);
             _storage.Save(_entities);
         }
-
+        public void Update(T entity)
+        {
+            var existingEntity = _entities.FirstOrDefault(e => e.id == entity.id);
+            if (existingEntity != null)
+            {
+                _entities.Remove(existingEntity);
+                _entities.Add(entity);
+                _storage.Save(_entities);
+            }
+        }
         public T GetById(int id) => _entities.FirstOrDefault(e => e.id == id);
         public IEnumerable<T> GetAll() => _entities.ToList();
         public IEnumerable<T> GetSorted() => _entities.OrderBy(e => e.id).ToList();

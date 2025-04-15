@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "Orders": [],
+    "Name": "admin",
+    "Password": "$2a$11$lMNpBgqEUuJgOUvv22.z7e9579d3d8kIwuymxspF9q8unDDHynjQi",
+    "Role": "Customer",
+    "Address": "admin",
+    "id": 0
+  },
+  {
+    "Orders": [],
+    "Name": "customer",
+    "Password": "$2a$11$Xeu44lxUouSgfvcUYwqEq.F61c4ijT9btGHJBKDhdedNFPqedUANa",
+    "Role": "Customer",
+    "Address": "sdawdsa",
+    "id": 1
+  }
+]

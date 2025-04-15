@@ -1,7 +1,7 @@
 [
   {
     "Name": "admin",
-    "Password": "$2a$11$BJlAVRD5nAi7BB547qIqbex4XXt7aXzqKQ/Rm5qE4Gdrd1pZ65PH2",
+    "Password": "admin",
     "Role": "Admin",
     "Address": "default",
     "id": 1

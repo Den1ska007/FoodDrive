@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "Name": "admin",
+    "Password": "$2a$11$9f9UNFRPdZXnAJYGtAb8luoqaTc9pFn26laOgSFg7mNvwQonDHi.i",
+    "Role": "Customer",
+    "Address": "admin",
+    "id": 0
+  }
+]

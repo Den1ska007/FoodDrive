@@ -1,5 +1,4 @@
-﻿del FoodDrive.Models.Admin
-<head>
+﻿<head>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,21 +44,19 @@
             }
     </style>
 </head>
-<h2>Створення адміністратора</h2>
-
-<form asp-action="CreateAdmin" method="post">
-
-    <label>Ім'я:</label>
-    <input type="text" name="Name" value="@Model?.Name" required />
-    <br />
-
-    <label>Пароль:</label>
-    <input type="password" name="Password" value="@Model?.Password" required />
-    <br />
-    <label>Адрес:</label>
-    <input type="text" name="Address" value="@Model?.Address" required />
-   ]<br />
-    <button type="submit">Створити</button>
+<h2>Реєстрація</h2>
+<form asp-action="Register" method="post">
+    <div>
+        <label>Ім'я користувача:</label>
+        <input type="text" name="username" required />
+    </div>
+    <div>
+        <label>Пароль:</label>
+        <input type="password" name="password" required />
+    </div>
+    <div>
+        <label>Адреса:</label>
+        <input type="text" name="address" required />
+    </div>
+    <button type="submit">Зареєструватися</button>
 </form>
-
-<a href="@Url.Action("Admins")">Назад до списку</a>

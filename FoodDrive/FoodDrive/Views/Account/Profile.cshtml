@@ -1,0 +1,104 @@
+﻿@model FoodDrive.Models.User
+@{
+    ViewData["Title"] = "Профіль користувача";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title">Мій профіль</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="avatar-circle bg-secondary text-white mx-auto">
+                            <span class="initials">@Model.Name.Substring(0, 1).ToUpper()</span>
+                        </div>
+                    </div>
+
+                    <dl class="row">
+                        <dt class="col-sm-4">Ім'я:</dt>
+                        <dd class="col-sm-8">@Model.Name</dd>
+
+                        <dt class="col-sm-4">Роль:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge @(Model.Role == "Admin" ? "bg-danger" : "bg-success")">
+                                @Model.Role
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Адреса:</dt>
+                        <dd class="col-sm-8">@Model.Address</dd>
+
+                        <dt class="col-sm-4">Дата реєстрації:</dt>
+                        <dd class="col-sm-8">@DateTime.Now.ToString("dd.MM.yyyy")</dd>
+                    </dl>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="EditProfile" class="btn btn-primary">Редагувати профіль</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    form {
+        margin-top: 20px;
+    }
+
+    input {
+        padding: 8px;
+        margin: 5px;
+        width: 200px;
+    }
+
+    button {
+        padding: 8px 15px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    .initials {
+        line-height: 1;
+    }
+</style>

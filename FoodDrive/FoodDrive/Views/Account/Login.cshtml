@@ -1,4 +1,4 @@
-﻿del FoodDrive.Models.Admin
+﻿@model FoodDrive.Models.User
 <head>
     <style>
         body {
@@ -45,21 +45,16 @@
             }
     </style>
 </head>
-<h2>Створення адміністратора</h2>
-
-<form asp-action="CreateAdmin" method="post">
-
-    <label>Ім'я:</label>
-    <input type="text" name="Name" value="@Model?.Name" required />
-    <br />
-
-    <label>Пароль:</label>
-    <input type="password" name="Password" value="@Model?.Password" required />
-    <br />
-    <label>Адрес:</label>
-    <input type="text" name="Address" value="@Model?.Address" required />
-   ]<br />
-    <button type="submit">Створити</button>
+<h2>Вхід</h2>
+<form asp-action="Login" method="post">
+    <div>
+        <label>Ім'я користувача:</label>
+        <input type="text" name="username" required />
+    </div>
+    <div>
+        <label>Пароль:</label>
+        <input type="password" name="password" required />
+    </div>
+    <button type="submit">Увійти</button>
 </form>
-
-<a href="@Url.Action("Admins")">Назад до списку</a>
+<p>Ще не зареєстровані? <a asp-action="Register">Реєстрація</a></p>

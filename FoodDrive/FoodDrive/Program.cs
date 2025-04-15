@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using FoodDrive.Interfaces;
 using FoodDrive.Models;
 using FoodDrive.Data;
+using FoodDrive.Services;
+using System.Text.Json;
 
 class Program
 {
@@ -28,14 +30,32 @@ class Program
         builder.Services.AddSingleton<IRepository<Review>, ReviewRepository>();
         builder.Services.AddSingleton<IRepository<User>, UserRepository>();
 
-
+        builder.Services.AddSingleton<UserService>();
         builder.Services.AddSingleton<AdminRepository>();
         builder.Services.AddSingleton<CustomerRepository>();
         builder.Services.AddSingleton<DishRepository>();
         builder.Services.AddSingleton<OrderRepository>();
         builder.Services.AddSingleton<ReviewRepository>();
         builder.Services.AddSingleton<UserRepository>(); // Додали цей рядок
+        builder.Services.Configure<JsonSerializerOptions>(options =>
+        {
+            options.Converters.Add(new UserConverter());
+        });                                        // Program.cs
+        builder.Services.AddSingleton<IRepository<User>, UserRepository>();
+        builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddAuthentication("CookieAuth")
+            .AddCookie("CookieAuth", options =>
+            {
+                options.Cookie.Name = "AuthCookie";
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
 
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
+        });
         builder.Services.AddControllersWithViews();
 
         var app = builder.Build();
