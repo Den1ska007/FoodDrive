@@ -20,3 +20,18 @@ html {
 body {
   margin-bottom: 60px;
 }
+/* Стилі для карток страв */
+.card {
+    transition: transform 0.3s;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+/* Стилі для кошика */
+#cart-items .cart-item {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}

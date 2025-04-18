@@ -10,7 +10,10 @@ namespace FoodDrive.Models
         public decimal TotalPrice { get; set; }
         public Status Status { get; set; }
         public TimeSpan Time { get; set; }
-        public Order() { }
+        public Order()
+        {
+            Products = new List<Dish>();
+        }
         public Order(Customer user, List<Dish> products, Status status, TimeSpan time)
         {
             User = user;
@@ -20,14 +23,12 @@ namespace FoodDrive.Models
             Time = time;
         }
 
-        private decimal CalculateTotal()
+        public decimal CalculateTotal()
         {
-            decimal total = 0;
-            foreach (var product in Products)
-            {
-                total += product.Price;
-            }
-            return total;
+            if (Products == null || !Products.Any())
+                return 0m;  // Явно повертаємо 0, якщо немає продуктів
+
+            return Products.Sum(p => p.Price);
         }
     }
     public class OrderRepository : Repository<Order>

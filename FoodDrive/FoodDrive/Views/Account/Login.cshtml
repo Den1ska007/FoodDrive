@@ -1,60 +1,142 @@
 ﻿@model FoodDrive.Models.User
+@{
+    ViewData["Title"] = "Вхід";
+}
+
 <head>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
 
-        th, td {
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
             border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        form {
-            margin-top: 20px;
-        }
-
-        input {
-            padding: 8px;
-            margin: 5px;
-            width: 200px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
         }
 
         button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
+            width: 100%;
+            padding: 12px;
+            background-color: #2ecc71;
             color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 10px;
         }
 
             button:hover {
-                background-color: #45a049;
+                background-color: #27ae60;
+            }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+        }
+
+            .register-link a {
+                color: #3498db;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+                .register-link a:hover {
+                    text-decoration: underline;
+                }
+
+        .validation-error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .logo img {
+                height: 60px;
             }
     </style>
 </head>
-<h2>Вхід</h2>
-<form asp-action="Login" method="post">
-    <div>
-        <label>Ім'я користувача:</label>
-        <input type="text" name="username" required />
+
+<div class="login-container">
+    <div class="logo">
+        <img src="~/css/original.png" alt="FoodDrive Logo" />
     </div>
-    <div>
-        <label>Пароль:</label>
-        <input type="password" name="password" required />
-    </div>
-    <button type="submit">Увійти</button>
-</form>
-<p>Ще не зареєстровані? <a asp-action="Register">Реєстрація</a></p>
+
+    <h2>Вхід до системи</h2>
+
+    <form asp-action="Login" method="post">
+        <div class="form-group">
+            <label asp-for="Name">Ім'я користувача</label>
+            <input asp-for="Name" type="text" class="form-control" placeholder="Введіть ваш логін" />
+            <span asp-validation-for="Name" class="validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password">Пароль</label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="Введіть ваш пароль" />
+            <span asp-validation-for="Password" class="validation-error"></span>
+        </div>
+
+        @if (ViewData["ErrorMessage"] != null)
+        {
+            <div class="validation-error" style="margin-bottom: 15px;">
+                @ViewData["ErrorMessage"]
+            </div>
+        }
+
+        <button type="submit">Увійти</button>
+
+        <div class="register-link">
+            Ще не зареєстровані? <a asp-action="Register">Створити акаунт</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

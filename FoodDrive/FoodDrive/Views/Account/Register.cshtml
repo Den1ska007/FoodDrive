@@ -1,62 +1,168 @@
-﻿<head>
+﻿@model FoodDrive.Models.User
+@{
+    ViewData["Title"] = "Реєстрація";
+}
+
+<head>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f5f5f5;
         }
 
-        table {
+        .registration-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
+            padding: 10px;
             border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
-        th {
-            background-color: #f2f2f2;
+        .role-selector {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
         }
 
-        form {
-            margin-top: 20px;
+        .role-option {
+            flex: 1;
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
         }
 
-        input {
-            padding: 8px;
-            margin: 5px;
-            width: 200px;
+            .role-option:hover {
+                border-color: #3498db;
+            }
+
+            .role-option.selected {
+                border-color: #2ecc71;
+                background-color: #f0fff4;
+            }
+
+        input[type="radio"] {
+            display: none;
         }
 
         button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
+            width: 100%;
+            padding: 12px;
+            background-color: #2ecc71;
             color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
 
             button:hover {
-                background-color: #45a049;
+                background-color: #27ae60;
             }
+
+        .validation-error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
     </style>
 </head>
-<h2>Реєстрація</h2>
-<form asp-action="Register" method="post">
-    <div>
-        <label>Ім'я користувача:</label>
-        <input type="text" name="username" required />
-    </div>
-    <div>
-        <label>Пароль:</label>
-        <input type="password" name="password" required />
-    </div>
-    <div>
-        <label>Адреса:</label>
-        <input type="text" name="address" required />
-    </div>
-    <button type="submit">Зареєструватися</button>
-</form>
+
+<div class="registration-container">
+    <h2>Створити новий акаунт</h2>
+
+    <form asp-action="Register" method="post">
+        <div class="form-group">
+            <label asp-for="Name">Ім'я користувача</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password">Пароль</label>
+            <input asp-for="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password" class="validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Address">Адреса</label>
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Оберіть роль</label>
+            <div class="role-selector">
+                <label class="role-option" onclick="selectRole('Customer')">
+                    <input type="radio" name="Role" value="Customer" checked />
+                    <i class="fas fa-user" style="font-size: 24px; display: block; margin-bottom: 5px;"></i>
+                    Користувач
+                    <p style="font-size: 12px; color: #7f8c8d;">Звичайний акаунт для замовлень</p>
+                </label>
+
+                <label class="role-option" onclick="selectRole('Admin')">
+                    <input type="radio" name="Role" value="Admin" />
+                    <i class="fas fa-user-shield" style="font-size: 24px; display: block; margin-bottom: 5px;"></i>
+                    Адміністратор
+                    <p style="font-size: 12px; color: #7f8c8d;">Повний доступ до системи</p>
+                </label>
+            </div>
+            <span asp-validation-for="Role" class="validation-error"></span>
+        </div>
+
+        <button type="submit">Зареєструватися</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function selectRole(role) {
+            document.querySelectorAll('.role-option').forEach(el => {
+                el.classList.remove('selected');
+                if (el.querySelector('input').value === role) {
+                    el.classList.add('selected');
+                }
+            });
+            document.querySelector(`input[value="${role}"]`).checked = true;
+        }
+
+        // Встановлюємо вибрану роль за замовчуванням
+        document.addEventListener('DOMContentLoaded', function() {
+            selectRole('Customer');
+        });
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

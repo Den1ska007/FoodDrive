@@ -1,5 +1,4 @@
-﻿// Controllers/AccountController.cs
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using FoodDrive.Interfaces;
 using FoodDrive.Models;
 using FoodDrive.Services;
@@ -13,106 +12,164 @@ public class AccountController : Controller
     private readonly AuthService _authService;
     private readonly UserService _userService;
     private readonly IRepository<User> _userRepository;
+    private readonly ILogger<AccountController> _logger;
 
-    public AccountController(AuthService authService, IRepository<User> userRepository)
+    public AccountController(
+        UserService userService,
+        AuthService authService,
+        IRepository<User> userRepository,
+        ILogger<AccountController> logger)
     {
-        _authService = authService;
-        _userRepository = userRepository;
+        _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     [HttpGet]
-    public IActionResult Login()
+    public IActionResult Login(string returnUrl = null)
     {
+        ViewData["ReturnUrl"] = returnUrl;
         return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(string username, string password)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(string username, string password, string returnUrl = null)
     {
-        var user = _authService.Authenticate(username, password);
-        if (user == null)
+        try
         {
-            ModelState.AddModelError("", "Невірний логін або пароль");
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                ModelState.AddModelError("", "Логін та пароль обов'язкові");
+                return View();
+            }
+
+            var user = _authService.Authenticate(username, password);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Невірний логін або пароль");
+                return View();
+            }
+
+            var principal = _authService.CreateClaimsPrincipal(user);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            return RedirectToLocal(returnUrl);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Помилка при вході для користувача {Username}", username);
+            ModelState.AddModelError("", "Сталася помилка при спробі входу");
             return View();
         }
-
-        var principal = _authService.CreateClaimsPrincipal(user);
-        await HttpContext.SignInAsync(principal);
-
-        return RedirectToAction("Index", "Home");
     }
 
     [HttpGet]
     public IActionResult Register()
     {
-        return View();
+        return View(new User());  // Повертаємо модель User замість RegisterViewModel
     }
 
     [HttpPost]
-    public IActionResult Register(string username, string password, string address)
+    public IActionResult Register(User model, string role)
     {
-        var existingUser = _userRepository.GetAll().FirstOrDefault(u => u.Name == username);
-        if (existingUser != null)
+        if (ModelState.IsValid)
         {
-            ModelState.AddModelError("", "Користувач з таким іменем вже існує");
-            return View();
+            User newUser = role == "Admin"
+                ? new Admin(model.Name, model.Password, model.Address)
+                : new Customer(model.Name, model.Password, model.Address, new List<Order>());
+
+            _userRepository.Add(newUser);
+            return RedirectToAction("Login");
         }
-
-        var newCustomer = new Customer
-        {
-            Name = username,
-            Password = password,
-            Address = address
-        };
-
-        _userRepository.Add(newCustomer);
-        return RedirectToAction("Login");
+        return View(model);
     }
 
     [Authorize]
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync();
-        return RedirectToAction("Index", "Admin");
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction("Index", "Home");
     }
-    [Authorize]
+
     [Authorize]
     public IActionResult Profile()
     {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        var user = _userService.GetUserProfile(userId);
-        return View(user);
+        try
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
+
+            var user = _userService.GetUserProfile(userId);
+            if (user == null) return NotFound();
+
+            return View(user);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Помилка при отриманні профілю");
+            return StatusCode(500, "Internal server error");
+        }
     }
+
     [Authorize]
+    [HttpGet]
     public IActionResult EditProfile()
     {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        var user = _userService.GetUserProfile(userId);
-        return View(user);
-    }
-
-    [Authorize]
-    [HttpPost]
-    public IActionResult EditProfile(User model)
-    {
-        if (ModelState.IsValid)
+        try
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var success = _userService.UpdateUserProfile(userId, model.Name, model.Address);
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
 
-            if (success)
-                return RedirectToAction("Profile");
+            var user = _userService.GetUserProfile(userId);
+            if (user == null) return NotFound();
 
-            ModelState.AddModelError("", "Не вдалося оновити профіль");
+            var model = new EditProfileViewModel
+            {
+                Name = user.Name,
+                Address = user.Address
+            };
+
+            return View(model);
         }
-        return View(model);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Помилка при отриманні профілю для редагування");
+            return StatusCode(500, "Internal server error");
+        }
     }
+
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> LogoutConfirmed()
+    [ValidateAntiForgeryToken]
+    public IActionResult EditProfile(EditProfileViewModel model)
     {
-        await HttpContext.SignOutAsync();
-        return RedirectToAction("Index", "Home");
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
+
+            var success = _userService.UpdateUserProfile(userId, model.Name, model.Address);
+            if (!success)
+            {
+                ModelState.AddModelError("", "Не вдалося оновити профіль");
+                return View(model);
+            }
+
+            return RedirectToAction("Profile");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Помилка при оновленні профілю");
+            ModelState.AddModelError("", "Сталася помилка при оновленні профілю");
+            return View(model);
+        }
     }
 
     [AllowAnonymous]
@@ -120,9 +177,45 @@ public class AccountController : Controller
     {
         return View();
     }
+
     [Authorize(Roles = "Admin")]
     public IActionResult AdminPanel()
     {
         return View();
     }
+
+    private int GetCurrentUserId()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim)) // Fixed missing closing parenthesis  
+            return 0;
+
+        return int.TryParse(userIdClaim, out var userId) ? userId : 0;
+    }
+
+    private IActionResult RedirectToLocal(string returnUrl)
+    {
+        if (Url.IsLocalUrl(returnUrl))
+        {
+            return Redirect(returnUrl);
+        }
+        return RedirectToAction("Index", "Index");
+    }
+
+    
+}
+
+// Додаткові моделі для View
+public class RegisterViewModel
+{
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string ConfirmPassword { get; set; }
+    public string Address { get; set; }
+}
+
+public class EditProfileViewModel
+{
+    public string Name { get; set; }
+    public string Address { get; set; }
 }

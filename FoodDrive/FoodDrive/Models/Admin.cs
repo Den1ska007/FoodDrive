@@ -18,7 +18,7 @@ namespace FoodDrive.Models
 
         public override string GetInfo()
         {
-            return $"{id}_{Name}_{Password}_{Role}";
+            return $"{id}_{Name}_{Password}_{Role}_{Address}";
         }
 
         public void ManageProducts()

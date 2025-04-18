@@ -1,0 +1,35 @@
+﻿@model IEnumerable<FoodDrive.Models.Order>
+
+@{
+    ViewData["Title"] = "Мої замовлення";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Історія замовлень</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            У вас ще немає замовлень
+        </div>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var order in Model)
+            {
+                <div class="list-group-item mb-3">
+                    <div class="d-flex justify-content-between">
+                        <h5>Замовлення #@order.id</h5>
+                        <span class="badge bg-@(order.Status == Status.Completed ? "success" : "warning")">
+                            @order.Status
+                        </span>
+                    </div>
+                    <p class="mb-1">@order.Time.ToString(@"hh\:mm") - @order.Products.Count товар(ів)</p>
+                    <p class="mb-1"><strong>Сума: @order.TotalPrice.ToString("C")</strong></p>
+                    <a href="#" class="btn btn-sm btn-outline-primary mt-2">Деталі</a>
+                </div>
+            }
+        </div>
+    }
+</div>

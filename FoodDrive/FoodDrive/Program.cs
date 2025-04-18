@@ -42,6 +42,7 @@ class Program
             options.Converters.Add(new UserConverter());
         });                                        // Program.cs
         builder.Services.AddSingleton<IRepository<User>, UserRepository>();
+        builder.Services.AddSingleton<UserService>();
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddAuthentication("CookieAuth")
             .AddCookie("CookieAuth", options =>

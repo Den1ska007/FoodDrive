@@ -11,9 +11,8 @@ namespace FoodDrive.Services
 
         public UserService(IRepository<User> userRepository)
         {
-            _userRepository = userRepository;
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
-
         public bool UpdateUserProfile(int userId, string name, string address)
         {
             var user = _userRepository.GetById(userId);
