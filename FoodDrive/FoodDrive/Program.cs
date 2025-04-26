@@ -21,7 +21,7 @@ class Program
         builder.Services.AddSingleton<IDataStorage<Dish>, JsonStorage<Dish>>();
         builder.Services.AddSingleton<IDataStorage<Order>, JsonStorage<Order>>();
         builder.Services.AddSingleton<IDataStorage<Review>, JsonStorage<Review>>();
-        builder.Services.AddSingleton<IDataStorage<User>, JsonStorage<User>>(); // Додали цей рядок
+        builder.Services.AddSingleton<IDataStorage<User>, JsonStorage<User>>();
 
         builder.Services.AddSingleton<IRepository<Admin>, AdminRepository>();
         builder.Services.AddSingleton<IRepository<Customer>, CustomerRepository>();
@@ -36,32 +36,34 @@ class Program
         builder.Services.AddSingleton<DishRepository>();
         builder.Services.AddSingleton<OrderRepository>();
         builder.Services.AddSingleton<ReviewRepository>();
-        builder.Services.AddSingleton<UserRepository>(); // Додали цей рядок
+        builder.Services.AddSingleton<UserRepository>();
         builder.Services.Configure<JsonSerializerOptions>(options =>
         {
             options.Converters.Add(new UserConverter());
-        });                                        // Program.cs
+        });                     
         builder.Services.AddSingleton<IRepository<User>, UserRepository>();
         builder.Services.AddSingleton<UserService>();
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddAuthentication("CookieAuth")
-            .AddCookie("CookieAuth", options =>
-            {
-                options.Cookie.Name = "AuthCookie";
-                options.LoginPath = "/Account/Login";
-                options.AccessDeniedPath = "/Account/AccessDenied";
-            });
+        .AddCookie("CookieAuth", options =>
+        {
+            options.Cookie.Name = "AuthCookie";
+            options.LoginPath = "/Account/Login";
+            options.AccessDeniedPath = "/Account/AccessDenied";
+            options.ExpireTimeSpan = TimeSpan.FromHours(1);
+        });
 
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
             options.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
         });
+
         builder.Services.AddControllersWithViews();
 
         var app = builder.Build();
 
-        // Створюємо папку Data при запуску додатка
+        
         Directory.CreateDirectory(Path.Combine(app.Environment.ContentRootPath, "Data"));
 
         if (!app.Environment.IsDevelopment())
@@ -73,6 +75,7 @@ class Program
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseRouting();
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllerRoute(

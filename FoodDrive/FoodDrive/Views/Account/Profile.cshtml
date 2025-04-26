@@ -1,4 +1,6 @@
-﻿@model FoodDrive.Models.User
+﻿@using FoodDrive.Models.ViewModels
+@model ProfileViewModel
+
 @{
     ViewData["Title"] = "Профіль користувача";
 }
@@ -19,7 +21,7 @@
 
                     <dl class="row">
                         <dt class="col-sm-4">Ім'я:</dt>
-                        <dd class="col-sm-8">@Model.Name</dd>
+                        <span class="initials">@Model.Name.Substring(0, 1).ToUpper()</span>
 
                         <dt class="col-sm-4">Роль:</dt>
                         <dd class="col-sm-8">
@@ -32,7 +34,7 @@
                         <dd class="col-sm-8">@Model.Address</dd>
 
                         <dt class="col-sm-4">Дата реєстрації:</dt>
-                        <dd class="col-sm-8">@DateTime.Now.ToString("dd.MM.yyyy")</dd>
+                        <dd class="col-sm-8">@Model.RegistrationDate.ToString("dd.MM.yyyy")</dd>
                     </dl>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">

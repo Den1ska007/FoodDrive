@@ -8,5 +8,6 @@
         Delivered,
         Completed,
         Pending,
+        Cancelled,
     }
 }

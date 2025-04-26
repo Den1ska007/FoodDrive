@@ -1,36 +1,43 @@
 ﻿// Services/AuthService.cs
-using FoodDrive.Interfaces;
 using FoodDrive.Models;
-using System.Security.Claims;
+using BCrypt.Net;
+using FoodDrive.Interfaces;
 
 public class AuthService
 {
-    private readonly IRepository<User> _userRepository;
-
-    public AuthService(IRepository<User> userRepository)
+    private readonly UserRepository _userRepository;
+    private readonly IRepository<Admin> _adminRepository;
+    private readonly IRepository<Customer> _customerRepository;
+    public AuthService(UserRepository userRepository,
+        IRepository<Admin> adminRepository,
+        IRepository<Customer> customerRepository)
     {
         _userRepository = userRepository;
+        _adminRepository = adminRepository;
+        _customerRepository = customerRepository;
     }
 
-    public User Authenticate(string username, string password)
+    public User? Authenticate(string username, string password)
     {
-        var user = _userRepository.GetAll().FirstOrDefault(u => u.Name == username);
-        if (user == null || !user.VerifyPassword(password))
-            return null;
+        // Шукаємо адміністратора
+        var admin = _adminRepository.GetAll()
+            .FirstOrDefault(u => u.Name == username);
 
-        return user;
+        if (admin != null)
+            return admin;
+
+        // Шукаємо користувача
+        var customer = _customerRepository.GetAll()
+            .FirstOrDefault(u => u.Name == username);
+
+        if (customer != null)
+            return customer;
+
+        return null;
     }
 
-    public ClaimsPrincipal CreateClaimsPrincipal(User user)
+    public void Register(User user)
     {
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Role, user.Role),
-            new Claim(ClaimTypes.NameIdentifier, user.id.ToString())
-        };
-
-        var identity = new ClaimsIdentity(claims, "CookieAuth");
-        return new ClaimsPrincipal(identity);
+        _userRepository.Add(user);
     }
 }

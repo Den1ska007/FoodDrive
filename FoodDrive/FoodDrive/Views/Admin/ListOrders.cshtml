@@ -1,39 +1,96 @@
 ﻿@model IEnumerable<FoodDrive.Models.Order>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3><i class="fas fa-clipboard-list me-2"></i>Замовлення</h3>
+                <div class="input-group w-25">
+                    <select class="form-select" id="statusFilter">
+                        <option value="">Всі статуси</option>
+                        @foreach (var status in Enum.GetValues(typeof(Status)))
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Клієнт</th>
+                            <th>Страви</th>
+                            <th>Сума</th>
+                            <th>Статус</th>
+                            <th>Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr data-status="@order.Status">
+                                <td>#@order.id</td>
+                                <td>@order.User.Name</td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (var product in order.Products)
+                                        {
+                                            <span class="badge bg-primary">@product.Name</span>
+                                        }
+                                    </div>
+                                </td>
+                                <td>@order.TotalPrice.ToString("C")</td>
+                                <td>
+                                    <span class="badge @GetStatusBadgeClass(order.Status)">
+                                        @order.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="@Url.Action("EditOrder", new { id = order.id })"
+                                           class="btn btn-sm btn-outline-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form asp-action="DeleteOrder" method="post">
+                                            <input type="hidden" name="id" value="@order.id" />
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Видалити замовлення?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<h2>Список замовлень</h2>
+<script>
+    document.getElementById('statusFilter').addEventListener('change', function() {
+        const status = this.value;
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.style.display = (!status || row.dataset.status === status) ? '' : 'none';
+        });
+    });
+</script>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Користувач</th>
-        <th>Товари</th>
-        <th>Загальна ціна</th>
-        <th>Статус</th>
-        <th>Дії</th>
-    </tr>
-    @foreach (var order in Model)
+@functions {
+    string GetStatusBadgeClass(Status status)
     {
-            <tr>
-                <td>@order.id</td>
-                <td>@order.User.Name</td>
-            <td>
-                @foreach (var product in order.Products)
-                {
-                            <span>@product.Name</span>
-
-                    <br />
-                }
-                </td>
-                <td>@order.TotalPrice грн</td>
-                <td>@order.Status</td>
-                    <td>
-        <a href="@Url.Action("EditOrder", new { id = order.id })">Редагувати</a> |
-        <a href="@Url.Action("DeleteOrder", new { id = order.id })">Видалити</a>
-    </td>
-
-            </tr> 
+        return status switch
+        {
+            Status.Pending => "bg-warning",
+            Status.Completed => "bg-success",
+            Status.Cancelled => "bg-danger",
+            _ => "bg-secondary"
+        };
     }
-</table>
-
-<a href="@Url.Action("CreateOrder")">Додати замовлення</a>
-<li><a href="@Url.Action("Menu")">Назад</a>
+}

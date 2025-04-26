@@ -19,7 +19,7 @@ namespace FoodDrive.Data
             _options = new JsonSerializerOptions
             {
                 WriteIndented = true,
-                Converters = { new UserConverter() } // Додаємо спеціальний конвертер
+                Converters = { new UserConverter() }
             };
 
             EnsureFileExists();
@@ -37,11 +37,11 @@ namespace FoodDrive.Data
 
                 if (!File.Exists(_filePath))
                 {
-                    File.WriteAllText(_filePath, "[]"); // Ініціалізуємо порожній масив
+                    File.WriteAllText(_filePath, "[]");
                 }
                 else if (new FileInfo(_filePath).Length == 0)
                 {
-                    File.WriteAllText(_filePath, "[]"); // Якщо файл існує але порожній
+                    File.WriteAllText(_filePath, "[]");
                 }
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace FoodDrive.Data
             {
                 var json = File.ReadAllText(_filePath);
 
-                // Додаткова перевірка на порожній вміст
+                
                 if (string.IsNullOrWhiteSpace(json))
                 {
                     return new List<T>();
@@ -80,7 +80,7 @@ namespace FoodDrive.Data
             }
             catch (JsonException)
             {
-                // Якщо файл пошкоджений, повертаємо порожній список
+                
                 return new List<T>();
             }
             catch (Exception ex)
@@ -96,7 +96,7 @@ namespace FoodDrive.Data
                 {
                     var root = doc.RootElement;
 
-                    // Визначаємо тип на основі ролі
+                    
                     if (root.TryGetProperty("Role", out var roleElement))
                     {
                         var role = roleElement.GetString();
@@ -113,7 +113,7 @@ namespace FoodDrive.Data
 
             public override void Write(Utf8JsonWriter writer, User value, JsonSerializerOptions options)
             {
-                // Серіалізуємо як конкретний тип
+                
                 JsonSerializer.Serialize(writer, (object)value, options);
             }
         }

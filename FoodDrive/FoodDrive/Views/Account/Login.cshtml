@@ -1,4 +1,5 @@
-﻿@model FoodDrive.Models.User
+﻿@using FoodDrive.Models.ViewModels
+@model LoginViewModel
 @{
     ViewData["Title"] = "Вхід";
 }
@@ -109,14 +110,14 @@
 
     <form asp-action="Login" method="post">
         <div class="form-group">
-            <label asp-for="Name">Ім'я користувача</label>
-            <input asp-for="Name" type="text" class="form-control" placeholder="Введіть ваш логін" />
-            <span asp-validation-for="Name" class="validation-error"></span>
+            <label asp-for="Username">Ім'я користувача</label>
+            <input asp-for="Username" type="text" placeholder="Логін" />
+            <span asp-validation-for="Username" class="validation-error"></span>
         </div>
 
         <div class="form-group">
             <label asp-for="Password">Пароль</label>
-            <input asp-for="Password" type="password" class="form-control" placeholder="Введіть ваш пароль" />
+            <input asp-for="Password" type="password" placeholder="Пароль" />
             <span asp-validation-for="Password" class="validation-error"></span>
         </div>
 

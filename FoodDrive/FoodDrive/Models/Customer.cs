@@ -9,16 +9,16 @@ namespace FoodDrive.Models
         public List<Order> Orders { get; set; } = new List<Order>();
         public Customer() : base()
         {
-            // 3. Инициализируем коллекцию
+            
             Orders = new List<Order>();
 
-            // 4. Установим роль по умолчанию
+            
             Role = "Customer";
         }
-        public Customer(string name, string password, string address, List<Order> orders)
+        public Customer(string name, string password, string address)
             : base(name, password, "Customer", address)
         {
-            Orders = orders;
+            
         }
         
         public override string GetInfo()

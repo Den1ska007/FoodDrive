@@ -3,25 +3,21 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using FoodDrive.Models;
 
+// Data/JsonStorage.cs
 public class UserConverter : JsonConverter<User>
 {
     public override User Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        using (JsonDocument doc = JsonDocument.ParseValue(ref reader))
+        using var jsonDoc = JsonDocument.ParseValue(ref reader);
+        var root = jsonDoc.RootElement;
+
+        var role = root.GetProperty("Role").GetString();
+        return role switch
         {
-            var root = doc.RootElement;
-            if (root.TryGetProperty("Role", out JsonElement roleElement))
-            {
-                string role = roleElement.GetString();
-                return role switch
-                {
-                    "Admin" => JsonSerializer.Deserialize<Admin>(root.GetRawText(), options),
-                    "Customer" => JsonSerializer.Deserialize<Customer>(root.GetRawText(), options),
-                    _ => throw new JsonException($"Unknown role: {role}")
-                };
-            }
-            throw new JsonException("Role property not found");
-        }
+            "Admin" => JsonSerializer.Deserialize<Admin>(root.GetRawText(), options),
+            "Customer" => JsonSerializer.Deserialize<Customer>(root.GetRawText(), options),
+            _ => throw new JsonException("Unknown role")
+        };
     }
 
     public override void Write(Utf8JsonWriter writer, User value, JsonSerializerOptions options)

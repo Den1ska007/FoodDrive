@@ -1,64 +1,50 @@
-﻿<h2>Створити відгук</h2>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>FoodDrive - Додавання відгуків</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 20px;
-            }
+﻿@using FoodDrive.Models.ViewModels
+@model CreateReviewViewModel
+@{
+    ViewData["Title"] = "Створити відгук";
+}
 
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 20px;
-            }
+<h2>Створити відгук</h2>
 
-            th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
+<form method="post">
+    <div class="form-group">
+        <label>Користувач:</label>
+        <select asp-for="SelectedUserId"
+                asp-items="Model.Users"
+                class="form-control">
+            <option value="">-- Оберіть користувача --</option>
+        </select>
+        <span asp-validation-for="SelectedUserId" class="text-danger"></span>
+    </div>
 
-            th {
-                background-color: #f2f2f2;
-            }
+    <div class="form-group">
+        <label>Страва:</label>
+        <select asp-for="SelectedDishId"
+                asp-items="Model.Dishes"
+                class="form-control">
+            <option value="">-- Оберіть страву --</option>
+        </select>
+        <span asp-validation-for="SelectedDishId" class="text-danger"></span>
+    </div>
 
-            form {
-                margin-top: 20px;
-            }
-            input {
-                padding: 8px;
-                margin: 5px;
-                width: 200px;
-            }
+    <div class="form-group">
+        <label>Оцінка (1-5):</label>
+        <input asp-for="Rating" type="number" min="1" max="5"
+               class="form-control" />
+        <span asp-validation-for="Rating" class="text-danger"></span>
+    </div>
 
-            button {
-                padding: 8px 15px;
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                cursor: pointer;
-            }
+    <div class="form-group">
+        <label>Текст відгуку:</label>
+        <textarea asp-for="Text" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Text" class="text-danger"></span>
+    </div>
 
-            button:hover {
-                background-color: #45a049;
-            }
-        </style>
+    <button type="submit" class="btn btn-primary mt-3">Зберегти</button>
+</form>
 
-    </head>
-    <body>
-        <form method="post">
-            <label>ID користувача:</label>
-            <input type="number" name="UserId" value="@Model?.UserId" required />
-            <label>ID страви:</label>
-            <input type="number" name="DishId" value="@Model?.DishId" required />
-            <label>Оцінка (1-5):</label>
-            <input type="number" name="Rating" min="1" max="5" value="@Model?.Rating" required />
-            <label>Текст:</label>
-            <input type="text" name="Text" value="@Model?.Text" required />
-            <button type="submit">Зберегти</button>
-        </form>
-    </body>
-</html>
-
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -26,7 +26,7 @@ namespace FoodDrive.Models
         public decimal CalculateTotal()
         {
             if (Products == null || !Products.Any())
-                return 0m;  // Явно повертаємо 0, якщо немає продуктів
+                return 0;
 
             return Products.Sum(p => p.Price);
         }

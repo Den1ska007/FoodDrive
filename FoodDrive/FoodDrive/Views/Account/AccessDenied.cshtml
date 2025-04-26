@@ -3,32 +3,29 @@
 }
 
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-danger text-white">
-                    <h3 class="card-title">@ViewData["Title"]</h3>
-                </div>
-                <div class="card-body text-center">
-                    <div class="mb-4">
-                        <i class="fas fa-ban fa-5x text-danger"></i>
-                    </div>
-                    <h4>У вас немає доступу до цього ресурсу</h4>
-                    <p>Для доступу до цієї сторінки потрібні відповідні права.</p>
-
-                    <div class="d-grid gap-2">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">На головну</a>
-                        }
-                        else
-                        {
-                            <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Увійти в систему</a>
-                        }
-                        <a href="mailto:support@fooddrive.com" class="btn btn-outline-secondary">Зв'язатися з підтримкою</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="alert alert-danger text-center">
+        <h2>⛔ Доступ заборонено</h2>
+        <p class="lead">Ви не маєте необхідних прав для перегляду цієї сторінки.</p>
+        <a href="/" class="btn btn-primary">Повернутися на головну</a>
     </div>
 </div>
+
+<style>
+    .alert {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        color: #dc3545;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn {
+        margin-top: 1.5rem;
+        padding: 0.5rem 2rem;
+    }
+</style>

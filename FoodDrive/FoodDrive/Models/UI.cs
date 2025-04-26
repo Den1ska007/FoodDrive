@@ -1,8 +1,12 @@
-﻿using FoodDrive.Models;
+﻿using System.Net.NetworkInformation;
+using System.Reflection;
+using FoodDrive.Models;
+using FoodDrive.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using FoodDrive.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace FoodDrive.Controllers
@@ -77,7 +81,7 @@ namespace FoodDrive.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Якщо потрібно встановити ID
+                
                 customer.id = _customerRepository.GetAll().Any() ?
                             _customerRepository.GetAll().Max(c => c.id) + 1 : 1;
 
@@ -167,10 +171,42 @@ namespace FoodDrive.Controllers
 
         // 🟢 Reviews CRUD
         public IActionResult ListReviews() => View(_reviewRepository.GetSorted());
-        public IActionResult CreateReview() => View();
-        [HttpPost]
-        public IActionResult CreateReview(Review review)
+        public IActionResult CreateReview()
         {
+            var model = new CreateReviewViewModel
+            {
+                
+                Users = _userRepository.GetAll()
+                    .Select(u => new SelectListItem
+                    {
+                        Value = u.id.ToString(),
+                        Text = $"{u.Name} (ID: {u.id})"
+                    }).ToList(),
+
+                Dishes = _dishRepository.GetAll()
+                    .Select(d => new SelectListItem
+                    {
+                        Value = d.id.ToString(),
+                        Text = $"{d.Name} (ID: {d.id})"
+                    }).ToList()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public IActionResult CreateReview(CreateReviewViewModel model)
+        {
+            var review = new Review
+            {
+                UserId = model.SelectedUserId,
+                DishId = model.SelectedDishId,
+                Rating = model.Rating,
+                Text = model.Text,
+                Date = DateTime.Now
+            };
+
             _reviewRepository.Add(review);
             return RedirectToAction("ListReviews");
         }

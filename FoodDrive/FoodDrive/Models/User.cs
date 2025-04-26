@@ -14,11 +14,12 @@ namespace FoodDrive.Models
         public string Password
         {
             get => _password;
-            set => _password = BCrypt.Net.BCrypt.HashPassword(value); // Хешуємо пароль перед збереженням
+            set => _password = BCrypt.Net.BCrypt.HashPassword(value);
         }
 
-        public string Role { get; protected set; }
+        public string Role { get; set; }
         public string Address { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         protected User()
         {
             Name = string.Empty;
@@ -26,6 +27,7 @@ namespace FoodDrive.Models
             Role = string.Empty;
             Address = string.Empty;
         }
+
         public User(string name, string password, string role, string address)
         {
             Name = name;
@@ -33,7 +35,7 @@ namespace FoodDrive.Models
             Role = role;
             Address = address;
         }
-        public abstract string GetInfo(); // Абстрактний метод
+        public abstract string GetInfo();
 
         public bool VerifyPassword(string enteredPassword)
         {
@@ -47,7 +49,7 @@ namespace FoodDrive.Models
         {
         }
 
-        // Додаткові методи для роботи з користувачами, якщо потрібно
+        
         public User GetByUsername(string username)
         {
             return GetAll().FirstOrDefault(u => u.Name == username);

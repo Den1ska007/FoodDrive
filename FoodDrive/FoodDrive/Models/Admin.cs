@@ -9,7 +9,7 @@ namespace FoodDrive.Models
         public Admin() : base("default", "default", "Admin", "default")
         {
         }
-        public Admin(int id, string name, string password, string address)
+        public Admin(string name, string password, string address)
 
             : base(name, password, "Admin", address)
         {
@@ -18,7 +18,7 @@ namespace FoodDrive.Models
 
         public override string GetInfo()
         {
-            return $"{id}_{Name}_{Password}_{Role}_{Address}";
+            return $"{Name}_{Password}_{Role}_{Address}";
         }
 
         public void ManageProducts()

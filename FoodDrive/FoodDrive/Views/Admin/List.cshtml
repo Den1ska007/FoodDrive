@@ -1,72 +1,59 @@
 ﻿@model IEnumerable<FoodDrive.Models.Customer>
-<h2>Список клієнтів</h2>
-<head>
-        <title>FoodDrive - Додавання відгуків</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 20px;
-            }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 20px;
-            }
-
-            th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
-
-            th {
-                background-color: #f2f2f2;
-            }
-
-            form {
-                margin-top: 20px;
-            }
-            input {
-                padding: 8px;
-                margin: 5px;
-                width: 200px;
-            }
-
-            button {
-                padding: 8px 15px;
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                cursor: pointer;
-            }
-
-            button:hover {
-                background-color: #45a049;
-            }
-        </style>
-
-    </head>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Ім'я</th>
-        <th>Кількість замовлень</th>
-        <th>Дії</th>
-    </tr>
-    @foreach (var customer in Model)
-    {
-        <tr>
-            <td>@customer.id</td>
-            <td>@customer.Name</td>
-            <td>@customer.Orders.Count</td>
-            <td>
-                <a href="@Url.Action("EditCustomer", new { id = customer.id })">Редагувати</a> |
-                <a href="@Url.Action("DeleteCustomer", new { id = customer.id })">Видалити</a>
-            </td>
-        </tr>
-    }
-</table>
-
-<a href="@Url.Action("CreateCustomer")">Додати клієнта</a>
-<li><a href="@Url.Action("Index")">Назад</a>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3><i class="fas fa-users me-2"></i>Клієнти</h3>
+                <div>
+                    <a href="@Url.Action("CreateCustomer")" class="btn btn-light">
+                        <i class="fas fa-plus me-2"></i>Додати
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Ім'я</th>
+                            <th>Адреса</th>
+                            <th>Замовлення</th>
+                            <th>Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var customer in Model)
+                        {
+                            <tr>
+                                <td>#@customer.id</td>
+                                <td>@customer.Name</td>
+                                <td>@customer.Address</td>
+                                <td>
+                                    <span class="badge bg-primary">@customer.Orders.Count</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="@Url.Action("EditCustomer", new { id = customer.id })"
+                                           class="btn btn-sm btn-outline-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form asp-action="DeleteCustomer" method="post">
+                                            <input type="hidden" name="id" value="@customer.id" />
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Видалити клієнта?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

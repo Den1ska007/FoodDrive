@@ -28,13 +28,13 @@
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-nlM6c6s\u002B8YJHXf4Z3wU41s7RQbdv3ygDtJLrh3nvXY4="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"666"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nlM6c6s\u002B8YJHXf4Z3wU41s7RQbdv3ygDtJLrh3nvXY4=\u0022"},{"Name":"Last-Modified","Value":"Fri, 18 Apr 2025 19:15:23 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"666"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nlM6c6s\u002B8YJHXf4Z3wU41s7RQbdv3ygDtJLrh3nvXY4=\u0022"},{"Name":"Last-Modified","Value":"Sat, 26 Apr 2025 08:05:11 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/FoodDrive/css/site.uoe9t1o9oc.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"uoe9t1o9oc"},{"Name":"integrity","Value":"sha256-nlM6c6s\u002B8YJHXf4Z3wU41s7RQbdv3ygDtJLrh3nvXY4="},{"Name":"label","Value":"_content/FoodDrive/css/site.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"666"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nlM6c6s\u002B8YJHXf4Z3wU41s7RQbdv3ygDtJLrh3nvXY4=\u0022"},{"Name":"Last-Modified","Value":"Fri, 18 Apr 2025 19:15:23 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"666"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nlM6c6s\u002B8YJHXf4Z3wU41s7RQbdv3ygDtJLrh3nvXY4=\u0022"},{"Name":"Last-Modified","Value":"Sat, 26 Apr 2025 08:05:11 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/FoodDrive/favicon.61n19gt1b8.ico">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\favicon.ico'))</AssetFile>

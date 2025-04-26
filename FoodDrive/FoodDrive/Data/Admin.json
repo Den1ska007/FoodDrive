@@ -1,0 +1,26 @@
+[
+  {
+    "Name": "customer",
+    "Password": "$2a$11$yXubuTONAVKGZJHG3WNKsOWMGNQvYDFGgm2yfIzmXyJOYqaAjHrFy",
+    "Role": "Admin",
+    "Address": "default",
+    "CreatedAt": "2025-04-26T15:19:18.0927375+03:00",
+    "id": 6
+  },
+  {
+    "Name": "admin1",
+    "Password": "$2a$11$GaXD27JYSBCyxApd6FE7ie1kau.oNegxabe9fBpHYxMHtYgK9v8t2",
+    "Role": "Admin",
+    "Address": "\u0432\u0446\u0444\u0444\u0446",
+    "CreatedAt": "2025-04-26T15:46:18.7099512+03:00",
+    "id": 7
+  },
+  {
+    "Name": "admin",
+    "Password": "$2a$11$LZJMBZOJBAWvqDIFZtNIP.nPHo/0lIs/22tYxj0M1c49.I3FbcVOS",
+    "Role": "Admin",
+    "Address": "default",
+    "CreatedAt": "2025-04-26T16:08:41.1520774+03:00",
+    "id": 1
+  }
+]

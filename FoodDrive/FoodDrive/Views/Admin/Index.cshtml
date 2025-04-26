@@ -1,12 +1,35 @@
-﻿<h2>Адмін-меню</h2>
-<a href="@Url.Action("List")">Список користувачів</a>
-<br />
-<a href="@Url.Action("ListAdmin")">Список адмінів</a>
-<br />
-<a href="@Url.Action("CreateDish")">Створити страву</a>
-<br />
-<a href="@Url.Action("CreateReview")">Створити відгук</a>
-<br />
-<a href="@Url.Action("ListDishes")">Список страв</a>
-<br />
-<a href="@Url.Action("CreateCustomer")">Створити користувача</a>
+﻿<div class="container mt-5">
+    <div class="row g-4">
+        <div class="col-12 text-center mb-4">
+            <h1 class="display-4"><i class="fas fa-tachometer-alt me-3"></i>Панель управління</h1>
+        </div>
+
+        <!-- Картки швидкого доступу -->
+        <div class="col-md-4">
+            <div class="card bg-primary text-white h-100 shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-users me-2"></i>Користувачі</h5>
+                    <a href="@Url.Action("List")" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-success text-white h-100 shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-utensils me-2"></i>Страви</h5>
+                    <a href="@Url.Action("ListDishes")" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-info text-white h-100 shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-clipboard-list me-2"></i>Замовлення</h5>
+                    <a href="@Url.Action("ListOrders")" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

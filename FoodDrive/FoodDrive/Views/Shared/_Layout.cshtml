@@ -13,7 +13,9 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-controller="Customer" asp-action="Index">
+                <a class="navbar-brand"
+                   asp-controller="@(User.IsInRole("Admin") ? "Admin" : "Customer")"
+                   asp-action="Index">
                     <img src="~/css/original.png" alt="FoodDrive Logo" width="70" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -22,10 +24,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Customer" asp-action="Index">Головна</a>
-                        </li>
-
+                        
                         @if (User.Identity.IsAuthenticated)
                         {
                             @if (User.IsInRole("Admin"))
@@ -46,6 +45,10 @@
                             }
                             else if (User.IsInRole("Customer"))
                             {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Customer" asp-action="Index">Головна</a>
+                                </li>
+
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Customer" asp-action="Index"><i class="fas fa-utensils me-1"></i>Меню</a>
                                 </li>

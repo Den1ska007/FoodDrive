@@ -1,62 +1,60 @@
 ﻿@model FoodDrive.Models.Dish
-<head>
-    <title>FoodDrive - Додавання користувачів</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        form {
-            margin-top: 20px;
-        }
-
-        input {
-            padding: 8px;
-            margin: 5px;
-            width: 200px;
-        }
-
-        button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-            button:hover {
-                background-color: #45a049;
-            }
-    </style>
-</head>
-<body>
-
-    <h2>Додати нову страву:</h2>
-    <form method="post">
-        <input type="text" name="Name" placeholder="Ім'я" required />
-        <input type="text" name="Description" placeholder="Опис" required />
-        <input type="number" name="Price" placeholder="Ціна страви" required />
-        <input type="number" name="Stock" placeholder="Кількість страв" required />
-        <input type="number" name="Rate" min="0" max="5" placeholder="Рейтинг" required />
-        <button type="submit">Додати</button>
-    </form>
-    <a href="@Url.Action("ListDishes")">Список страв</a>
-</body>
-
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-warning text-dark">
+            <h3><i class="fas fa-utensils me-2"></i>Нова страва</h3>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Назва</label>
+                        <input asp-for="Name" class="form-control" placeholder="Назва страви" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Тип кухні</label>
+                        <select asp-for="TypeOfDish" class="form-select"
+                                asp-items="Html.GetEnumSelectList<TypeOfDish>()"></select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Опис</label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Ціна</label>
+                        <div class="input-group">
+                            <input asp-for="Price" class="form-control" />
+                            <span class="input-group-text">грн</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Наявність</label>
+                        <input asp-for="stock" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Рейтинг</label>
+                        <div class="rating-stars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"
+                                           asp-for="Rating" value="@i" />
+                                    <label class="form-check-label">@i <i class="fas fa-star text-warning"></i></label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus-circle me-2"></i>Додати
+                        </button>
+                        <a href="@Url.Action("ListDishes")" class="btn btn-secondary">
+                            <i class="fas fa-undo me-2"></i>Назад
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

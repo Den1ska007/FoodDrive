@@ -1,79 +1,73 @@
 ﻿@model IEnumerable<FoodDrive.Models.Dish>
-<head>
-    <title>FoodDrive - Список страв</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-warning text-dark">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3><i class="fas fa-utensils me-2"></i>Меню</h3>
+                <div>
+                    <a href="@Url.Action("CreateDish")" class="btn btn-dark">
+                        <i class="fas fa-plus me-2"></i>Додати
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Фото</th>
+                            <th>Назва</th>
+                            <th>Опис</th>
+                            <th>Ціна</th>
+                            <th>Наявність</th>
+                            <th>Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dish in Model)
+                        {
+                            <tr>
+                                
+                                <td>@dish.Name</td>
+                                <td class="text-truncate" style="max-width: 200px;">@dish.Description</td>
+                                <td>@dish.Price.ToString("C")</td>
+                                <td>
+                                    <span class="badge @(dish.stock > 0 ? "bg-success" : "bg-danger")">
+                                        @dish.stock шт
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="@Url.Action("EditDish", new { id = dish.id })"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form asp-action="DeleteDish" method="post">
+                                            <input type="hidden" name="id" value="@dish.id" />
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Видалити страву?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        form {
-            margin-top: 20px;
-        }
-
-        input {
-            padding: 8px;
-            margin: 5px;
-            width: 200px;
-        }
-
-        button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-            button:hover {
-                background-color: #45a049;
-            }
-    </style>
-</head>
-<h2>Список товарів</h2>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Назва</th>
-        <th>Опис</th>
-        <th>Ціна</th>
-        <th>Тип кухні</th>
-        <th>Дії</th>
-    </tr>
-    @foreach (var product in Model)
-    {
-        <tr>
-            <td>@product.id</td>
-            <td>@product.Name</td>
-            <td>@product.Description</td>
-            <td>@product.Price</td>
-            <td>@product.TypeOfDish</td>
-            <td>
-                <a href="@Url.Action("EditProduct", new { id = product.id })">Редагувати</a> |
-                <a href="@Url.Action("DeleteProduct", new { id = product.id })">Видалити</a>
-            </td>
-        </tr>
+<style>
+    .dish-thumbnail {
+        width: 80px;
+        height: 80px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 8px;
     }
-
-</table>
-  
-
-<a href="@Url.Action("CreateDish")">Додати товар</a>
-<a href="@Url.Action("Index")">Назад</a>
-
+</style>
