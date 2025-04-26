@@ -41,6 +41,44 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
+                                        
+                                        <div class="modal fade" id="deleteAdminModal" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>Підтвердження
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Ви впевнені, що хочете видалити цього адміністратора?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            <i class="fas fa-times me-2"></i>Скасувати
+                                                        </button>
+                                                        <form id="deleteForm" method="post">
+                                                            @Html.AntiForgeryToken()
+                                                            <button type="submit" class="btn btn-danger">
+                                                                <i class="fas fa-trash me-2"></i>Видалити
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <script>
+                                            document.querySelectorAll('.delete-admin-btn').forEach(btn => {
+                                                btn.addEventListener('click', function(e) {
+                                                    e.preventDefault();
+                                                    const form = document.getElementById('deleteForm');
+                                                    form.action = this.href;
+                                                    new bootstrap.Modal(document.getElementById('deleteAdminModal')).show();
+                                                });
+                                            });
+                                        </script>
                                     </div>
                                 </td>
                             </tr>

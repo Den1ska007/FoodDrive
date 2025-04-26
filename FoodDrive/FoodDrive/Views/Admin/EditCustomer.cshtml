@@ -1,17 +1,37 @@
 ﻿@model FoodDrive.Models.Customer
-
-<h2>Редагування клієнта</h2>
-
-<form asp-action="EditAdmin" method="post">
-
-    <label>Ім'я:</label>
-    <input type="text" name="Name" value="@Model?.Name" required />
-    <br />
-
-    <label>Пароль:</label>
-    <input type="text" name="Password" value="@Model?.Password" required />
-    <br />
-
-    <button type="submit">Змінити</button>
-</form>
-<a href="@Url.Action("List")">Назад до списку</a>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h3><i class="fas fa-user-edit me-2"></i>Редагування клієнта</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditCustomer" method="post">
+                <input type="hidden" asp-for="id" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Ім'я</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Новий пароль</label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Адреса</label>
+                        <input asp-for="Address" class="form-control" />
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Оновити
+                        </button>
+                        <a href="@Url.Action("List")" class="btn btn-secondary">
+                            <i class="fas fa-undo me-2"></i>Назад
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

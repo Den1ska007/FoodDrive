@@ -1,12 +1,48 @@
-﻿<h2>Редагувати відгук</h2>
-<form asp-action="EditReview" method="post">
-    <label>ID користувача:</label>
-    <input type="number" name="UserId" value="@Model?.UserId" required />
-    <label>ID товару:</label>
-    <input type="number" name="ProductId" value="@Model?.ProductId" required />
-    <label>Оцінка (1-5):</label>
-    <input type="number" name="Rating" min="1" max="5" value="@Model?.Rating" required />
-    <label>Текст:</label>
-    <textarea type="text" name="Text">@Model?.Text</textarea>
-    <button type="submit">Зберегти</button>
-</form>
+﻿@model FoodDrive.Models.ViewModels.EditReviewViewModel
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3><i class="fas fa-comment-edit me-2"></i>Редагування відгуку</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditReview" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Користувач</label>
+                        <select asp-for="SelectedUserId"
+                                asp-items="Model.Users"
+                                class="form-select"></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Страва</label>
+                        <select asp-for="SelectedDishId"
+                                asp-items="Model.Dishes"
+                                class="form-select"></select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Оцінка</label>
+                        <select asp-for="Rating" class="form-select">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <option value="@i">@i зірок</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Текст відгуку</label>
+                        <textarea asp-for="Text" class="form-control" rows="4"></textarea>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Оновити
+                        </button>
+                        <a href="@Url.Action("ListReviews")" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Скасувати
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

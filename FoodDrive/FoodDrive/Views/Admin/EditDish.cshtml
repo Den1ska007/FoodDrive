@@ -1,5 +1,58 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model FoodDrive.Models.Dish
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-warning text-dark">
+            <h3><i class="fas fa-utensils me-2"></i>Редагування страви</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditDish" method="post">
+                <input type="hidden" asp-for="id" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Назва</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Тип кухні</label>
+                        <select asp-for="TypeOfDish"
+                                class="form-select"
+                                asp-items="Html.GetEnumSelectList<TypeOfDish>()"></select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Опис</label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Ціна</label>
+                        <div class="input-group">
+                            <input asp-for="Price" class="form-control" />
+                            <span class="input-group-text">₴</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Наявність</label>
+                        <input asp-for="stock" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Рейтинг</label>
+                        <select asp-for="Rating" class="form-select">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <option value="@i">@i зірок</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Зберегти
+                        </button>
+                        <a href="@Url.Action("ListDishes")" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Скасувати
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

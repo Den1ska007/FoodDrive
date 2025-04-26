@@ -1,15 +1,7 @@
 [
   {
-    "Name": "admin",
-    "Password": "$2a$11$xePpFTtEe6r9g.e0Y7b0YuOc.QyA3OGXRnyDJ/kchBXZF49yPVAsK",
-    "Role": "Admin",
-    "Address": "admin",
-    "CreatedAt": "2025-04-26T15:10:27.5806142+03:00",
-    "id": 1
-  },
-  {
     "Name": "customer",
-    "Password": "$2a$11$ipH.HpKPDlqEaBQD.QXlWOYssAJh7sk3BKrLH49pJi7cuA3lpvIOu",
+    "Password": "$2a$11$yXubuTONAVKGZJHG3WNKsOWMGNQvYDFGgm2yfIzmXyJOYqaAjHrFy",
     "Role": "Admin",
     "Address": "default",
     "CreatedAt": "2025-04-26T15:19:18.0927375+03:00",
@@ -17,10 +9,18 @@
   },
   {
     "Name": "admin1",
-    "Password": "$2a$11$iELr5jw2in9ASTLoi9Vpze.cHimcbeNZgOhP8VG.3Bmv7Vpz8rsW6",
+    "Password": "$2a$11$GaXD27JYSBCyxApd6FE7ie1kau.oNegxabe9fBpHYxMHtYgK9v8t2",
     "Role": "Admin",
     "Address": "\u0432\u0446\u0444\u0444\u0446",
     "CreatedAt": "2025-04-26T15:46:18.7099512+03:00",
     "id": 7
+  },
+  {
+    "Name": "admin",
+    "Password": "$2a$11$LZJMBZOJBAWvqDIFZtNIP.nPHo/0lIs/22tYxj0M1c49.I3FbcVOS",
+    "Role": "Admin",
+    "Address": "default",
+    "CreatedAt": "2025-04-26T16:08:41.1520774+03:00",
+    "id": 1
   }
 ]
