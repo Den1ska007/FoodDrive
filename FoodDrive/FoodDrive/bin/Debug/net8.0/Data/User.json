@@ -1,20 +1,10 @@
 [
   {
-    "Balance": 0,
-    "Orders": [],
-    "Name": "customer",
-    "Password": "$2a$13$A7ohCGVf0J9eMG0K1Tl8k.tWLaAjlwbjeNYqt8jE/WzBrec.xCOtq",
-    "Role": "Customer",
-    "Address": "\u0432\u0446\u0444\u0432",
-    "CreatedAt": "2025-05-08T15:07:44.9752383+03:00",
-    "id": 0
-  },
-  {
     "Name": "admin",
-    "Password": "$2a$13$my.auhjGQ6MiuBgKyOXmz.BcijIngo3CwiUPBinv0e.uDfG5FV6la",
+    "Password": "$2a$13$INaDtYoY4A.3twBVVdpuyuwcvWjDyCwtOFsw7aBzgkLnsD7FNedBW",
     "Role": "Admin",
-    "Address": "3\u0439\u04432",
-    "CreatedAt": "2025-05-08T15:36:12.4669439+03:00",
-    "id": 30
+    "Address": "awdawd",
+    "CreatedAt": "2025-05-08T16:39:58.9297067+03:00",
+    "id": 0
   }
 ]
