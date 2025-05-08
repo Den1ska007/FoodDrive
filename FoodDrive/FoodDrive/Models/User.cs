@@ -14,7 +14,7 @@ namespace FoodDrive.Models
         public string Password
         {
             get => _password;
-            set => _password = BCrypt.Net.BCrypt.HashPassword(value);
+            set => _password = BCrypt.Net.BCrypt.EnhancedHashPassword(value, 13);
         }
 
         public string Role { get; set; }

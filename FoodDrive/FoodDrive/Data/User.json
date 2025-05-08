@@ -1,28 +1,19 @@
 [
   {
     "Name": "admin",
-    "Password": "$2a$11$egBIoEuOa3mwrdT1ti9MeO/T6O4jeBb2uSmDfJ0NJ6dNHLGcdus16",
+    "Password": "$2a$13$VVHbVz7J95O2TVyfOb59XetML2/ud4JZuAJWOLlbRgGAXuCvxDHbm",
     "Role": "Admin",
     "Address": "admin",
-    "CreatedAt": "2025-04-26T15:10:27.5806142+03:00",
-    "id": 1
+    "CreatedAt": "2025-05-08T07:36:11.1503993+03:00",
+    "id": 0
   },
   {
     "Orders": [],
     "Name": "customer",
-    "Password": "$2a$11$cukZ.euB96vMc320y5UOK.P3eKCU4rvzMivGuuOkpgaJVQimgZj6K",
+    "Password": "$2a$13$R/V6ktZJVgl0NnwLWnHDHOlmTDu2FunRi.neOIjl2u8DsF41I/EVe",
     "Role": "Customer",
     "Address": "customer",
-    "CreatedAt": "2025-04-26T15:11:29.9772305+03:00",
-    "id": 2
-  },
-  {
-    "Orders": [],
-    "Name": "customer",
-    "Password": "$2a$11$gdxGtW/Ms8JSMI9h4qfI8u7fHVGjJu0iLWNwzvWLzfA5LD314krka",
-    "Role": "Customer",
-    "Address": "customer",
-    "CreatedAt": "2025-04-26T15:14:06.6477894+03:00",
-    "id": 4
+    "CreatedAt": "2025-05-08T07:36:58.2671825+03:00",
+    "id": 5
   }
 ]

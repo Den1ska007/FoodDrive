@@ -19,21 +19,12 @@ public class AuthService
 
     public User? Authenticate(string username, string password)
     {
-        // Шукаємо адміністратора
-        var admin = _adminRepository.GetAll()
-            .FirstOrDefault(u => u.Name == username);
-
-        if (admin != null)
-            return admin;
-
-        // Шукаємо користувача
-        var customer = _customerRepository.GetAll()
-            .FirstOrDefault(u => u.Name == username);
-
-        if (customer != null)
-            return customer;
-
-        return null;
+        
+        var user = _userRepository.GetByUsername(username);
+        if (user == null) return null;
+        return BCrypt.Net.BCrypt.EnhancedVerify(password, user.Password)
+                ? user
+                : null;
     }
 
     public void Register(User user)

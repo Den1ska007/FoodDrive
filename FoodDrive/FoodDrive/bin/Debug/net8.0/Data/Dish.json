@@ -1,12 +1,12 @@
 [
   {
-    "Description": "\u0412\u043A\u0443\u0441\u043D\u0430",
-    "id": 3,
     "Name": "Pizza",
-    "Price": 12,
-    "Rating": 0,
+    "Description": "\u0412\u043A\u0443\u0441\u043D\u0430...",
+    "Price": 13.00,
+    "TypeOfDish": 0,
+    "stock": 51,
     "Reviews": [],
-    "stock": 50,
-    "TypeOfDish": 0
+    "Rating": 3,
+    "id": 3
   }
 ]

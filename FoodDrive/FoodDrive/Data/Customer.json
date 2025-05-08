@@ -2,19 +2,10 @@
   {
     "Orders": [],
     "Name": "customer",
-    "Password": "$2a$11$MizJJ0P5sykg1e0gW4/7se9kXjJGoO6GxpZFLu.B87a2GG008ZPTC",
+    "Password": "$2a$13$R/V6ktZJVgl0NnwLWnHDHOlmTDu2FunRi.neOIjl2u8DsF41I/EVe",
     "Role": "Customer",
     "Address": "customer",
-    "CreatedAt": "2025-04-26T15:14:06.6477894+03:00",
-    "id": 4
-  },
-  {
-    "Orders": [],
-    "Name": "customer1",
-    "Password": "$2a$11$uoSnw97ZogjRkrbxvTlUG.fQe06DeVqUdmBmSYMRRnhZg3t72/f0a",
-    "Role": "Customer",
-    "Address": "dawdsadwa",
-    "CreatedAt": "2025-04-26T15:20:04.420789+03:00",
+    "CreatedAt": "2025-05-08T07:36:58.2671825+03:00",
     "id": 5
   }
 ]
