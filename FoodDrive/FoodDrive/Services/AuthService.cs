@@ -2,7 +2,11 @@
 using FoodDrive.Models;
 using BCrypt.Net;
 using FoodDrive.Interfaces;
-
+public interface IAuthService
+{
+    User? Authenticate(string username, string password);
+    void Register(User user);
+}
 public class AuthService
 {
     private readonly UserRepository _userRepository;

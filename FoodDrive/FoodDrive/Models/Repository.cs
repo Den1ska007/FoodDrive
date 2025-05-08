@@ -1,14 +1,14 @@
 ﻿// FoodDrive/Models/Repository.cs
 using FoodDrive.Interfaces;
-using FoodDrive.Data;
+using FoodDrive.JsonConverters;
 using System.Linq;
 
 namespace FoodDrive.Models
 {
     public class Repository<T> : IRepository<T> where T : IEntity
     {
-        private List<T> _entities;
-        private readonly IDataStorage<T> _storage;
+        protected List<T> _entities;
+        protected readonly IDataStorage<T> _storage;
 
         public Repository(IDataStorage<T> storage)
         {

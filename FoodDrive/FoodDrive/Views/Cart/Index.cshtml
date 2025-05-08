@@ -1,0 +1,47 @@
+﻿@model Cart
+
+<div class="container">
+    <h2>Ваш кошик</h2>
+
+    @if (Model.Items?.Any() == true)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Страва</th>
+                    <th>Кількість</th>
+                    <th>Ціна</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Dish.Name</td>
+                        <td>@item.Quantity</td>
+                        <td>@(item.Dish.Price * item.Quantity) грн</td>
+                        <td>
+                            <form asp-action="RemoveFromCart" method="post">
+                                <input type="hidden" name="itemId" value="@item.id" />
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="text-end">
+            <h4>Загальна сума: @Model.Total.ToString("C")</h4>
+            <a asp-controller="Order" asp-action="Checkout" class="btn btn-success">
+                Оформити замовлення
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">Кошик порожній</div>
+    }
+</div>

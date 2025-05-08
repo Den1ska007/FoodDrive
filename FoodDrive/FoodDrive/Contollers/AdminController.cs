@@ -9,33 +9,33 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 
-namespace FoodDrive.Controllers
+namespace FoodDrive.Contollers
 {
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IRepository<Admin> _adminRepository;
-        private readonly IRepository<Customer> _customerRepository;
         private readonly IRepository<Dish> _dishRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<Review> _reviewRepository;
         private readonly UserRepository _userRepository;
+        private readonly CustomerRepository _customerRepository;
 
 
         public AdminController(
             IRepository<Admin> adminRepository,
-            IRepository<Customer> customerRepository,
             IRepository<Dish> dishRepository,
             IRepository<Order> orderRepository,
             IRepository<Review> reviewRepository,
-            UserRepository userRepository)
+            UserRepository userRepository,
+            CustomerRepository customerRepository)
         {
             _adminRepository = adminRepository;
-            _customerRepository = customerRepository;
             _dishRepository = dishRepository;
             _orderRepository = orderRepository;
             _reviewRepository = reviewRepository;
             _userRepository = userRepository;
+            _customerRepository = customerRepository;
         }
         public IActionResult Contacts()
         {
@@ -44,6 +44,12 @@ namespace FoodDrive.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult UpdateBalance(int customerId, decimal amount)
+        {
+            _customerRepository.UpdateBalance(customerId, amount);
+            return RedirectToAction("EditCustomer", new { id = customerId });
         }
 
         // 🟢 Admins CRUD
@@ -57,6 +63,7 @@ namespace FoodDrive.Controllers
             admin.id = _adminRepository.GetAll().Any() ?
                   _adminRepository.GetAll().Max(a => a.id) + 1 : 1;
             _adminRepository.Add(admin);
+            _userRepository.Add(admin);
             return RedirectToAction("ListAdmin");
         }
         public IActionResult EditAdmin(int id) => View(_adminRepository.GetById(id));
@@ -65,11 +72,9 @@ namespace FoodDrive.Controllers
         public IActionResult EditAdmin(Admin admin)
         {
             var existingAdmin = _adminRepository.GetById(admin.id);
-            if (existingAdmin != null)
-            {
-                _adminRepository.Remove(existingAdmin);
-            }
-            _adminRepository.Add(admin);
+            
+            _adminRepository.Update(admin);
+            _userRepository.Update(admin);
             return RedirectToAction("ListAdmin");
         }
 
@@ -81,11 +86,8 @@ namespace FoodDrive.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                customer.id = _customerRepository.GetAll().Any() ?
-                            _customerRepository.GetAll().Max(c => c.id) + 1 : 1;
-
                 _customerRepository.Add(customer);
+                _userRepository.Add(customer);
                 return RedirectToAction("List");
             }
             return View(customer);
@@ -97,11 +99,9 @@ namespace FoodDrive.Controllers
             if (ModelState.IsValid)
             {
                 var existingCustomer = _customerRepository.GetById(customer.id);
-                if (existingCustomer != null)
-                {
-                    _customerRepository.Remove(existingCustomer);
-                }
-                _customerRepository.Add(customer);
+                
+                _customerRepository.Update(customer);
+                _userRepository.Update(customer);
                 return RedirectToAction("List");
             }
             return View(customer);
@@ -119,8 +119,14 @@ namespace FoodDrive.Controllers
         public IActionResult ListDishes() => View(_dishRepository.GetSorted());
         public IActionResult CreateDish() => View();
         [HttpPost]
+        [HttpPost]
         public IActionResult CreateDish(Dish dish)
         {
+            if (!ModelState.IsValid)
+            {
+                // Повертаємо форму з помилками
+                return View(dish);
+            }
             _dishRepository.Add(dish);
             return RedirectToAction("ListDishes");
         }
@@ -156,18 +162,87 @@ namespace FoodDrive.Controllers
             _orderRepository.Add(order);
             return RedirectToAction("ListOrders");
         }
-        public IActionResult EditOrder(int id) => View(_orderRepository.GetById(id));
-        [HttpPost]
-        public IActionResult EditOrder(Order order)
+        public IActionResult EditOrder(int id)
         {
-            var existingOrder = _orderRepository.GetById(order.id);
-            if (existingOrder != null)
+            // Отримуємо замовлення за ID
+            var order = _orderRepository.GetById(id);
+            if (order == null)
             {
-                _orderRepository.Remove(existingOrder);
+                return NotFound();
             }
-            _orderRepository.Add(order);
-            return RedirectToAction("ListOrders");
+
+            // Створюємо ViewModel для редагування замовлення
+            var model = new EditOrderViewModel
+            {
+                OrderId = order.id,
+                CustomerName = order.User.Name,
+                TotalPrice = order.TotalPrice,
+                Status = order.Status,
+                Products = order.Products.Select(p => new OrderProductViewModel
+                {
+                    DishId = p.id,
+                    DishName = p.Name,
+                    Quantity = order.Products.Count(prod => prod.id == p.id) // Можна тут підрахувати кількість продуктів, якщо це потрібно
+                }).ToList()
+            };
+
+            return View(model);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditOrder(EditOrderViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Отримуємо замовлення
+                var order = _orderRepository.GetById(model.OrderId);
+                if (order == null)
+                {
+                    return NotFound();
+                }
+
+                // Оновлюємо статус замовлення
+                order.Status = model.Status;
+
+                // Якщо потрібно оновити продукти в замовленні (наприклад, змінити кількість)
+                foreach (var product in model.Products)
+                {
+                    var dish = _dishRepository.GetById(product.DishId);
+                    if (dish != null)
+                    {
+                        // Оновлюємо кількість продукту в замовленні
+                        var existingProduct = order.Products.FirstOrDefault(p => p.id == dish.id);
+                        if (existingProduct != null)
+                        {
+                            // Тут можна додати логіку для зміни кількості продукту
+                        }
+                        else
+                        {
+                            // Додаємо новий продукт до замовлення
+                            order.Products.Add(dish);
+                        }
+                    }
+                }
+
+                // Перераховуємо загальну ціну замовлення
+                order.TotalPrice = order.Products.Sum(p => p.Price);
+
+                // Зберігаємо зміни
+                _orderRepository.Update(order);
+
+                TempData["Success"] = "Замовлення оновлено успішно!";
+                return RedirectToAction("ListOrders");
+            }
+
+            // Якщо модель не валідна, повертаємо користувача до форми редагування
+            return View(model);
+        }
+}
+
+
+
 
         // 🟢 Reviews CRUD
         public IActionResult ListReviews() => View(_reviewRepository.GetSorted());

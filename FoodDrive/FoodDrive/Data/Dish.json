@@ -2,11 +2,11 @@
   {
     "Name": "Pizza",
     "Description": "\u0412\u043A\u0443\u0441\u043D\u0430...",
-    "Price": 13.00,
+    "Price": 20,
     "TypeOfDish": 0,
-    "stock": 51,
+    "stock": 50,
     "Reviews": [],
-    "Rating": 3,
+    "Rating": 5,
     "id": 3
   }
 ]

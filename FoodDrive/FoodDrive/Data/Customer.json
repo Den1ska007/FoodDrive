@@ -1,11 +1,12 @@
 [
   {
+    "Balance": 0,
     "Orders": [],
     "Name": "customer",
-    "Password": "$2a$13$R/V6ktZJVgl0NnwLWnHDHOlmTDu2FunRi.neOIjl2u8DsF41I/EVe",
+    "Password": "$2a$13$Eq6C8AhOT.CZwxAFFEADi.zBhD8Lb.SjrbwTKXL3/4gX5Zi0Suk96",
     "Role": "Customer",
-    "Address": "customer",
-    "CreatedAt": "2025-05-08T07:36:58.2671825+03:00",
-    "id": 5
+    "Address": "\u0432\u0446\u0444\u0432",
+    "CreatedAt": "2025-05-08T15:07:44.9752383+03:00",
+    "id": 0
   }
 ]

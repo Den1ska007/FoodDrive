@@ -1,5 +1,4 @@
-﻿<!-- Views/Customer/Index.cshtml -->
-@model IEnumerable<Dish>
+﻿@model IEnumerable<FoodDrive.Models.Dish>
 @{
     ViewData["Title"] = "Меню";
 }
@@ -11,7 +10,12 @@
             <h3>@dish.Name</h3>
             <p>@dish.Description</p>
             <p class="price">@dish.Price.ToString("C")</p>
-            <button class="add-to-cart" data-dish-id="@dish.id">Додати в кошик</button>
+            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="dishId" value="@dish.id" />
+                <input type="number" name="quantity" value="1" min="1" class="quantity-input" />
+                <button type="submit" class="add-to-cart">Додати в кошик</button>
+            </form>
         </div>
     }
 </div>
@@ -29,11 +33,14 @@
         border-radius: 8px;
         padding: 15px;
         background: white;
+        display: flex;
+        flex-direction: column;
     }
 
     .price {
         color: #2ecc71;
         font-weight: bold;
+        margin: 10px 0;
     }
 
     .add-to-cart {
@@ -43,5 +50,34 @@
         padding: 8px 15px;
         border-radius: 4px;
         cursor: pointer;
+        margin-top: auto;
+    }
+
+    .quantity-input {
+        width: 60px;
+        padding: 5px;
+        margin-right: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    form {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
     }
 </style>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}

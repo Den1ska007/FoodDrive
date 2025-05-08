@@ -6,6 +6,7 @@ namespace FoodDrive.Models.ViewModels
         public string Name { get; set; }
         public string Role { get; set; }
         public string Address { get; set; }
+        public decimal Balance { get; set; }
         public DateTime RegistrationDate { get; set; }
     }
 }

@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using FoodDrive.Interfaces;
 using FoodDrive.Models;
-using FoodDrive.Data;
 using FoodDrive.Services;
 using System.Text.Json;
+using FoodDrive.JsonConverters;
 
 class Program
 {
@@ -22,6 +22,7 @@ class Program
         builder.Services.AddSingleton<IDataStorage<Order>, JsonStorage<Order>>();
         builder.Services.AddSingleton<IDataStorage<Review>, JsonStorage<Review>>();
         builder.Services.AddSingleton<IDataStorage<User>, JsonStorage<User>>();
+        builder.Services.AddSingleton<IDataStorage<Cart>, JsonStorage<Cart>>();
 
         builder.Services.AddSingleton<IRepository<Admin>, AdminRepository>();
         builder.Services.AddSingleton<IRepository<Customer>, CustomerRepository>();
@@ -30,9 +31,9 @@ class Program
         builder.Services.AddSingleton<IRepository<Review>, ReviewRepository>();
         builder.Services.AddSingleton<IRepository<User>, UserRepository>();
 
-        builder.Services.AddSingleton<UserService>();
         builder.Services.AddSingleton<AdminRepository>();
         builder.Services.AddSingleton<CustomerRepository>();
+        builder.Services.AddSingleton<CartRepository>();
         builder.Services.AddSingleton<DishRepository>();
         builder.Services.AddSingleton<OrderRepository>();
         builder.Services.AddSingleton<ReviewRepository>();
@@ -43,15 +44,17 @@ class Program
         });                     
         builder.Services.AddSingleton<IRepository<User>, UserRepository>();
         builder.Services.AddSingleton<UserService>();
+        builder.Services.AddSingleton<OrderService>();
         builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddScoped<CartRepository>();
         builder.Services.AddAuthentication("CookieAuth")
         .AddCookie("CookieAuth", options =>
         {
             options.Cookie.Name = "AuthCookie";
-            options.LoginPath = "/Account/Login";
-            options.AccessDeniedPath = "/Account/AccessDenied";
-            options.ExpireTimeSpan = TimeSpan.FromHours(1);
+            options.LoginPath = "/Account/Login";  // Перенаправлення на сторінку входу
+            options.AccessDeniedPath = "/Account/AccessDenied"; // Якщо немає доступу
         });
+
 
         builder.Services.AddAuthorization(options =>
         {
@@ -80,7 +83,7 @@ class Program
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Admin}/{action=Index}/{id?}");
+            pattern: "{controller=Account}/{action=Profile}/{id?}");
         app.Run();
     }
 }

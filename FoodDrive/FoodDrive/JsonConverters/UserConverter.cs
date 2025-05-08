@@ -1,16 +1,13 @@
-﻿// JsonConverters/UserConverter.cs
-using System.Text.Json;
+﻿using FoodDrive.Models;
 using System.Text.Json.Serialization;
-using FoodDrive.Models;
+using System.Text.Json;
 
-// Data/JsonStorage.cs
 public class UserConverter : JsonConverter<User>
 {
     public override User Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        using var jsonDoc = JsonDocument.ParseValue(ref reader);
-        var root = jsonDoc.RootElement;
-
+        using var doc = JsonDocument.ParseValue(ref reader);
+        var root = doc.RootElement;
         var role = root.GetProperty("Role").GetString();
         return role switch
         {

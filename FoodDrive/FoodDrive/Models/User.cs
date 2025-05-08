@@ -17,6 +17,7 @@ namespace FoodDrive.Models
             set => _password = BCrypt.Net.BCrypt.EnhancedHashPassword(value, 13);
         }
 
+
         public string Role { get; set; }
         public string Address { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

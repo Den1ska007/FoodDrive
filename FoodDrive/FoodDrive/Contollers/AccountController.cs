@@ -35,6 +35,7 @@ public class AccountController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
+        
         var user = _authService.Authenticate(model.Username, model.Password);
         if (user == null)
         {
@@ -47,7 +48,7 @@ public class AccountController : Controller
         {
             new Claim(ClaimTypes.Name, user.Name),
             new Claim(ClaimTypes.Role, user.Role),
-            new Claim("UserId", user.id.ToString())
+            new Claim(ClaimTypes.NameIdentifier, user.id.ToString())
         };
 
         var identity = new ClaimsIdentity(claims, "CookieAuth");
@@ -98,7 +99,11 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid)
             return View(model);
-
+        if (_userRepository.GetAll().Any(u => u.Name == model.Name))
+        {
+            ModelState.AddModelError("Name", "Це ім'я користувача вже використовується.");
+            return View(model);
+        }
         if (model.Role == "Admin")
         {
             var admin = new Admin(model.Name, model.Password, model.Address);
@@ -113,6 +118,31 @@ public class AccountController : Controller
         }
 
         return RedirectToAction("Login");
+    }
+    [HttpPost]
+    [Authorize]
+    public IActionResult EditProfile(ProfileViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var username = User.Identity.Name;
+            var user = _userRepository.GetByUsername(username);
+            if (user != null)
+            {
+                user.Name = model.Name;
+                user.Address = model.Address;
+                
+                if (user is Customer customer)
+                {
+                    customer.Balance = model.Balance;
+                }
+
+                _userRepository.Update(user);
+            }
+            return RedirectToAction("Profile");
+        }
+
+        return View(model);
     }
     [Authorize]
     public async Task<IActionResult> Logout()

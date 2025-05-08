@@ -38,7 +38,9 @@ namespace FoodDrive.Models
         public DishRepository(IDataStorage<Dish> storage) : base(storage)
         {
         }
-
-        
+        public Dish GetById(int id)
+        {
+            return _entities.FirstOrDefault(d => d.id == id); // Тепер _entities доступні
+        }
     }
 }

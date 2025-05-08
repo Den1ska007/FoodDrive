@@ -1,0 +1,56 @@
+﻿@model FoodDrive.Models.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Оформлення замовлення";
+}
+
+<div class="container mt-5">
+    <h2>Оформлення замовлення</h2>
+
+    @if (Model.Items != null && Model.Items.Any()) // Перевірка на null та наявність елементів
+    {
+        <h4>Ваші замовлені страви:</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Страва</th>
+                    <th>Кількість</th>
+                    <th>Ціна</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Dish.Name</td>
+                        <td>@item.Quantity</td>
+                        <td>@(item.Dish.Price * item.Quantity) грн</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Ваш кошик порожній.</p>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Інформація про покупця</h4>
+            <p><strong>Ім'я:</strong> @Model.CustomerName</p>
+            <p><strong>Адреса:</strong> @Model.CustomerAddress</p>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Загальна сума</h4>
+            <p><strong>Сума до оплати:</strong> @Model.TotalPrice.ToString("C")</p>
+        </div>
+    </div>
+
+    <form method="post" asp-action="ConfirmOrder">
+        <button type="submit" class="btn btn-success">Підтвердити замовлення</button>
+    </form>
+
+    <a href="@Url.Action("Index", "Cart")" class="btn btn-secondary mt-3">Редагувати кошик</a>
+</div>

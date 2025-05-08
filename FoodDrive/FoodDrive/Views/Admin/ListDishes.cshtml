@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<FoodDrive.Models.Dish>
+@{
+    ViewData["Title"] = "Список страв";
+}
+
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-warning text-dark">
@@ -28,7 +32,11 @@
                         @foreach (var dish in Model)
                         {
                             <tr>
-                                
+                                <td>
+                                    <div class="dish-thumbnail"
+                                         style="background-image: url('@Url.Content($"~/images/dishes/{dish.id}.jpg")')">
+                                    </div>
+                                </td>
                                 <td>@dish.Name</td>
                                 <td class="text-truncate" style="max-width: 200px;">@dish.Description</td>
                                 <td>@dish.Price.ToString("C")</td>
@@ -44,10 +52,11 @@
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form asp-action="DeleteDish" method="post">
+                                            
                                             <input type="hidden" name="id" value="@dish.id" />
                                             <button type="submit"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    onclick="return confirm('Видалити страву?')">
+                                                    onclick="return confirm('Ви впевнені, що хочете видалити цю страву?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -69,5 +78,6 @@
         background-size: cover;
         background-position: center;
         border-radius: 8px;
+        background-color: #f8f9fa;
     }
 </style>

@@ -1,10 +1,10 @@
 [
   {
     "Name": "admin",
-    "Password": "$2a$13$VVHbVz7J95O2TVyfOb59XetML2/ud4JZuAJWOLlbRgGAXuCvxDHbm",
+    "Password": "$2a$13$my.auhjGQ6MiuBgKyOXmz.BcijIngo3CwiUPBinv0e.uDfG5FV6la",
     "Role": "Admin",
-    "Address": "admin",
-    "CreatedAt": "2025-05-08T07:36:11.1503993+03:00",
-    "id": 0
+    "Address": "3\u0439\u04432",
+    "CreatedAt": "2025-05-08T15:36:12.4669439+03:00",
+    "id": 30
   }
 ]

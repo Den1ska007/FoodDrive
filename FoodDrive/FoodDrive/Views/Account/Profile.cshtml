@@ -1,5 +1,4 @@
-﻿@using FoodDrive.Models.ViewModels
-@model ProfileViewModel
+﻿@model FoodDrive.Models.ViewModels.ProfileViewModel
 
 @{
     ViewData["Title"] = "Профіль користувача";
@@ -21,14 +20,13 @@
 
                     <dl class="row">
                         <dt class="col-sm-4">Ім'я:</dt>
-                        <span class="initials">@Model.Name.Substring(0, 1).ToUpper()</span>
+                        <dd class="col-sm-8">@Model.Name</dd>
 
                         <dt class="col-sm-4">Роль:</dt>
-                        <dd class="col-sm-8">
-                            <span class="badge @(Model.Role == "Admin" ? "bg-danger" : "bg-success")">
-                                @Model.Role
-                            </span>
-                        </dd>
+                        <dd class="col-sm-8">@Model.Role</dd>
+
+                        <dt class="col-sm-4">Баланс:</dt>
+                        <dd class="col-sm-8">@Model.Balance.ToString("C")</dd>
 
                         <dt class="col-sm-4">Адреса:</dt>
                         <dd class="col-sm-8">@Model.Address</dd>
@@ -56,51 +54,5 @@
         justify-content: center;
         font-size: 32px;
         font-weight: bold;
-    }
-
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-
-    form {
-        margin-top: 20px;
-    }
-
-    input {
-        padding: 8px;
-        margin: 5px;
-        width: 200px;
-    }
-
-    button {
-        padding: 8px 15px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-
-        button:hover {
-            background-color: #45a049;
-        }
-    .initials {
-        line-height: 1;
     }
 </style>

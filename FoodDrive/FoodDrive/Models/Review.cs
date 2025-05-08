@@ -7,7 +7,7 @@ namespace FoodDrive.Models
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public Customer User { get; set; }
+        public User User { get; set; }
         public Dish Dish { get; set; }
         public int DishId { get; set; }
         public string Text { get; set; }
@@ -16,6 +16,7 @@ namespace FoodDrive.Models
 
         public Review()
         {
+            UserId = 0;
             User = null;
             Dish = null;
             Text = string.Empty;
@@ -23,8 +24,9 @@ namespace FoodDrive.Models
             Date = DateTime.MinValue;
         }
 
-        public Review(Customer user, Dish dish, string text, byte rating, DateTime date)
+        public Review(int UserId, User user, Dish dish, string text, byte rating, DateTime date)
         {
+            UserId = UserId;
             User = user;
             Dish = dish;
             Text = text;
