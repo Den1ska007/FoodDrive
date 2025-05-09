@@ -4,6 +4,7 @@ using FoodDrive.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Transactions;
 
 [Authorize(Roles = "Customer")]
 public class CustomerController : Controller
@@ -134,47 +135,68 @@ public class CustomerController : Controller
         var cart = _cartRepository.GetByUserId(userId);
         var customer = _customerRepository.GetById(userId);
 
-        // Перевірка кошика та клієнта
         if (cart == null || !cart.Items.Any() || customer == null)
         {
             TempData["Error"] = "Помилка. Спробуйте ще раз.";
             return RedirectToAction("Index", "Cart");
         }
 
-        // Перевірка балансу
-        if (customer.Balance < cart.Total)
+        using (var transaction = new TransactionScope()) // Додано транзакцію
         {
-            TempData["Error"] = "Недостатньо коштів на рахунку.";
-            return RedirectToAction("Checkout");
+            try
+            {
+                // Перевірка балансу
+                if (customer.Balance < cart.Total)
+                {
+                    TempData["Error"] = "Недостатньо коштів на рахунку.";
+                    return RedirectToAction("Checkout");
+                }
+
+                // Оновлення запасів страв
+                foreach (var item in cart.Items)
+                {
+                    var dish = _dishRepository.GetById(item.DishId);
+                    if (dish == null || dish.Stock < item.Quantity)
+                    {
+                        TempData["Error"] = $"Страва '{dish?.Name}' недоступна в потрібній кількості";
+                        return RedirectToAction("Checkout");
+                    }
+                    dish.Stock -= item.Quantity;
+                    _dishRepository.Update(dish);
+                }
+
+                // Створення замовлення
+                var order = new Order
+                {
+                    UserId = customer.id,
+                    Products = cart.Items.Select(i => i.Dish).ToList(),
+                    TotalPrice = cart.Total,
+                    Status = Status.Pending,
+                    OrderDate = DateTime.Now
+                };
+                order.id = _orderRepository.GetAll().Any()
+                    ? _orderRepository.GetAll().Max(o => o.id) + 1
+                    : 1; // Фікс генерації ID
+                _orderRepository.Add(order);
+
+                // Оновлення балансу
+                customer.Balance -= cart.Total;
+                _customerRepository.Update(customer);
+
+                // Очищення кошика
+                _cartRepository.Remove(cart);
+
+                transaction.Complete(); // Підтвердження транзакції
+
+                TempData["Success"] = "Замовлення успішно оформлено!";
+                return RedirectToAction("Orders");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Сталася помилка: " + ex.Message;
+                return RedirectToAction("Checkout");
+            }
         }
-
-        // Оновлення запасів страв
-        foreach (var item in cart.Items)
-        {
-            var dish = _dishRepository.GetById(item.DishId);
-            dish.Stock -= item.Quantity;
-            _dishRepository.Update(dish);
-        }
-
-        // Створення замовлення
-        var order = new Order
-        {
-            UserId = customer.id,
-            Products = cart.Items.Select(i => i.Dish).ToList(),
-            TotalPrice = cart.Total,
-            Status = Status.Pending,
-            OrderDate = DateTime.Now
-        };
-        _orderRepository.Add(order);
-        // Оновлення балансу
-        customer.Balance -= cart.Total;
-        _customerRepository.Update(customer);
-
-        // Очищення кошика
-        _cartRepository.Remove(cart);
-
-        TempData["Success"] = "Замовлення успішно оформлено!";
-        return RedirectToAction("Orders");
     }
     [HttpGet]
     public IActionResult EditProfile()

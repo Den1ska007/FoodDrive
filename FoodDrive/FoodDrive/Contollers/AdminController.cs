@@ -60,8 +60,10 @@ namespace FoodDrive.Contollers
         [HttpPost]
         public IActionResult CreateAdmin(Admin admin)
         {
-            admin.id = _adminRepository.GetAll().Any() ?
-                  _adminRepository.GetAll().Max(a => a.id) + 1 : 1;
+            admin.id = _adminRepository.GetAll().Any()
+        ? _adminRepository.GetAll().Max(a => a.id) + 1
+        : 1;
+            
             _adminRepository.Add(admin);
             _userRepository.Add(admin);
             return RedirectToAction("ListAdmin");
@@ -154,7 +156,30 @@ namespace FoodDrive.Contollers
         }
 
         // 🟢 Orders CRUD
-        public IActionResult ListOrders() => View(_orderRepository.GetSorted());
+        public IActionResult ListOrders()
+        {
+            var orders = _orderRepository.GetAll()
+                .Select(o =>
+                {
+                    // Отримуємо користувача як Customer (якщо це можливо)
+                    var user = _userRepository.GetById(o.UserId);
+                    Customer customer = user as Customer; // Спроба приведення типу
+
+                    return new Order
+                    {
+                        id = o.id,
+                        UserId = o.UserId,
+                        User = customer ?? new Customer { Name = "Невідомий клієнт" }, // Обробка null
+                        Products = o.Products.Select(pId => _dishRepository.GetById(pId)).ToList(),
+                        TotalPrice = o.TotalPrice,
+                        Status = o.Status,
+                        OrderDate = o.OrderDate
+                    };
+                })
+                .ToList();
+
+            return View(orders);
+        }
         public IActionResult CreateOrder() => View();
         [HttpPost]
         public IActionResult CreateOrder(Order order)

@@ -52,9 +52,9 @@ public class CartController : Controller
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
         var dish = _dishRepository.GetById(dishId);
 
-        if (dish == null)
+        if (dish == null || dish.Stock < quantity)
         {
-            TempData["ErrorMessage"] = "Страва не знайдена";
+            TempData["ErrorMessage"] = "Страва недоступна";
             return RedirectToAction("Index", "Customer");
         }
 
@@ -62,29 +62,31 @@ public class CartController : Controller
         if (cart == null)
         {
             cart = new Cart { UserId = userId };
+            cart.id = _cartRepository.GetAll().Any()
+                ? _cartRepository.GetAll().Max(c => c.id) + 1
+                : 1; // Фікс ID
             _cartRepository.Add(cart);
-            _cartRepository.Update(cart); // Збереження нової корзини
         }
 
         var existingItem = cart.Items.FirstOrDefault(i => i.DishId == dishId);
         if (existingItem != null)
         {
             existingItem.Quantity += quantity;
-            _cartRepository.Update(cart);
         }
         else
         {
-            var newCartItem = new CartItem
+            cart.Items.Add(new CartItem
             {
+                id = cart.Items.Any()
+                    ? cart.Items.Max(i => i.id) + 1
+                    : 1, // Фікс ID
                 CartId = cart.id,
                 DishId = dishId,
-                Quantity = quantity,
-                Dish = dish
-            };
-            cart.Items.Add(newCartItem);
-            _cartRepository.Update(cart);
+                Quantity = quantity
+            });
         }
 
+        _cartRepository.Update(cart); // Виправлено оновлення кошика
         return RedirectToAction("Index");
     }
 

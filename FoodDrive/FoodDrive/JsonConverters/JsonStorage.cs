@@ -20,6 +20,12 @@ namespace FoodDrive.JsonConverters
                 WriteIndented = true,
                 Converters = { new UserConverter() } // Для обробки успадкування
             };
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Converters = { new UserConverter() },
+                ReferenceHandler = ReferenceHandler.IgnoreCycles // Ігноруємо цикличні посилання
+            };
             EnsureFileExists();
         }
 
@@ -78,5 +84,6 @@ namespace FoodDrive.JsonConverters
                 Console.WriteLine($"Помилка збереження {_filePath}: {ex.Message}");
             }
         }
+
     }
 }

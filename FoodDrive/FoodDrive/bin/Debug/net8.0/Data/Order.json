@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "UserId": 2,
+    "User": null,
+    "Products": [
+      {
+        "Name": "Pizza",
+        "Description": "\u0412\u043A\u0443\u0441\u043D\u0430...",
+        "Price": 20,
+        "TypeOfDish": 0,
+        "Stock": 0,
+        "Reviews": [],
+        "Rating": 5,
+        "id": 3
+      }
+    ],
+    "TotalPrice": 60,
+    "Status": 5,
+    "OrderDate": "2025-05-09T22:40:53.395088+03:00",
+    "id": 1
+  }
+]

@@ -100,7 +100,6 @@ public class AccountController : Controller
         return View(new RegisterViewModel());
     }
 
-    // Controllers/AccountController.cs
     [HttpPost]
     [AllowAnonymous]
     public IActionResult Register(RegisterViewModel model)
