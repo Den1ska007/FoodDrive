@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using FoodDrive.Interfaces;
 
 namespace FoodDrive.Models
 {
     public class Customer : User
     {
-        [Range(0, double.MaxValue, ErrorMessage = "Баланс не може бути від'ємним")]
+        [JsonPropertyName("Balance")]
         public decimal Balance { get; set; }
         public List<Order> Orders { get; set; } = new List<Order>();
         public Customer() : base()
@@ -35,6 +36,10 @@ namespace FoodDrive.Models
         public CustomerRepository(IDataStorage<Customer> storage) : base(storage)
         {
         }
+        public Customer GetById(int id)
+        {
+            return _entities.FirstOrDefault(c => c.id == id);
+        }
         public void UpdateBalance(int customerId, decimal amount)
         {
             var customer = GetById(customerId);
@@ -42,6 +47,17 @@ namespace FoodDrive.Models
             {
                 customer.Balance += amount;
                 Update(customer);
+            }
+        }
+        public void Update(Customer entity)
+        {
+            var customers = _storage.Load();
+            var existing = customers.FirstOrDefault(c => c.id == entity.id);
+            if (existing != null)
+            {
+                customers.Remove(existing);
+                customers.Add(entity);
+                _storage.Save(customers);
             }
         }
     }

@@ -1,0 +1,56 @@
+﻿@model FoodDrive.Models.Order
+@{
+    ViewData["Title"] = "Деталі замовлення";
+}
+
+<div class="container mt-4">
+    <h2>Деталі замовлення #@Model.id</h2>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>
+                        Статус:
+                        <span class="badge bg-@(Model.Status == Status.Completed ? "success" : "warning")">
+                            @Model.Status
+                        </span>
+                    </h5>
+                </div>
+                <div class="col-md-6 text-end">
+                    <h5>Сума: @Model.TotalPrice.ToString("C")</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <h5>Страви:</h5>
+            <ul class="list-group">
+                @foreach (var dish in Model.Products)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6>@dish.Name</h6>
+                            <small class="text-muted">@dish.Description</small>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">@dish.Price.ToString("C")</span>
+                    </li>
+                }
+            </ul>
+
+            <div class="mt-4">
+                <h5>Інформація про доставку:</h5>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <p><strong>Адреса:</strong> @Model.User.Address</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Дата замовлення:</strong> @Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a asp-action="Orders" class="btn btn-secondary mt-4">Назад до списку замовлень</a>
+</div>

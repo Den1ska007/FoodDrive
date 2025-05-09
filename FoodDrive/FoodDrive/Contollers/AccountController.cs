@@ -1,4 +1,4 @@
-﻿// Controllers/AccountController.cs
+﻿
 using FoodDrive.Models;
 using FoodDrive.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -43,41 +43,46 @@ public class AccountController : Controller
             return View(model);
         }
 
-        // Створюємо Claims
         var claims = new List<Claim>
         {
+            new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
             new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Role, user.Role),
-            new Claim(ClaimTypes.NameIdentifier, user.id.ToString())
+            new Claim(ClaimTypes.Role, user.Role)
         };
 
         var identity = new ClaimsIdentity(claims, "CookieAuth");
         var principal = new ClaimsPrincipal(identity);
 
-        // Автентифікуємо користувача
         await HttpContext.SignInAsync("CookieAuth", principal);
 
-        // Перенаправляємо за роллю
         return RedirectToAction("Index", user.Role);
     }
 
     [Authorize]
     public IActionResult Profile()
     {
-        // Отримання поточного користувача
-        var username = User.Identity.Name;
-        var user = _userRepository.GetByUsername(username);
+        var userIdClaim = User.FindFirstValue("UserId")
+            ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        // Перевірка наявності користувача
-        if (user == null)
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
             return RedirectToAction("Login");
+        }
 
-        // Створення ViewModel
+        if (!int.TryParse(userIdClaim, out int userId))
+        {
+            return RedirectToAction("Login");
+        }
+
+        var user = _userRepository.GetById(userId);
+        if (user == null) return RedirectToAction("Login");
+
         var model = new ProfileViewModel
         {
             Name = user.Name,
             Role = user.Role,
             Address = user.Address,
+            Balance = user is Customer customer ? customer.Balance : 0,
             RegistrationDate = user.CreatedAt
         };
 
@@ -90,7 +95,10 @@ public class AccountController : Controller
     }
     [HttpGet]
     [AllowAnonymous]
-    public IActionResult Register() => View();
+    public IActionResult Register()
+    {
+        return View(new RegisterViewModel());
+    }
 
     // Controllers/AccountController.cs
     [HttpPost]
@@ -106,13 +114,22 @@ public class AccountController : Controller
         }
         if (model.Role == "Admin")
         {
-            var admin = new Admin(model.Name, model.Password, model.Address);
+            var admin = new Admin(model.Name, model.Password, model.Address)
+            {
+                id = _adminRepository.GetAll().Any()
+                    ? _adminRepository.GetAll().Max(u => u.id) + 1
+                    :1
+            };
             _adminRepository.Add(admin);
             _userRepository.Add(admin);
         }
         else
         {
             var customer = new Customer(model.Name, model.Password, model.Address);
+            customer.id = _customerRepository.GetAll().Any()
+                ? _customerRepository.GetAll().Max(u => u.id) + 1
+                : 1;
+
             _customerRepository.Add(customer);
             _userRepository.Add(customer);
         }

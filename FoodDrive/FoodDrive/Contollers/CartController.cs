@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
+[Authorize(Roles = "Customer")]
 public class CartController : Controller
 {
     private readonly CartRepository _cartRepository;
     private readonly DishRepository _dishRepository;
+    private readonly UserRepository _userRepository;
 
     public CartController(CartRepository cartRepository, DishRepository dishRepository)
     {
@@ -17,7 +19,22 @@ public class CartController : Controller
     [Authorize]
     public IActionResult Index()
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        // Отримуємо значення клейма
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        // Перевірка наявності клейма
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        // Перевірка коректності формату ID
+        if (!int.TryParse(userIdClaim, out int userId))
+        {
+            return RedirectToAction("Error", "Home", new { message = "Невірний формат ID користувача" });
+        }
+
+        // Логіка отримання кошика
         var cart = _cartRepository.GetByUserId(userId);
         return View(cart ?? new Cart());
     }
@@ -26,16 +43,27 @@ public class CartController : Controller
     [Authorize]
     public IActionResult AddToCart(int dishId, int quantity = 1)
     {
+        if (quantity <= 0)
+        {
+            TempData["ErrorMessage"] = "Кількість має бути більше нуля";
+            return RedirectToAction("Index", "Customer");
+        }
+
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
         var dish = _dishRepository.GetById(dishId);
 
-        if (dish == null) return NotFound();
+        if (dish == null)
+        {
+            TempData["ErrorMessage"] = "Страва не знайдена";
+            return RedirectToAction("Index", "Customer");
+        }
 
         var cart = _cartRepository.GetByUserId(userId);
         if (cart == null)
         {
             cart = new Cart { UserId = userId };
             _cartRepository.Add(cart);
+            _cartRepository.Update(cart); // Збереження нової корзини
         }
 
         var existingItem = cart.Items.FirstOrDefault(i => i.DishId == dishId);

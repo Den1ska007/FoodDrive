@@ -1,9 +1,9 @@
 [
   {
-    "UserId": 0,
+    "UserId": 1,
     "Items": [
       {
-        "CartId": 4,
+        "CartId": 6,
         "Cart": null,
         "DishId": 3,
         "Dish": {
@@ -11,16 +11,16 @@
           "Description": "\u0412\u043A\u0443\u0441\u043D\u0430...",
           "Price": 20,
           "TypeOfDish": 0,
-          "stock": 50,
+          "Stock": 0,
           "Reviews": [],
           "Rating": 5,
           "id": 3
         },
-        "Quantity": 2,
-        "id": 62
+        "Quantity": 4,
+        "id": 17
       }
     ],
-    "Total": 40,
-    "id": 4
+    "Total": 80,
+    "id": 6
   }
 ]

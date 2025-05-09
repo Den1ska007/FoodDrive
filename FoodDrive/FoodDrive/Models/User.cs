@@ -53,7 +53,7 @@ namespace FoodDrive.Models
         
         public User GetByUsername(string username)
         {
-            return GetAll().FirstOrDefault(u => u.Name == username);
+            return GetAll().FirstOrDefault(u => u.Name.Equals(username, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

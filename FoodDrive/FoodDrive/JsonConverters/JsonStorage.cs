@@ -14,7 +14,7 @@ namespace FoodDrive.JsonConverters
 
         public JsonStorage()
         {
-            _filePath = Path.Combine("Data", $"{typeof(T).Name}.json");
+            _filePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", $"{typeof(T).Name}.json");
             _options = new JsonSerializerOptions
             {
                 WriteIndented = true,
