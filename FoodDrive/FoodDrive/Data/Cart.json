@@ -1,26 +1,8 @@
 [
   {
     "UserId": 1,
-    "Items": [
-      {
-        "CartId": 6,
-        "Cart": null,
-        "DishId": 3,
-        "Dish": {
-          "Name": "Pizza",
-          "Description": "\u0412\u043A\u0443\u0441\u043D\u0430...",
-          "Price": 20,
-          "TypeOfDish": 0,
-          "Stock": 0,
-          "Reviews": [],
-          "Rating": 5,
-          "id": 3
-        },
-        "Quantity": 4,
-        "id": 17
-      }
-    ],
-    "Total": 80,
+    "Items": [],
+    "Total": 0,
     "id": 6
   }
 ]

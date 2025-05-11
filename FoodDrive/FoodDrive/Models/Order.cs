@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using FoodDrive.Interfaces;
 
 namespace FoodDrive.Models
@@ -8,8 +9,15 @@ namespace FoodDrive.Models
     public class Order : BaseEntity
     {
         public int UserId { get; set; }
-        public Customer User { get; set; }
-        public List<Dish> Products { get; set; }
+
+        [JsonIgnore]
+        public User User { get; set; }
+
+        public List<int> ProductIds { get; set; } = new List<int>();
+
+        [JsonIgnore]
+        public List<Dish> Products { get; set; } = new List<Dish>();
+
         public decimal TotalPrice { get; set; }
         public Status Status { get; set; }
         public DateTime OrderDate { get; set; }

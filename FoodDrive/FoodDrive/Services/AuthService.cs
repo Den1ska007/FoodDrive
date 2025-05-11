@@ -25,7 +25,8 @@ public class AuthService
     {
 
         var user = _userRepository.GetByUsername(username)
-        ?? _adminRepository.GetAll().FirstOrDefault(u => u.Name == username);
+        ?? (User?)_adminRepository.GetAll().FirstOrDefault(u => u.Name == username)
+        ?? (User?)_customerRepository.GetAll().FirstOrDefault(u => u.Name == username);
         if (user == null) return null;
         return BCrypt.Net.BCrypt.EnhancedVerify(password, user.Password)
                 ? user

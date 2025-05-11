@@ -1,12 +1,32 @@
 [
   {
-    "Name": "Pizza",
-    "Description": "\u0412\u043A\u0443\u0441\u043D\u0430...",
-    "Price": 20,
-    "TypeOfDish": 0,
-    "Stock": -3,
+    "Name": "Burger",
+    "Description": "Tasty...",
+    "Price": 69,
+    "TypeOfDish": 2,
+    "Stock": 10000,
     "Reviews": [],
-    "Rating": 5,
+    "Rating": 3,
+    "id": 30
+  },
+  {
+    "Name": "Pizza",
+    "Description": "Delizioso...",
+    "Price": 129,
+    "TypeOfDish": 0,
+    "Stock": 100000,
+    "Reviews": [],
+    "Rating": 3,
     "id": 3
+  },
+  {
+    "Name": "\u0411\u043E\u0440\u0449",
+    "Description": "\u0421\u043C\u0430\u0447\u043D\u043E",
+    "Price": 40,
+    "TypeOfDish": 3,
+    "Stock": 10000000,
+    "Reviews": [],
+    "Rating": 3,
+    "id": 32
   }
 ]

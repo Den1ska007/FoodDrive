@@ -79,7 +79,18 @@ namespace FoodDrive.Contollers
             _userRepository.Update(admin);
             return RedirectToAction("ListAdmin");
         }
-
+        [HttpPost]
+        public IActionResult DeleteAdmin(int id)
+        {
+            var admin = _adminRepository.GetById(id);
+            if (admin != null)
+            {
+                // Видаляємо адміна з обох репозиторіїв
+                _adminRepository.Remove(admin);
+                _userRepository.Remove(admin);
+            }
+            return RedirectToAction("ListAdmin");
+        }
         // 🟢 Customers CRUD
         public IActionResult List() => View(_customerRepository.GetSorted());
         public IActionResult CreateCustomer() => View();
@@ -159,27 +170,25 @@ namespace FoodDrive.Contollers
         public IActionResult ListOrders()
         {
             var orders = _orderRepository.GetAll()
-                .Select(o =>
+                .Select(o => new Order
                 {
-                    // Отримуємо користувача як Customer (якщо це можливо)
-                    var user = _userRepository.GetById(o.UserId);
-                    Customer customer = user as Customer; // Спроба приведення типу
-
-                    return new Order
-                    {
-                        id = o.id,
-                        UserId = o.UserId,
-                        User = customer ?? new Customer { Name = "Невідомий клієнт" }, // Обробка null
-                        Products = o.Products.Select(pId => _dishRepository.GetById(pId)).ToList(),
-                        TotalPrice = o.TotalPrice,
-                        Status = o.Status,
-                        OrderDate = o.OrderDate
-                    };
+                    id = o.id,
+                    UserId = o.UserId,
+                    User = _userRepository.GetById(o.UserId) as Customer, // Отримуємо Customer
+                    ProductIds = o.ProductIds,
+                    Products = o.ProductIds
+                        .Select(id => _dishRepository.GetById(id))
+                        .Where(d => d != null)
+                        .ToList(),
+                    TotalPrice = o.TotalPrice,
+                    Status = o.Status,
+                    OrderDate = o.OrderDate
                 })
                 .ToList();
 
             return View(orders);
         }
+        
         public IActionResult CreateOrder() => View();
         [HttpPost]
         public IActionResult CreateOrder(Order order)
@@ -187,8 +196,44 @@ namespace FoodDrive.Contollers
             _orderRepository.Add(order);
             return RedirectToAction("ListOrders");
         }
-        
+        [HttpGet]
+        public IActionResult EditOrder(int id)
+        {
+            var order = _orderRepository.GetById(id);
+            if (order == null) return NotFound();
 
+            var model = new EditOrderViewModel
+            {
+                Id = order.id,
+                SelectedStatus = order.Status
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult EditOrder(EditOrderViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var order = _orderRepository.GetById(model.Id);
+            if (order == null) return NotFound();
+
+            order.Status = model.SelectedStatus;
+            _orderRepository.Update(order);
+
+            return RedirectToAction("ListOrders");
+        }
+        [HttpPost]
+        public IActionResult DeleteOrder(int id)
+        {
+            var order = _orderRepository.GetById(id);
+            if (order != null)
+            {
+                _orderRepository.Remove(order);
+            }
+            return RedirectToAction("ListOrders");
+        }
 
         // 🟢 Reviews CRUD
         public IActionResult ListReviews() => View(_reviewRepository.GetSorted());
