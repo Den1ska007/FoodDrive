@@ -1,4 +1,5 @@
-﻿@model IEnumerable<FoodDrive.Models.Order>
+﻿@using FoodDrive.Models
+@model IEnumerable<FoodDrive.Models.Order>
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-danger text-white">
@@ -31,14 +32,16 @@
                     <tbody>
                         @foreach (var order in Model)
                         {
+                            
                             <tr data-status="@order.Status">
+
                                 <td>#@order.id</td>
-                                <td>@order.User.Name</td>
+                                <td>@(order.User?.Name ?? "Невідомий користувач")</td>
                                 <td>
                                     <div class="d-flex flex-wrap gap-2">
-                                        @foreach (var product in order.Products)
+                                        @foreach (var product in order.Products ?? new List<Dish>())
                                         {
-                                            <span class="badge bg-primary">@product.Name</span>
+                                            <span class="badge bg-primary">@product?.Name</span>
                                         }
                                     </div>
                                 </td>
@@ -57,7 +60,7 @@
                                         <form asp-action="DeleteOrder" method="post">
                                             <input type="hidden" name="id" value="@order.id" />
                                             <button type="submit"
-                                                    class="btn btn-sm btn-outline-danger"
+                                                    class="btn btn-danger btn-sm"
                                                     onclick="return confirm('Видалити замовлення?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>

@@ -1,4 +1,13 @@
 ﻿@model FoodDrive.Models.Dish
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-warning text-dark">
@@ -28,7 +37,7 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Наявність</label>
-                        <input asp-for="stock" class="form-control" />
+                        <input asp-for="Stock" class="form-control" />
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Рейтинг</label>

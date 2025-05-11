@@ -18,53 +18,55 @@ public class OrderService
 
     public OrderResult PlaceOrder(Cart cart)
     {
-        if (cart == null) throw new ArgumentNullException(nameof(cart));
+        
+        if (!ValidationService.IsValid(cart))
+        {
+            return new OrderResult
+            {
+                Success = false,
+                Message = "Некоректні дані кошика"
+            };
+        }
         foreach (var item in cart.Items)
         {
             var dish = _dishRepository.GetById(item.DishId);
-            if (dish == null)
-                return new OrderResult { Success = false, Message = $"Страва не знайдена: {item.DishId}" };
-            if (dish.stock < item.Quantity)
+            if (dish == null || dish.Stock < item.Quantity)
             {
                 return new OrderResult
-
                 {
                     Success = false,
-                    Message = $"Недостатньо '{dish.Name}' на складі"
+                    Message = $"Недостатньо '{dish?.Name}' на складі"
                 };
             }
         }
-
         var customer = _customerRepository.GetById(cart.UserId);
-        if (customer == null)
-        { 
-            return new OrderResult { Success = false, Message = "Клієнт не знайдений" };
-        }
-        if (customer.Balance < cart.Total)
+        if (customer == null || customer.Balance < cart.Total)
+        {
             return new OrderResult { Success = false, Message = "Недостатньо коштів" };
+        }
 
         customer.Balance -= cart.Total;
+
         _customerRepository.Update(customer);
+
+        var updatedCustomer = _customerRepository.GetById(customer.id);
 
         foreach (var item in cart.Items)
         {
             var dish = _dishRepository.GetById(item.DishId);
-            dish.stock -= item.Quantity;
+            dish.Stock -= item.Quantity;
             _dishRepository.Update(dish);
         }
-
-        var dishes = cart.Items.Select(item => _dishRepository.GetById(item.DishId)).ToList();
 
         var order = new Order
         {
             User = customer,
-            Products = dishes,
+            Products = cart.Items.Select(i => i.Dish).ToList(),
             TotalPrice = cart.Total,
-            Status = Status.Completed
+            Status = Status.Pending
         };
 
         _orderRepository.Add(order);
-
         return new OrderResult { Success = true, Order = order };
     }
 }

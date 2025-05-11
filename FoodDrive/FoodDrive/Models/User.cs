@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using BCrypt.Net;
 using FoodDrive.Interfaces;
 
@@ -19,6 +20,8 @@ namespace FoodDrive.Models
 
 
         public string Role { get; set; }
+        [Required(ErrorMessage = "Адреса обов'язкова")]
+        [StringLength(200, ErrorMessage = "Адреса має бути до 200 символів")]
         public string Address { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         protected User()
@@ -50,10 +53,14 @@ namespace FoodDrive.Models
         {
         }
 
-        
+        public User GetById(int id)
+        {
+            return _storage.Load()
+                .FirstOrDefault(u => u.id == id);
+        }
         public User GetByUsername(string username)
         {
-            return GetAll().FirstOrDefault(u => u.Name == username);
+            return GetAll().FirstOrDefault(u => u.Name.Equals(username, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

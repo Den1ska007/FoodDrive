@@ -1,34 +1,37 @@
 ﻿@model IEnumerable<FoodDrive.Models.Order>
-
 @{
     ViewData["Title"] = "Мої замовлення";
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4">Історія замовлень</h2>
+    <h2>Історія замовлень</h2>
 
     @if (!Model.Any())
     {
-        <div class="alert alert-info">
+        <div class="alert alert-info mt-4">
             У вас ще немає замовлень
         </div>
     }
     else
     {
-        <div class="list-group">
-            @foreach (var order in Model)
+        <div class="list-group mt-4">
+            @foreach (var order in Model.OrderByDescending(o => o.OrderDate))
             {
-                <div class="list-group-item mb-3">
+                <a asp-action="OrderDetails" asp-route-id="@order.id"
+                   class="list-group-item list-group-item-action">
                     <div class="d-flex justify-content-between">
-                        <h5>Замовлення #@order.id</h5>
-                        <span class="badge bg-@(order.Status == Status.Completed ? "success" : "warning")">
-                            @order.Status
-                        </span>
+                        <div>
+                            <h5>Замовлення #@order.id</h5>
+                            <small class="text-muted">@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-@(order.Status == Status.Completed ? "success" : "warning")">
+                                @order.Status
+                            </span>
+                            <span class="ms-2">@order.TotalPrice.ToString("C")</span>
+                        </div>
                     </div>
-                    <p class="mb-1">@order.Time.ToString(@"hh\:mm") - @order.Products.Count товар(ів)</p>
-                    <p class="mb-1"><strong>Сума: @order.TotalPrice.ToString("C")</strong></p>
-                    <a href="#" class="btn btn-sm btn-outline-primary mt-2">Деталі</a>
-                </div>
+                </a>
             }
         </div>
     }

@@ -10,7 +10,6 @@ namespace FoodDrive.Models
         {
         }
         public Admin(string name, string password, string address)
-
             : base(name, password, "Admin", address)
         {
            

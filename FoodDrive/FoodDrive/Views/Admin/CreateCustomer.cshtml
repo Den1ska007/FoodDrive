@@ -7,20 +7,28 @@
         <div class="card-body">
             <form asp-action="CreateCustomer" method="post">
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Ім'я</label>
-                        <input asp-for="Name" class="form-control" placeholder="Введіть ім'я" />
+                    <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Пароль</label>
-                        <input asp-for="Password" type="password" class="form-control" placeholder="Введіть пароль" />
+
+                    <div class="form-group">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" type="password" class="form-control" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
-                    <div class="col-12">
-                        <label class="form-label">Адреса</label>
-                        <input asp-for="Address" class="form-control" placeholder="Введіть адресу" />
+
+                    <div class="form-group">
+                        <label asp-for="Address"></label>
+                        <input asp-for="Address" class="form-control" />
                         <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Balance"></label>
+                        <input asp-for="Balance" type="number" step="0.01" class="form-control" />
+                        <span asp-validation-for="Balance" class="text-danger"></span>
                     </div>
                     <div class="col-12 text-end">
                         <button type="submit" class="btn btn-success">

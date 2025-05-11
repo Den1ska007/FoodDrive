@@ -1,0 +1,67 @@
+﻿@model FoodDrive.Models.Dish
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="dish-details">
+    <div class="dish-image">
+        <img src="~/images/dishes/@(Model.id).jpg" alt="@Model.Name" />
+    </div>
+
+    <div class="dish-info">
+        <h1>@Model.Name</h1>
+        <p class="description">@Model.Description</p>
+
+        <div class="price">@Model.Price.ToString("C")</div>
+
+        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+            <input type="hidden" name="dishId" value="@Model.id" />
+
+            <div class="quantity-selector">
+                <label>Кількість:</label>
+                <input type="number" name="quantity" value="1" min="1" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-cart-plus"></i> Додати в кошик
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .dish-details {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 40px;
+        padding: 30px;
+    }
+
+    .dish-image img {
+        width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .dish-info {
+        max-width: 600px;
+    }
+
+    .price {
+        font-size: 28px;
+        color: #27ae60;
+        margin: 20px 0;
+    }
+
+    .quantity-selector {
+        margin: 25px 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+        .quantity-selector input {
+            width: 100px;
+        }
+</style>

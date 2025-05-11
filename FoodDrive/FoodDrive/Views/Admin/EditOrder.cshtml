@@ -1,0 +1,30 @@
+﻿@using FoodDrive.Models.ViewModels
+@model EditOrderViewModel
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3>Редагування замовлення #@Model.Id</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditOrder" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-group mb-3">
+                    <label>Статус</label>
+                    <select asp-for="SelectedStatus"
+                            asp-items="Html.GetEnumSelectList<Status>()"
+                            class="form-select"></select>
+                    <span asp-validation-for="SelectedStatus" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save me-2"></i>Зберегти
+                </button>
+                <a href="@Url.Action("ListOrders")" class="btn btn-secondary">
+                    <i class="fas fa-times me-2"></i>Скасувати
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

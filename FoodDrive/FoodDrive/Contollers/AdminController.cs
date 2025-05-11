@@ -20,7 +20,7 @@ namespace FoodDrive.Contollers
         private readonly IRepository<Review> _reviewRepository;
         private readonly UserRepository _userRepository;
         private readonly CustomerRepository _customerRepository;
-
+        private readonly CartRepository _cartRepository;
 
         public AdminController(
             IRepository<Admin> adminRepository,
@@ -28,7 +28,8 @@ namespace FoodDrive.Contollers
             IRepository<Order> orderRepository,
             IRepository<Review> reviewRepository,
             UserRepository userRepository,
-            CustomerRepository customerRepository)
+            CustomerRepository customerRepository,
+            CartRepository cartRepository)
         {
             _adminRepository = adminRepository;
             _dishRepository = dishRepository;
@@ -36,6 +37,7 @@ namespace FoodDrive.Contollers
             _reviewRepository = reviewRepository;
             _userRepository = userRepository;
             _customerRepository = customerRepository;
+            _cartRepository = cartRepository;
         }
         public IActionResult Contacts()
         {
@@ -56,14 +58,27 @@ namespace FoodDrive.Contollers
         public IActionResult ListAdmin() => View(_adminRepository.GetSorted());
         
         public IActionResult CreateAdmin() => View();
-        
+
         [HttpPost]
         public IActionResult CreateAdmin(Admin admin)
         {
-            admin.id = _adminRepository.GetAll().Any() ?
-                  _adminRepository.GetAll().Max(a => a.id) + 1 : 1;
+            var validationResults = ValidationService.Validate(admin);
+            if (!ModelState.IsValid || validationResults.Any())
+            {
+                foreach (var error in validationResults)
+                {
+                    ModelState.AddModelError("", error.ErrorMessage);
+                }
+                return View(admin);
+            }
+
+            admin.id = _adminRepository.GetAll().Any()
+                ? _adminRepository.GetAll().Max(a => a.id) + 1
+                : 1;
+
             _adminRepository.Add(admin);
             _userRepository.Add(admin);
+
             return RedirectToAction("ListAdmin");
         }
         public IActionResult EditAdmin(int id) => View(_adminRepository.GetById(id));
@@ -77,20 +92,53 @@ namespace FoodDrive.Contollers
             _userRepository.Update(admin);
             return RedirectToAction("ListAdmin");
         }
-
+        [HttpPost]
+        public IActionResult DeleteAdmin(int id)
+        {
+            var admin = _adminRepository.GetById(id);
+            if (admin != null)
+            {
+                // Видаляємо адміна з обох репозиторіїв
+                _adminRepository.Remove(admin);
+                _userRepository.Remove(admin);
+            }
+            return RedirectToAction("ListAdmin");
+        }
         // 🟢 Customers CRUD
         public IActionResult List() => View(_customerRepository.GetSorted());
         public IActionResult CreateCustomer() => View();
         [HttpPost]
-        public IActionResult CreateCustomer(Customer customer)
+        public IActionResult CreateCustomer(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _customerRepository.Add(customer);
-                _userRepository.Add(customer);
-                return RedirectToAction("List");
+                return View(model);
             }
-            return View(customer);
+
+            var customer = new Customer(model.Name, model.Password, model.Address)
+            {
+                Balance = model.Balance,
+                id = _customerRepository.GetAll().Any()
+                    ? _customerRepository.GetAll().Max(c => c.id) + 1
+                    : 1
+            };
+
+            // Валідація перед збереженням
+            var validationResults = ValidationService.Validate(customer);
+            if (validationResults.Any())
+            {
+                foreach (var error in validationResults)
+                {
+                    ModelState.AddModelError("", error.ErrorMessage);
+                }
+                return View(model);
+            }
+
+            _customerRepository.Add(customer);
+            _userRepository.Add(customer);
+
+            TempData["SuccessMessage"] = "Клієнта успішно створено!";
+            return RedirectToAction("List");
         }
         public IActionResult EditCustomer(int id) => View(_customerRepository.GetById(id));
         [HttpPost]
@@ -106,12 +154,29 @@ namespace FoodDrive.Contollers
             }
             return View(customer);
         }
+        // Controllers/AdminController.cs
+        [HttpPost]
         public IActionResult DeleteCustomer(int id)
         {
             var customer = _customerRepository.GetById(id);
             if (customer != null)
             {
+                var customerOrders = _orderRepository.GetAll()
+                    .Where(o => o.UserId == customer.id)
+                    .ToList();
+
+                foreach (var order in customerOrders)
+                {
+                    _orderRepository.Remove(order);
+                }
+
+                var cart = _cartRepository.GetByUserId(customer.id);
+                if (cart != null)
+                {
+                    _cartRepository.Remove(cart);
+                }
                 _customerRepository.Remove(customer);
+                _userRepository.Remove(customer);
             }
             return RedirectToAction("List");
         }
@@ -154,7 +219,27 @@ namespace FoodDrive.Contollers
         }
 
         // 🟢 Orders CRUD
-        public IActionResult ListOrders() => View(_orderRepository.GetSorted());
+        public IActionResult ListOrders()
+        {
+            var orders = _orderRepository.GetAll()
+                .Select(o => new Order
+                {
+                    id = o.id,
+                    UserId = o.UserId,
+                    User = _userRepository.GetById(o.UserId),
+                    ProductIds = o.ProductIds,
+                    Products = o.ProductIds
+                        .Select(id => _dishRepository.GetById(id))
+                        .Where(d => d != null)
+                        .ToList(),
+                    TotalPrice = o.TotalPrice,
+                    Status = o.Status,
+                    OrderDate = o.OrderDate
+                })
+                .ToList();
+
+            return View(orders);
+        }
         public IActionResult CreateOrder() => View();
         [HttpPost]
         public IActionResult CreateOrder(Order order)
@@ -162,8 +247,44 @@ namespace FoodDrive.Contollers
             _orderRepository.Add(order);
             return RedirectToAction("ListOrders");
         }
-        
+        [HttpGet]
+        public IActionResult EditOrder(int id)
+        {
+            var order = _orderRepository.GetById(id);
+            if (order == null) return NotFound();
 
+            var model = new EditOrderViewModel
+            {
+                Id = order.id,
+                SelectedStatus = order.Status
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult EditOrder(EditOrderViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var order = _orderRepository.GetById(model.Id);
+            if (order == null) return NotFound();
+
+            order.Status = model.SelectedStatus;
+            _orderRepository.Update(order);
+
+            return RedirectToAction("ListOrders");
+        }
+        [HttpPost]
+        public IActionResult DeleteOrder(int id)
+        {
+            var order = _orderRepository.GetById(id);
+            if (order != null)
+            {
+                _orderRepository.Remove(order);
+            }
+            return RedirectToAction("ListOrders");
+        }
 
         // 🟢 Reviews CRUD
         public IActionResult ListReviews() => View(_reviewRepository.GetSorted());

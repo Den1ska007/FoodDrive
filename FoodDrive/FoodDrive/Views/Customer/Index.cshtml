@@ -7,15 +7,12 @@
     @foreach (var dish in Model)
     {
         <div class="dish-card">
-            <h3>@dish.Name</h3>
-            <p>@dish.Description</p>
-            <p class="price">@dish.Price.ToString("C")</p>
-            <form asp-controller="Cart" asp-action="AddToCart" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="dishId" value="@dish.id" />
-                <input type="number" name="quantity" value="1" min="1" class="quantity-input" />
-                <button type="submit" class="add-to-cart">Додати в кошик</button>
-            </form>
+            <a asp-action="DishDetails" asp-route-id="@dish.id" class="dish-link">
+                <h3>@dish.Name</h3>
+                <img src="~/images/dishes/@(dish.id).jpg" alt="@dish.Name" class="dish-thumbnail" />
+            </a>
+
+            <div class="price">@dish.Price.ToString("C")</div>
         </div>
     }
 </div>
@@ -28,6 +25,18 @@
         padding: 20px;
     }
 
+    .dish-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .dish-thumbnail {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
     .dish-card {
         border: 1px solid #ddd;
         border-radius: 8px;

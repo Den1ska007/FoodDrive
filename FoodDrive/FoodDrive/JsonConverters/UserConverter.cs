@@ -19,6 +19,11 @@ public class UserConverter : JsonConverter<User>
 
     public override void Write(Utf8JsonWriter writer, User value, JsonSerializerOptions options)
     {
-        JsonSerializer.Serialize(writer, (object)value, options);
+        var typeInfo = new
+        {
+            value.Role,
+            Value = (object)value
+        };
+        JsonSerializer.Serialize(writer, typeInfo, options);
     }
 }

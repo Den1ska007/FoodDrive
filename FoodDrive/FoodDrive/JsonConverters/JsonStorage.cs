@@ -14,11 +14,17 @@ namespace FoodDrive.JsonConverters
 
         public JsonStorage()
         {
-            _filePath = Path.Combine("Data", $"{typeof(T).Name}.json");
+            _filePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", $"{typeof(T).Name}.json");
             _options = new JsonSerializerOptions
             {
                 WriteIndented = true,
                 Converters = { new UserConverter() } // Для обробки успадкування
+            };
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Converters = { new UserConverter() },
+                ReferenceHandler = ReferenceHandler.IgnoreCycles // Ігноруємо цикличні посилання
             };
             EnsureFileExists();
         }
@@ -78,5 +84,6 @@ namespace FoodDrive.JsonConverters
                 Console.WriteLine($"Помилка збереження {_filePath}: {ex.Message}");
             }
         }
+
     }
 }

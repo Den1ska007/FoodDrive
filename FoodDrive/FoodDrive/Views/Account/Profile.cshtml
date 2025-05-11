@@ -11,11 +11,22 @@
                 <div class="card-header bg-primary text-white">
                     <h3 class="card-title">Мій профіль</h3>
                 </div>
+                <div class="text-center mb-4">
+                    
+                </div>
                 <div class="card-body">
-                    <div class="text-center mb-4">
-                        <div class="avatar-circle bg-secondary text-white mx-auto">
-                            <span class="initials">@Model.Name.Substring(0, 1).ToUpper()</span>
-                        </div>
+                    <div class="avatar-circle bg-secondary text-white mx-auto">
+                        @{
+
+                            var initial = "👤";
+                            if (!string.IsNullOrEmpty(Model.Name))
+                            {
+                                initial = Model.Name.Length > 0
+                                ? Model.Name.Substring(0, 1).ToUpper()
+                                : "?";
+                            }
+                        }
+                        <span class="initials">@initial</span>
                     </div>
 
                     <dl class="row">
@@ -26,7 +37,7 @@
                         <dd class="col-sm-8">@Model.Role</dd>
 
                         <dt class="col-sm-4">Баланс:</dt>
-                        <dd class="col-sm-8">@Model.Balance.ToString("C")</dd>
+                        <dd class="col-sm-8">@Model.Balance.ToString("C2")</dd>
 
                         <dt class="col-sm-4">Адреса:</dt>
                         <dd class="col-sm-8">@Model.Address</dd>
@@ -35,8 +46,10 @@
                         <dd class="col-sm-8">@Model.RegistrationDate.ToString("dd.MM.yyyy")</dd>
                     </dl>
 
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a asp-action="EditProfile" class="btn btn-primary">Редагувати профіль</a>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a asp-controller="Customer" asp-action="EditProfile" class="btn btn-primary me-md-2">
+                            <i class="fas fa-edit me-2"></i>Редагувати профіль
+                        </a>
                     </div>
                 </div>
             </div>

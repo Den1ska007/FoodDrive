@@ -16,7 +16,7 @@ namespace FoodDrive.Models
             _entities = _storage.Load();
         }
 
-        public void Add(T entity)
+        public virtual void Add(T entity)
         {
             if (!_entities.Any(e => e.id == entity.id))
             {
