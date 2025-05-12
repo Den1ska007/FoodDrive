@@ -1,67 +1,63 @@
-﻿using FoodDrive.Models;
+﻿using FoodDrive.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 [Authorize(Roles = "Customer")]
 public class CartController : Controller
 {
-    private readonly CartRepository _cartRepository;
-    private readonly DishRepository _dishRepository;
-    private readonly UserRepository _userRepository;
+    private readonly AppDbContext _context;
 
-    public CartController(CartRepository cartRepository, DishRepository dishRepository)
+    public CartController(AppDbContext context)
     {
-        _cartRepository = cartRepository;
-        _dishRepository = dishRepository;
+        _context = context;
     }
 
     [Authorize]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        // Отримуємо значення клейма
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        // Перевірка наявності клейма
-        if (string.IsNullOrEmpty(userIdClaim))
+        var userId = GetCurrentUserId();
+        if (userId == null)
         {
             return RedirectToAction("Login", "Account");
         }
 
-        // Перевірка коректності формату ID
-        if (!int.TryParse(userIdClaim, out int userId))
-        {
-            return RedirectToAction("Error", "Home", new { message = "Невірний формат ID користувача" });
-        }
+        var cart = await _context.Carts
+            .Include(c => c.Items)
+            .ThenInclude(i => i.Dish)
+            .FirstOrDefaultAsync(c => c.UserId == userId);
 
-        // Логіка отримання кошика
-        var cart = _cartRepository.GetByUserId(userId);
-        return View(cart ?? new Cart());
+        return View(cart ?? new Cart { UserId = userId.Value });
     }
 
     [HttpPost]
     [Authorize]
-    public IActionResult AddToCart(int dishId, int quantity = 1)
+    public async Task<IActionResult> AddToCart(int dishId, int quantity = 1)
     {
         if (quantity < 1) quantity = 1;
 
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var dish = _dishRepository.GetById(dishId);
-
-        if (dish == null || dish.Stock < quantity)
+        var userId = GetCurrentUserId();
+        if (userId == null)
         {
-            TempData["ErrorMessage"] = "Страва недоступна";
-            return RedirectToAction("Index", "Customer");
+            return RedirectToAction("Login", "Account");
         }
 
-        var cart = _cartRepository.GetByUserId(userId);
+        var dish = await _context.Dishes.FindAsync(dishId);
+        if (dish == null || dish.Stock < quantity)
+        {
+            TempData["Error"] = "Страва недоступна";
+            return RedirectToAction("Index", "Dish");
+        }
+
+        var cart = await _context.Carts
+            .Include(c => c.Items)
+            .FirstOrDefaultAsync(c => c.UserId == userId);
+
         if (cart == null)
         {
-            cart = new Cart { UserId = userId };
-            cart.id = _cartRepository.GetAll().Any()
-                ? _cartRepository.GetAll().Max(c => c.id) + 1
-                : 1; // Фікс ID
-            _cartRepository.Add(cart);
+            cart = new Cart { UserId = userId.Value };
+            await _context.Carts.AddAsync(cart);
         }
 
         var existingItem = cart.Items.FirstOrDefault(i => i.DishId == dishId);
@@ -73,37 +69,49 @@ public class CartController : Controller
         {
             cart.Items.Add(new CartItem
             {
-                id = cart.Items.Any()
-                    ? cart.Items.Max(i => i.id) + 1
-                    : 1,
-                CartId = cart.id,
                 DishId = dishId,
-                Quantity = quantity,
-                Dish = dish
+                Quantity = quantity
             });
         }
 
-        _cartRepository.Update(cart); // Виправлено оновлення кошика
+        await _context.SaveChangesAsync();
         return RedirectToAction("Index");
     }
 
     [HttpPost]
     [Authorize]
-    public IActionResult RemoveFromCart(int itemId)
+    public async Task<IActionResult> RemoveFromCart(int itemId)
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var cart = _cartRepository.GetByUserId(userId);
+        var userId = GetCurrentUserId();
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        var cart = await _context.Carts
+            .Include(c => c.Items)
+            .FirstOrDefaultAsync(c => c.UserId == userId);
 
         if (cart != null)
         {
-            var item = cart.Items.FirstOrDefault(i => i.id == itemId);
+            var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
             if (item != null)
             {
                 cart.Items.Remove(item);
-                _cartRepository.Update(cart);
+                await _context.SaveChangesAsync();
             }
         }
 
         return RedirectToAction("Index");
+    }
+
+    private int? GetCurrentUserId()
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (int.TryParse(userIdClaim, out int userId))
+        {
+            return userId;
+        }
+        return null;
     }
 }

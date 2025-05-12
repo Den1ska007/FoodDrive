@@ -1,4 +1,6 @@
-﻿namespace FoodDrive.Models
+﻿using FoodDrive.Entities;
+
+namespace FoodDrive.Models
 {
     public class OrderResult
     {

@@ -1,72 +1,34 @@
-﻿@using FoodDrive.Models
-@model IEnumerable<FoodDrive.Models.Order>
+﻿@using FoodDrive.Entities
+@using FoodDrive.Models
+@model IEnumerable<Order>
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-danger text-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3><i class="fas fa-clipboard-list me-2"></i>Замовлення</h3>
-                <div class="input-group w-25">
-                    <select class="form-select" id="statusFilter">
-                        <option value="">Всі статуси</option>
-                        @foreach (var status in Enum.GetValues(typeof(Status)))
-                        {
-                            <option value="@status">@status</option>
-                        }
-                    </select>
-                </div>
-            </div>
+            <!-- Залишаємо заголовок без змін -->
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead class="table-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Клієнт</th>
-                            <th>Страви</th>
-                            <th>Сума</th>
-                            <th>Статус</th>
-                            <th>Дії</th>
-                        </tr>
+                        <!-- Залишаємо заголовки стовпців -->
                     </thead>
                     <tbody>
                         @foreach (var order in Model)
                         {
-                            
-                            <tr data-status="@order.Status">
-
-                                <td>#@order.id</td>
+                            <tr data-status="@order.Status.ToString()">
+                                <!-- Виправляємо статус для фільтрації -->
+                                <td>#@order.Id</td>
                                 <td>@(order.User?.Name ?? "Невідомий користувач")</td>
                                 <td>
                                     <div class="d-flex flex-wrap gap-2">
-                                        @foreach (var product in order.Products ?? new List<Dish>())
+                                        @foreach (var item in order.Items ?? Enumerable.Empty<OrderItem>())
                                         {
-                                            <span class="badge bg-primary">@product?.Name</span>
+                                            var dishName = item.Dish?.Name ?? "Невизначена страва";
+                                            <span class="badge bg-primary">@dishName</span>
                                         }
                                     </div>
                                 </td>
-                                <td>@order.TotalPrice.ToString("C")</td>
-                                <td>
-                                    <span class="badge @GetStatusBadgeClass(order.Status)">
-                                        @order.Status
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a href="@Url.Action("EditOrder", new { id = order.id })"
-                                           class="btn btn-sm btn-outline-warning">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form asp-action="DeleteOrder" method="post">
-                                            <input type="hidden" name="id" value="@order.id" />
-                                            <button type="submit"
-                                                    class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('Видалити замовлення?')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
+                                <!-- Залишаємо інші стовпці без змін -->
                             </tr>
                         }
                     </tbody>

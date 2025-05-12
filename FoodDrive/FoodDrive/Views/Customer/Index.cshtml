@@ -1,4 +1,5 @@
-﻿@model IEnumerable<FoodDrive.Models.Dish>
+﻿@using FoodDrive.Entities
+@model IEnumerable<Dish>
 @{
     ViewData["Title"] = "Меню";
 }
@@ -7,9 +8,9 @@
     @foreach (var dish in Model)
     {
         <div class="dish-card">
-            <a asp-action="DishDetails" asp-route-id="@dish.id" class="dish-link">
+            <a asp-action="DishDetails" asp-route-id="@dish.Id" class="dish-link">
                 <h3>@dish.Name</h3>
-                <img src="~/images/dishes/@(dish.id).jpg" alt="@dish.Name" class="dish-thumbnail" />
+                <img src="~/images/dishes/@(dish.Id).jpg" alt="@dish.Name" class="dish-thumbnail" />
             </a>
 
             <div class="price">@dish.Price.ToString("C")</div>

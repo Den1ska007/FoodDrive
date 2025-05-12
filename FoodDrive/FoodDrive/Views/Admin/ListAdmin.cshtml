@@ -1,4 +1,5 @@
-﻿@model IEnumerable<FoodDrive.Models.Admin>
+﻿@using FoodDrive.Entities
+@model IEnumerable<Admin>
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-dark text-white">
@@ -24,17 +25,17 @@
                         @foreach (var admin in Model)
                         {
                             <tr>
-                                <td>#@admin.id</td>
+                                <td>#@admin.Id</td>
                                 <td>@admin.Name</td>
                                 <td>@admin.Address</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="@Url.Action("EditAdmin", new { id = admin.id })"
+                                        <a href="@Url.Action("EditAdmin", new { id = admin.Id })"
                                            class="btn btn-sm btn-outline-warning">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form asp-action="DeleteAdmin" method="post">
-                                            <input type="hidden" name="id" value="@admin.id" />
+                                            <input type="hidden" name="id" value="@admin.Id" />
                                             <button type="submit"
                                                     class="btn btn-danger btn-sm"
                                                     onclick="return confirm('Ви впевнені?')">

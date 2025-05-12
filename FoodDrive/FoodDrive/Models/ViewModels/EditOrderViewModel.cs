@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using FoodDrive.Entities;
 
 namespace FoodDrive.Models.ViewModels
 {

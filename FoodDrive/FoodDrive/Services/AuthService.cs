@@ -1,40 +1,45 @@
-﻿// Services/AuthService.cs
-using FoodDrive.Models;
-using BCrypt.Net;
-using FoodDrive.Interfaces;
+﻿using BCrypt.Net;
+using FoodDrive.Entities;
+using Microsoft.EntityFrameworkCore;
+
 public interface IAuthService
 {
-    User? Authenticate(string username, string password);
-    void Register(User user);
+    Task<User?> Authenticate(string username, string password);
+    Task<bool> Register(User user);
 }
-public class AuthService
+
+public class AuthService : IAuthService
 {
-    private readonly UserRepository _userRepository;
-    private readonly IRepository<Admin> _adminRepository;
-    private readonly IRepository<Customer> _customerRepository;
-    public AuthService(UserRepository userRepository,
-        IRepository<Admin> adminRepository,
-        IRepository<Customer> customerRepository)
+    private readonly AppDbContext _context;
+
+    public AuthService(AppDbContext context)
     {
-        _userRepository = userRepository;
-        _adminRepository = adminRepository;
-        _customerRepository = customerRepository;
+        _context = context;
     }
 
-    public User? Authenticate(string username, string password)
+    public async Task<User?> Authenticate(string username, string password)
     {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Name == username);
 
-        var user = _userRepository.GetByUsername(username)
-        ?? (User?)_adminRepository.GetAll().FirstOrDefault(u => u.Name == username)
-        ?? (User?)_customerRepository.GetAll().FirstOrDefault(u => u.Name == username);
-        if (user == null) return null;
-        return BCrypt.Net.BCrypt.EnhancedVerify(password, user.Password)
-                ? user
-                : null;
+        if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) // Replace EnhancedVerify with Verify
+            return null;
+
+        return user;
     }
 
-    public void Register(User user)
+    public async Task<bool> Register(User user)
     {
-        _userRepository.Add(user);
+        try
+        {
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash); // Replace EnhancedHashPassword with HashPassword
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

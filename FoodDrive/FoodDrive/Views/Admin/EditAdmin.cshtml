@@ -1,4 +1,5 @@
-﻿@model FoodDrive.Models.Admin
+﻿@using FoodDrive.Entities
+@model Admin
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
@@ -6,7 +7,7 @@
         </div>
         <div class="card-body">
             <form asp-action="EditAdmin" method="post">
-                <input type="hidden" asp-for="id" />
+                <input type="hidden" asp-for="Id" />
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">Ім'я</label>
@@ -15,8 +16,8 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Новий пароль</label>
-                        <input asp-for="Password" type="password" class="form-control" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <input asp-for="PasswordHash" type="password" class="form-control" />
+                        <span asp-validation-for="PasswordHash" class="text-danger"></span>
                     </div>
                     <div class="col-12 text-end">
                         <button type="submit" class="btn btn-success">

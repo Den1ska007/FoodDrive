@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FoodDrive.Models.Review>
+﻿@model IEnumerable<FoodDrive.Entities.Review>
 @{
     ViewData["Title"] = "Управління відгуками";
 }
@@ -10,7 +10,7 @@
             <a href="@Url.Action("CreateReview")" class="btn btn-primary">
                 <i class="fas fa-plus-circle me-2"></i>Додати відгук
             </a>
-            <a href="@Url.Action("Menu")" class="btn btn-outline-secondary">
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-left me-2"></i>Назад
             </a>
         </div>
@@ -54,7 +54,7 @@
                                     </div>
                                 </td>
                                 <td class="text-truncate" style="max-width: 250px;">@review.Text</td>
-                                <td>@review.Date.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>@review.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
                                 <td>
                                     <div class="btn-group">
                                         <a href="@Url.Action("EditReview", new { id = review.Id })"

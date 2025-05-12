@@ -1,4 +1,5 @@
-﻿@model IEnumerable<FoodDrive.Models.Order>
+﻿@using FoodDrive.Entities
+@model IEnumerable<Order>
 @{
     ViewData["Title"] = "Мої замовлення";
 }
@@ -17,11 +18,11 @@
         <div class="list-group mt-4">
             @foreach (var order in Model.OrderByDescending(o => o.OrderDate))
             {
-                <a asp-action="OrderDetails" asp-route-id="@order.id"
+                <a asp-action="OrderDetails" asp-route-id="@order.Id"
                    class="list-group-item list-group-item-action">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h5>Замовлення #@order.id</h5>
+                            <h5>Замовлення #@order.Id</h5>
                             <small class="text-muted">@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</small>
                         </div>
                         <div>

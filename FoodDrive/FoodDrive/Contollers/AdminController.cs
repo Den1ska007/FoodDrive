@@ -7,6 +7,8 @@ using System.Linq;
 using FoodDrive.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using FoodDrive.Entities;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace FoodDrive.Contollers
@@ -14,30 +16,11 @@ namespace FoodDrive.Contollers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private readonly IRepository<Admin> _adminRepository;
-        private readonly IRepository<Dish> _dishRepository;
-        private readonly IRepository<Order> _orderRepository;
-        private readonly IRepository<Review> _reviewRepository;
-        private readonly UserRepository _userRepository;
-        private readonly CustomerRepository _customerRepository;
-        private readonly CartRepository _cartRepository;
+        private readonly AppDbContext _context;
 
-        public AdminController(
-            IRepository<Admin> adminRepository,
-            IRepository<Dish> dishRepository,
-            IRepository<Order> orderRepository,
-            IRepository<Review> reviewRepository,
-            UserRepository userRepository,
-            CustomerRepository customerRepository,
-            CartRepository cartRepository)
+        public AdminController(AppDbContext context)
         {
-            _adminRepository = adminRepository;
-            _dishRepository = dishRepository;
-            _orderRepository = orderRepository;
-            _reviewRepository = reviewRepository;
-            _userRepository = userRepository;
-            _customerRepository = customerRepository;
-            _cartRepository = cartRepository;
+            _context = context;
         }
         public IActionResult Contacts()
         {
@@ -47,298 +30,442 @@ namespace FoodDrive.Contollers
         {
             return View();
         }
-        [HttpPost]
-        public IActionResult UpdateBalance(int customerId, decimal amount)
-        {
-            _customerRepository.UpdateBalance(customerId, amount);
-            return RedirectToAction("EditCustomer", new { id = customerId });
-        }
+
 
         // 🟢 Admins CRUD
-        public IActionResult ListAdmin() => View(_adminRepository.GetSorted());
-        
+        public async Task<IActionResult> ListAdmin()
+        {
+            var admins = await _context.Users
+                .OfType<Admin>()
+                .AsNoTracking()
+                .OrderBy(a => a.Id)
+                .ToListAsync();
+
+            return View(admins);
+        }
+
+        [HttpGet]
         public IActionResult CreateAdmin() => View();
 
         [HttpPost]
-        public IActionResult CreateAdmin(Admin admin)
+        public async Task<IActionResult> CreateAdmin(Admin admin)
         {
-            var validationResults = ValidationService.Validate(admin);
-            if (!ModelState.IsValid || validationResults.Any())
+            if (!ModelState.IsValid)
             {
-                foreach (var error in validationResults)
-                {
-                    ModelState.AddModelError("", error.ErrorMessage);
-                }
                 return View(admin);
             }
 
-            admin.id = _adminRepository.GetAll().Any()
-                ? _adminRepository.GetAll().Max(a => a.id) + 1
-                : 1;
-
-            _adminRepository.Add(admin);
-            _userRepository.Add(admin);
+            admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword(admin.PasswordHash);
+            await _context.Users.AddAsync(admin);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("ListAdmin");
         }
-        public IActionResult EditAdmin(int id) => View(_adminRepository.GetById(id));
-        
-        [HttpPost]
-        public IActionResult EditAdmin(Admin admin)
+
+        [HttpGet]
+        public async Task<IActionResult> EditAdmin(int id)
         {
-            var existingAdmin = _adminRepository.GetById(admin.id);
-            
-            _adminRepository.Update(admin);
-            _userRepository.Update(admin);
-            return RedirectToAction("ListAdmin");
+            var admin = await _context.Users
+                .OfType<Admin>()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            return admin == null ? NotFound() : View(admin);
         }
+
         [HttpPost]
-        public IActionResult DeleteAdmin(int id)
+        public async Task<IActionResult> EditAdmin(Admin updatedAdmin)
         {
-            var admin = _adminRepository.GetById(id);
-            if (admin != null)
+            if (!ModelState.IsValid) return View(updatedAdmin);
+
+            var existingAdmin = await _context.Users
+                .OfType<Admin>()
+                .FirstOrDefaultAsync(a => a.Id == updatedAdmin.Id);
+
+            if (existingAdmin == null) return NotFound();
+
+            existingAdmin.Name = updatedAdmin.Name;
+
+            if (!string.IsNullOrEmpty(updatedAdmin.PasswordHash))
             {
-                // Видаляємо адміна з обох репозиторіїв
-                _adminRepository.Remove(admin);
-                _userRepository.Remove(admin);
+                existingAdmin.PasswordHash = BCrypt.Net.BCrypt.HashPassword(updatedAdmin.PasswordHash);
             }
-            return RedirectToAction("ListAdmin");
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ListAdmin));
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteAdmin(int id)
+        {
+            var admin = await _context.Users
+                .OfType<Admin>()
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (admin == null) return NotFound();
+
+            _context.Users.Remove(admin);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ListAdmin));
         }
         // 🟢 Customers CRUD
-        public IActionResult List() => View(_customerRepository.GetSorted());
-        public IActionResult CreateCustomer() => View();
-        [HttpPost]
-        public IActionResult CreateCustomer(RegisterViewModel model)
+        public async Task<IActionResult> List()
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            var customers = await _context.Users
+                .OfType<Customer>()
+                .AsNoTracking()
+                .Include(c => c.Orders)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
 
-            var customer = new Customer(model.Name, model.Password, model.Address)
-            {
-                Balance = model.Balance,
-                id = _customerRepository.GetAll().Any()
-                    ? _customerRepository.GetAll().Max(c => c.id) + 1
-                    : 1
-            };
+            return View(customers);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateBalance(int customerId, decimal amount)
+        {
+            var customer = await _context.Users
+                .OfType<Customer>()
+                .FirstOrDefaultAsync(c => c.Id == customerId);
 
-            // Валідація перед збереженням
-            var validationResults = ValidationService.Validate(customer);
-            if (validationResults.Any())
-            {
-                foreach (var error in validationResults)
-                {
-                    ModelState.AddModelError("", error.ErrorMessage);
-                }
-                return View(model);
-            }
+            if (customer == null) return NotFound();
 
-            _customerRepository.Add(customer);
-            _userRepository.Add(customer);
+            customer.Balance += amount;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(EditCustomer), new { id = customerId });
+        }
+        [HttpGet]
+        public IActionResult CreateCustomer() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCustomer(Customer customer)
+        {
+            if (!ModelState.IsValid) return View(customer);
+
+            customer.PasswordHash = BCrypt.Net.BCrypt.HashPassword(customer.PasswordHash);
+            await _context.Users.AddAsync(customer);
+            await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Клієнта успішно створено!";
-            return RedirectToAction("List");
+            return RedirectToAction(nameof(List));
         }
-        public IActionResult EditCustomer(int id) => View(_customerRepository.GetById(id));
-        [HttpPost]
-        public IActionResult EditCustomer(Customer customer)
+        [HttpGet]
+        public async Task<IActionResult> EditCustomer(int id)
         {
-            if (ModelState.IsValid)
-            {
-                var existingCustomer = _customerRepository.GetById(customer.id);
-                
-                _customerRepository.Update(customer);
-                _userRepository.Update(customer);
-                return RedirectToAction("List");
-            }
-            return View(customer);
+            var customer = await _context.Users
+                .OfType<Customer>()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            return customer == null ? NotFound() : View(customer);
         }
-        // Controllers/AdminController.cs
+
         [HttpPost]
-        public IActionResult DeleteCustomer(int id)
+        public async Task<IActionResult> EditCustomer(Customer updatedCustomer)
         {
-            var customer = _customerRepository.GetById(id);
-            if (customer != null)
+            if (!ModelState.IsValid) return View(updatedCustomer);
+
+            var existingCustomer = await _context.Users
+                .OfType<Customer>()
+                .FirstOrDefaultAsync(c => c.Id == updatedCustomer.Id);
+
+            if (existingCustomer == null) return NotFound();
+
+            existingCustomer.Name = updatedCustomer.Name;
+            existingCustomer.Address = updatedCustomer.Address;
+            existingCustomer.Balance = updatedCustomer.Balance;
+
+            if (!string.IsNullOrEmpty(updatedCustomer.PasswordHash))
             {
-                var customerOrders = _orderRepository.GetAll()
-                    .Where(o => o.UserId == customer.id)
-                    .ToList();
-
-                foreach (var order in customerOrders)
-                {
-                    _orderRepository.Remove(order);
-                }
-
-                var cart = _cartRepository.GetByUserId(customer.id);
-                if (cart != null)
-                {
-                    _cartRepository.Remove(cart);
-                }
-                _customerRepository.Remove(customer);
-                _userRepository.Remove(customer);
+                existingCustomer.PasswordHash = BCrypt.Net.BCrypt.HashPassword(updatedCustomer.PasswordHash);
             }
-            return RedirectToAction("List");
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(List));
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteCustomer(int id)
+        {
+            var customer = await _context.Users
+                .OfType<Customer>()
+                .Include(c => c.Orders)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (customer == null) return NotFound();
+
+            _context.Users.Remove(customer);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(List));
         }
         // 🟢 Dishes CRUD
-        public IActionResult ListDishes() => View(_dishRepository.GetSorted());
-        public IActionResult CreateDish() => View();
-        [HttpPost]
-        [HttpPost]
-        public IActionResult CreateDish(Dish dish)
+        public async Task<IActionResult> ListDishes()
         {
-            if (!ModelState.IsValid)
-            {
-                // Повертаємо форму з помилками
-                return View(dish);
-            }
-            _dishRepository.Add(dish);
-            return RedirectToAction("ListDishes");
+            var dishes = await _context.Dishes
+                .AsNoTracking()
+                .Include(d => d.Reviews)
+                .OrderBy(d => d.Name)
+                .ToListAsync();
+
+            return View(dishes);
         }
-        public IActionResult EditDish(int id) => View(_dishRepository.GetById(id));
+
+        [HttpGet]
+        public IActionResult CreateDish() => View();
+
         [HttpPost]
-        public IActionResult EditDish(Dish dish)
+        public async Task<IActionResult> CreateDish(Dish dish)
         {
-            var existingDish = _dishRepository.GetById(dish.id);
-            if (existingDish != null)
-            {
-                _dishRepository.Remove(existingDish);
-            }
-            _dishRepository.Add(dish);
+            if (!ModelState.IsValid) return View(dish);
+
+            await _context.Dishes.AddAsync(dish);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Страву успішно створено!";
+            return RedirectToAction(nameof(ListDishes));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditDish(int id)
+        {
+            var dish = await _context.Dishes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            return dish == null ? NotFound() : View(dish);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditDish(Dish updatedDish)
+        {
+            if (!ModelState.IsValid) return View(updatedDish);
+
+            _context.Dishes.Update(updatedDish);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ListDishes));
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteDish(int id)
+        {
+            var dish = await _context.Dishes.FindAsync(id);
+            if (dish == null) return NotFound();
+
+            _context.Dishes.Remove(dish);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction("ListDishes");
         }
 
-        public IActionResult DeleteDish(int id)
-        {
-            var dish = _dishRepository.GetById(id);
-            if (dish != null)
-            {
-                _dishRepository.Remove(dish);
-            }
-            return RedirectToAction("ListDishes");
-        }
 
         // 🟢 Orders CRUD
-        public IActionResult ListOrders()
+        public async Task<IActionResult> ListOrders()
         {
-            var orders = _orderRepository.GetAll()
-                .Select(o => new Order
-                {
-                    id = o.id,
-                    UserId = o.UserId,
-                    User = _userRepository.GetById(o.UserId),
-                    ProductIds = o.ProductIds,
-                    Products = o.ProductIds
-                        .Select(id => _dishRepository.GetById(id))
-                        .Where(d => d != null)
-                        .ToList(),
-                    TotalPrice = o.TotalPrice,
-                    Status = o.Status,
-                    OrderDate = o.OrderDate
-                })
-                .ToList();
+            var orders = await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.User)
+                .Include(o => o.Items)
+                    .ThenInclude(oi => oi.Dish)
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
 
             return View(orders);
         }
+
+
         public IActionResult CreateOrder() => View();
         [HttpPost]
-        public IActionResult CreateOrder(Order order)
+        public async Task<IActionResult> CreateOrder(Order order)
         {
-            _orderRepository.Add(order);
+            if (!ModelState.IsValid) return View(order);
+
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
             return RedirectToAction("ListOrders");
         }
-        [HttpGet]
-        public IActionResult EditOrder(int id)
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrderStatus(int orderId, Status status)
         {
-            var order = _orderRepository.GetById(id);
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null) return NotFound();
+
+            order.Status = status;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ListOrders));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditOrder(int orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
             if (order == null) return NotFound();
 
             var model = new EditOrderViewModel
             {
-                Id = order.id,
+                Id = order.Id,
                 SelectedStatus = order.Status
             };
 
             return View(model);
         }
         [HttpPost]
-        public IActionResult EditOrder(EditOrderViewModel model)
+        public async Task<IActionResult> EditOrder(EditOrderViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var order = _orderRepository.GetById(model.Id);
+            var order = await _context.Orders.FindAsync(model.Id);
             if (order == null) return NotFound();
 
+            order.UserId = model.Id;
             order.Status = model.SelectedStatus;
-            _orderRepository.Update(order);
+            order.TotalPrice = order.Items.Sum(i => i.Dish.Price * i.Quantity);
+            order.OrderDate = DateTime.UtcNow;
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("ListOrders");
         }
         [HttpPost]
-        public IActionResult DeleteOrder(int id)
+        public async Task<IActionResult> DeleteOrder(int id)
         {
-            var order = _orderRepository.GetById(id);
-            if (order != null)
-            {
-                _orderRepository.Remove(order);
-            }
-            return RedirectToAction("ListOrders");
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null) return NotFound();
+
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ListOrders));
         }
 
         // 🟢 Reviews CRUD
-        public IActionResult ListReviews() => View(_reviewRepository.GetSorted());
-        public IActionResult CreateReview()
+        public async Task<IActionResult> ListReviews()
+        {
+            var reviews = await _context.Reviews
+                .Include(r => r.User)
+                .Include(r => r.Dish)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            return View(reviews);
+        }
+        [HttpGet]
+        public async Task<IActionResult> CreateReview()
         {
             var model = new CreateReviewViewModel
             {
-                
-                Users = _userRepository.GetAll()
+                Users = await _context.Users
                     .Select(u => new SelectListItem
                     {
-                        Value = u.id.ToString(),
-                        Text = $"{u.Name} (ID: {u.id})"
-                    }).ToList(),
-
-                Dishes = _dishRepository.GetAll()
+                        Value = u.Id.ToString(),
+                        Text = $"{u.Name} (ID: {u.Id})"
+                    })
+                    .ToListAsync(),
+                Dishes = await _context.Dishes
                     .Select(d => new SelectListItem
                     {
-                        Value = d.id.ToString(),
-                        Text = $"{d.Name} (ID: {d.id})"
-                    }).ToList()
+                        Value = d.Id.ToString(),
+                        Text = $"{d.Name} (ID: {d.Id})"
+                    })
+                    .ToListAsync()
             };
 
             return View(model);
         }
 
+
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public IActionResult CreateReview(CreateReviewViewModel model)
+        public async Task<IActionResult> CreateReview(CreateReviewViewModel model)
         {
+            if (!ModelState.IsValid) return View(model);
+
             var review = new Review
             {
                 UserId = model.SelectedUserId,
                 DishId = model.SelectedDishId,
                 Rating = model.Rating,
                 Text = model.Text,
-                Date = DateTime.Now
+                CreatedAt = DateTime.UtcNow
             };
 
-            _reviewRepository.Add(review);
-            return RedirectToAction("ListReviews");
+            await _context.Reviews.AddAsync(review);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ListReviews));
         }
-        public IActionResult EditReview(int id) => View(_reviewRepository.GetById(id));
-        [HttpPost]
-        public IActionResult EditReview(Review review)
+        public async Task<IActionResult> EditReview(int id)
         {
-            var existingReview = _reviewRepository.GetById(review.Id);
-            if (existingReview != null)
+            var review = await _context.Reviews
+                .Include(r => r.Dish)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (review == null)
             {
-                _reviewRepository.Remove(existingReview);
+                return NotFound();
             }
-            _reviewRepository.Add(review);
-            return RedirectToAction("ListReviews");
+
+            return View(review);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditReview(int id, Review model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var existingReview = await _context.Reviews.FindAsync(id);
+            if (existingReview == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                // Оновлюємо тільки поля, які дозволено змінювати
+                existingReview.Rating = model.Rating;
+                existingReview.Text = model.Text;
+                existingReview.CreatedAt = DateTime.UtcNow;
+
+                _context.Update(existingReview);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Відгук успішно оновлено";
+                return RedirectToAction("ListReviews");
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                ModelState.AddModelError("", "Конфлікт редагування. Запис був змінений іншим користувачем.");
+                return View(model);
+            }
+            catch (DbUpdateException ex)
+            {
+                ModelState.AddModelError("", "Помилка збереження змін. Спробуйте ще раз.");
+                return View(model);
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteReview(int id)
+        {
+            var review = await _context.Reviews.FindAsync(id);
+            if (review == null) return NotFound();
+
+            _context.Reviews.Remove(review);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ListReviews));
+        }
+        private bool DishExists(int id) => _context.Dishes.Any(e => e.Id == id);
+        private bool UserExists(int id) => _context.Users.Any(e => e.Id == id);
     }
 }
 

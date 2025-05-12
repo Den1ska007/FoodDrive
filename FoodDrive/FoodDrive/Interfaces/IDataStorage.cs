@@ -1,4 +1,4 @@
-﻿// FoodDrive/Interfaces/IDataStorage.cs
+﻿
 namespace FoodDrive.Interfaces
 {
     public interface IDataStorage<T> where T : IEntity

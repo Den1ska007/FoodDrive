@@ -7,45 +7,24 @@ using FoodDrive.Interfaces;
 using FoodDrive.Models;
 using System.Text.Json;
 using FoodDrive.JsonConverters;
-
+using Microsoft.EntityFrameworkCore;
+using FoodDrive.Entities;
+using Microsoft.AspNetCore.Identity;
 class Program
 {
     static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        // –еЇстрац≥€ серв≥с≥в
-        builder.Services.AddSingleton<IDataStorage<Admin>, JsonStorage<Admin>>();
-        builder.Services.AddSingleton<IDataStorage<Customer>, JsonStorage<Customer>>();
-        builder.Services.AddSingleton<IDataStorage<Dish>, JsonStorage<Dish>>();
-        builder.Services.AddSingleton<IDataStorage<Order>, JsonStorage<Order>>();
-        builder.Services.AddSingleton<IDataStorage<Review>, JsonStorage<Review>>();
-        builder.Services.AddSingleton<IDataStorage<User>, JsonStorage<User>>();
-        builder.Services.AddSingleton<IDataStorage<Cart>, JsonStorage<Cart>>();
-
-        builder.Services.AddSingleton<IRepository<Admin>, AdminRepository>();
-        builder.Services.AddSingleton<IRepository<Customer>, CustomerRepository>();
-        builder.Services.AddSingleton<IRepository<Dish>, DishRepository>();
-        builder.Services.AddSingleton<IRepository<Order>, OrderRepository>();
-        builder.Services.AddSingleton<IRepository<Review>, ReviewRepository>();
-        builder.Services.AddSingleton<IRepository<User>, UserRepository>();
-
-        builder.Services.AddSingleton<AdminRepository>();
-        builder.Services.AddSingleton<CustomerRepository>();
-        builder.Services.AddSingleton<CartRepository>();
-        builder.Services.AddSingleton<DishRepository>();
-        builder.Services.AddSingleton<OrderRepository>();
-        builder.Services.AddSingleton<ReviewRepository>();
-        builder.Services.AddSingleton<UserRepository>();
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")),
+            ServiceLifetime.Scoped);
         builder.Services.Configure<JsonSerializerOptions>(options =>
         {
             options.Converters.Add(new UserConverter());
-        });                     
-        builder.Services.AddSingleton<IRepository<User>, UserRepository>();
-        builder.Services.AddSingleton<UserService>();
-        builder.Services.AddSingleton<OrderService>();
-        builder.Services.AddSingleton<AuthService>();
-        builder.Services.AddScoped<CartRepository>();
+        });
+        builder.Services.AddScoped<UserService>();
+        builder.Services.AddScoped<OrderService>();
+        builder.Services.AddScoped<AuthService>();
         builder.Services.AddAuthentication("CookieAuth")
         .AddCookie("CookieAuth", options =>
         {

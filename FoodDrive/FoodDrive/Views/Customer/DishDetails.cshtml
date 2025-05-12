@@ -1,4 +1,5 @@
-﻿@model FoodDrive.Models.Dish
+﻿@using FoodDrive.Entities
+@model Dish
 
 @{
     ViewData["Title"] = Model.Name;
@@ -6,7 +7,7 @@
 
 <div class="dish-details">
     <div class="dish-image">
-        <img src="~/images/dishes/@(Model.id).jpg" alt="@Model.Name" />
+        <img src="~/images/dishes/@(Model.Id).jpg" alt="@Model.Name" />
     </div>
 
     <div class="dish-info">
@@ -16,7 +17,7 @@
         <div class="price">@Model.Price.ToString("C")</div>
 
         <form asp-controller="Cart" asp-action="AddToCart" method="post">
-            <input type="hidden" name="dishId" value="@Model.id" />
+            <input type="hidden" name="dishId" value="@Model.Id" />
 
             <div class="quantity-selector">
                 <label>Кількість:</label>

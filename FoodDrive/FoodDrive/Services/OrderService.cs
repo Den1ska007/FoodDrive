@@ -1,72 +1,90 @@
-﻿using FoodDrive.Models;
+﻿using FoodDrive.Entities;
+using FoodDrive.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class OrderService
 {
-    private readonly DishRepository _dishRepository;
-    private readonly CustomerRepository _customerRepository;
-    private readonly OrderRepository _orderRepository;
+    private readonly AppDbContext _context;
 
-    public OrderService(
-        DishRepository dishRepository,
-        CustomerRepository customerRepository,
-        OrderRepository orderRepository)
+    public OrderService(AppDbContext context)
     {
-        _dishRepository = dishRepository;
-        _customerRepository = customerRepository;
-        _orderRepository = orderRepository;
+        _context = context;
     }
 
-    public OrderResult PlaceOrder(Cart cart)
+    public async Task<OrderResult> PlaceOrder(Cart cart)
     {
-        
-        if (!ValidationService.IsValid(cart))
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        try
         {
-            return new OrderResult
+            // Перевірка кошика
+            var dbCart = await _context.Carts
+                .Include(c => c.Items)
+                .ThenInclude(i => i.Dish)
+                .FirstOrDefaultAsync(c => c.Id == cart.Id);
+
+            if (dbCart == null || !dbCart.Items.Any())
             {
-                Success = false,
-                Message = "Некоректні дані кошика"
-            };
-        }
-        foreach (var item in cart.Items)
-        {
-            var dish = _dishRepository.GetById(item.DishId);
-            if (dish == null || dish.Stock < item.Quantity)
-            {
-                return new OrderResult
-                {
-                    Success = false,
-                    Message = $"Недостатньо '{dish?.Name}' на складі"
-                };
+                return new OrderResult { Success = false, Message = "Кошик порожній" };
             }
+
+            // Перевірка запасів
+            foreach (var item in dbCart.Items)
+            {
+                var dish = await _context.Dishes.FindAsync(item.DishId);
+                if (dish == null || dish.Stock < item.Quantity)
+                {
+                    return new OrderResult
+                    {
+                        Success = false,
+                        Message = $"Недостатньо '{dish?.Name}' на складі"
+                    };
+                }
+            }
+
+            // Перевірка балансу
+            var customer = await _context.Users.OfType<Customer>()
+                .FirstOrDefaultAsync(c => c.Id == dbCart.UserId);
+
+            var totalPrice = dbCart.Items.Sum(i => i.Dish.Price * i.Quantity);
+            if (customer == null || customer.Balance < totalPrice)
+            {
+                return new OrderResult { Success = false, Message = "Недостатньо коштів" };
+            }
+
+            // Оновлення балансу
+            customer.Balance -= totalPrice;
+
+            // Оновлення запасів
+            foreach (var item in dbCart.Items)
+            {
+                item.Dish.Stock -= item.Quantity;
+            }
+
+            // Створення замовлення
+            var order = new Order
+            {
+                UserId = customer.Id,
+                TotalPrice = totalPrice,
+                Status = Status.Pending,
+                Items = dbCart.Items.Select(i => new OrderItem
+                {
+                    DishId = i.DishId,
+                    Quantity = i.Quantity
+                }).ToList()
+            };
+
+            // Видалення кошика
+            _context.Carts.Remove(dbCart);
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return new OrderResult { Success = true, Order = order };
         }
-        var customer = _customerRepository.GetById(cart.UserId);
-        if (customer == null || customer.Balance < cart.Total)
+        catch (Exception ex)
         {
-            return new OrderResult { Success = false, Message = "Недостатньо коштів" };
+            await transaction.RollbackAsync();
+            return new OrderResult { Success = false, Message = ex.Message };
         }
-
-        customer.Balance -= cart.Total;
-
-        _customerRepository.Update(customer);
-
-        var updatedCustomer = _customerRepository.GetById(customer.id);
-
-        foreach (var item in cart.Items)
-        {
-            var dish = _dishRepository.GetById(item.DishId);
-            dish.Stock -= item.Quantity;
-            _dishRepository.Update(dish);
-        }
-
-        var order = new Order
-        {
-            User = customer,
-            Products = cart.Items.Select(i => i.Dish).ToList(),
-            TotalPrice = cart.Total,
-            Status = Status.Pending
-        };
-
-        _orderRepository.Add(order);
-        return new OrderResult { Success = true, Order = order };
     }
 }

@@ -1,54 +1,72 @@
-﻿@model FoodDrive.Models.Dish
+﻿@using FoodDrive.Entities
+@model Dish
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-warning text-dark">
-            <h3><i class="fas fa-utensils me-2"></i>Редагування страви</h3>
+            <h3 class="mb-0"><i class="fas fa-edit me-2"></i>Редагування страви</h3>
         </div>
         <div class="card-body">
             <form asp-action="EditDish" method="post">
-                <input type="hidden" asp-for="id" />
+                <input type="hidden" asp-for="Id" />
+
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">Назва</label>
-                        <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control"
+                               placeholder="Нова назва страви">
+                        <span asp-validation-for="Name" class="text-danger small"></span>
                     </div>
+
                     <div class="col-md-6">
-                        <label class="form-label">Тип кухні</label>
+                        <label asp-for="TypeOfDish" class="form-label"></label>
                         <select asp-for="TypeOfDish"
                                 class="form-select"
-                                asp-items="Html.GetEnumSelectList<TypeOfDish>()"></select>
+                                asp-items="Html.GetEnumSelectList<TypeOfDish>()">
+                        </select>
+                        <span asp-validation-for="TypeOfDish" class="text-danger small"></span>
                     </div>
+
                     <div class="col-12">
-                        <label class="form-label">Опис</label>
-                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3"
+                                  placeholder="Оновлений опис"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
                     </div>
+
                     <div class="col-md-4">
-                        <label class="form-label">Ціна</label>
+                        <label asp-for="Price" class="form-label"></label>
                         <div class="input-group">
-                            <input asp-for="Price" class="form-control" />
                             <span class="input-group-text">₴</span>
+                            <input asp-for="Price" type="number" step="0.01"
+                                   class="form-control">
                         </div>
+                        <span asp-validation-for="Price" class="text-danger small"></span>
                     </div>
+
                     <div class="col-md-4">
-                        <label class="form-label">Наявність</label>
-                        <input asp-for="Stock" class="form-control" />
+                        <label asp-for="Stock" class="form-label"></label>
+                        <input asp-for="Stock" type="number" class="form-control"
+                               placeholder="Кількість на складі">
+                        <span asp-validation-for="Stock" class="text-danger small"></span>
                     </div>
+
                     <div class="col-md-4">
-                        <label class="form-label">Рейтинг</label>
+                        <label asp-for="Rating" class="form-label"></label>
                         <select asp-for="Rating" class="form-select">
                             @for (int i = 1; i <= 5; i++)
                             {
                                 <option value="@i">@i зірок</option>
                             }
                         </select>
+                        <span asp-validation-for="Rating" class="text-danger small"></span>
                     </div>
-                    <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save me-2"></i>Зберегти
+
+                    <div class="col-12 text-end mt-4">
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="fas fa-save me-2"></i>Оновити
                         </button>
-                        <a href="@Url.Action("ListDishes")" class="btn btn-secondary">
-                            <i class="fas fa-times me-2"></i>Скасувати
+                        <a href="@Url.Action("ListDishes")" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-undo me-2"></i>Назад
                         </a>
                     </div>
                 </div>

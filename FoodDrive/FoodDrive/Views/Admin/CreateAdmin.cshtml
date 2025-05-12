@@ -1,33 +1,29 @@
-﻿@model FoodDrive.Models.Admin
+﻿@using FoodDrive.Entities
+@model Admin
 <div class="container mt-4">
     <div class="card shadow">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header bg-dark text-white">
             <h3><i class="fas fa-user-shield me-2"></i>Новий адміністратор</h3>
         </div>
         <div class="card-body">
             <form asp-action="CreateAdmin" method="post">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">Ім'я</label>
+                        <label asp-for="Name" class="form-label"></label>
                         <input asp-for="Name" class="form-control" placeholder="Введіть ім'я" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <span asp-validation-for="Name" class="text-danger small"></span>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Пароль</label>
-                        <input asp-for="Password" type="password" class="form-control" placeholder="Введіть пароль" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Адреса</label>
-                        <input asp-for="Address" class="form-control" placeholder="Введіть адресу" />
-                        <span asp-validation-for="Address" class="text-danger"></span>
+                        <label asp-for="PasswordHash" class="form-label"></label>
+                        <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Введіть пароль" />
+                        <span asp-validation-for="PasswordHash" class="text-danger small"></span>
                     </div>
                     <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save me-2"></i>Зберегти
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="fas fa-save me-2"></i>Створити
                         </button>
-                        <a href="@Url.Action("ListAdmin")" class="btn btn-secondary">
-                            <i class="fas fa-undo me-2"></i>Назад
+                        <a href="@Url.Action("ListAdmin")" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-arrow-left me-2"></i>Назад
                         </a>
                     </div>
                 </div>

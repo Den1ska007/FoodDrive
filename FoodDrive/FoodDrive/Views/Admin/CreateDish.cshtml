@@ -1,63 +1,70 @@
-﻿@model FoodDrive.Models.Dish
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <p>@error.ErrorMessage</p>
-        }
-    </div>
-}
+﻿@using FoodDrive.Entities
+@model Dish
 <div class="container mt-4">
     <div class="card shadow">
-        <div class="card-header bg-warning text-dark">
-            <h3><i class="fas fa-utensils me-2"></i>Нова страва</h3>
+        <div class="card-header bg-success text-white">
+            <h3 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Створити нову страву</h3>
         </div>
         <div class="card-body">
-            <form method="post">
+            <form asp-action="CreateDish" method="post">
                 <div class="row g-3">
-                    <div class="form-group">
-                        <label asp-for="Name"></label>
-                        <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
                     <div class="col-md-6">
-                        <label class="form-label">Тип кухні</label>
-                        <select asp-for="TypeOfDish" class="form-select"
-                                asp-items="Html.GetEnumSelectList<TypeOfDish>()"></select>
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" placeholder="Назва страви">
+                        <span asp-validation-for="Name" class="text-danger small"></span>
                     </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="TypeOfDish" class="form-label"></label>
+                        <select asp-for="TypeOfDish"
+                                class="form-select"
+                                asp-items="Html.GetEnumSelectList<TypeOfDish>()">
+                            <option value="">Оберіть тип кухні</option>
+                        </select>
+                        <span asp-validation-for="TypeOfDish" class="text-danger small"></span>
+                    </div>
+
                     <div class="col-12">
-                        <label class="form-label">Опис</label>
-                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3"
+                                  placeholder="Опис страви"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Price"></label>
-                        <input asp-for="Price" type="number" step="0.01" class="form-control" />
-                        <span asp-validation-for="Price" class="text-danger"></span>
-                    </div>
+
                     <div class="col-md-4">
-                        <label class="form-label">Наявність</label>
-                        <input asp-for="Stock" class="form-control" />
+                        <label asp-for="Price" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">₴</span>
+                            <input asp-for="Price" type="number" step="0.01" class="form-control"
+                                   placeholder="0.00">
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger small"></span>
                     </div>
+
                     <div class="col-md-4">
-                        <label class="form-label">Рейтинг</label>
-                        <div class="rating-stars">
+                        <label asp-for="Stock" class="form-label"></label>
+                        <input asp-for="Stock" type="number" class="form-control"
+                               placeholder="Доступна кількість">
+                        <span asp-validation-for="Stock" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Rating" class="form-label"></label>
+                        <select asp-for="Rating" class="form-select">
                             @for (int i = 1; i <= 5; i++)
                             {
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio"
-                                           asp-for="Rating" value="@i" />
-                                    <label class="form-check-label">@i <i class="fas fa-star text-warning"></i></label>
-                                </div>
+                                <option value="@i">@i / 5</option>
                             }
-                        </div>
+                        </select>
+                        <span asp-validation-for="Rating" class="text-danger small"></span>
                     </div>
-                    <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-plus-circle me-2"></i>Додати
+
+                    <div class="col-12 text-end mt-4">
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="fas fa-save me-2"></i>Зберегти
                         </button>
-                        <a href="@Url.Action("ListDishes")" class="btn btn-secondary">
-                            <i class="fas fa-undo me-2"></i>Назад
+                        <a href="@Url.Action("ListDishes")" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-times me-2"></i>Скасувати
                         </a>
                     </div>
                 </div>

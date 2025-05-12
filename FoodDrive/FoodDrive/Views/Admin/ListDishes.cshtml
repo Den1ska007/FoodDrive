@@ -1,4 +1,5 @@
-﻿@model IEnumerable<FoodDrive.Models.Dish>
+﻿@using FoodDrive.Entities
+@model IEnumerable<Dish>
 @{
     ViewData["Title"] = "Список страв";
 }
@@ -34,7 +35,7 @@
                             <tr>
                                 <td>
                                     <div class="dish-thumbnail"
-                                         style="background-image: url('@Url.Content($"~/images/dishes/{dish.id}.jpg")')">
+                                         style="background-image: url('@Url.Content($"~/images/dishes/{dish.Id}.jpg")')">
                                     </div>
                                 </td>
                                 <td>@dish.Name</td>
@@ -47,13 +48,13 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="@Url.Action("EditDish", new { id = dish.id })"
+                                        <a href="@Url.Action("EditDish", new { id = dish.Id })"
                                            class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form asp-action="DeleteDish" method="post">
                                             
-                                            <input type="hidden" name="id" value="@dish.id" />
+                                            <input type="hidden" name="id" value="@dish.Id" />
                                             <button type="submit"
                                                     class="btn btn-sm btn-outline-danger"
                                                     onclick="return confirm('Ви впевнені, що хочете видалити цю страву?')">

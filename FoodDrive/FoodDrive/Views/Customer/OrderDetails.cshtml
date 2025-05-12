@@ -1,63 +1,86 @@
-﻿@model FoodDrive.Models.Order
+﻿@using FoodDrive.Entities
+@model Order
 @{
     ViewData["Title"] = "Деталі замовлення";
 }
 
 <div class="container mt-4">
-    <h2>Деталі замовлення #@Model.id</h2>
+    <h2 class="mb-4">Деталі замовлення #@Model.Id</h2>
 
-    <div class="card mt-4">
-        <div class="card-header">
-            <div class="row">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <div class="row align-items-center">
                 <div class="col-md-6">
-                    <h5>
+                    <h5 class="mb-0">
                         Статус:
-                        <span class="badge bg-@(Model.Status == Status.Completed ? "success" : "warning")">
+                        <span class="badge @GetStatusClass(Model.Status)">
                             @Model.Status
                         </span>
                     </h5>
                 </div>
                 <div class="col-md-6 text-end">
-                    <h5>Сума: @Model.TotalPrice.ToString("C")</h5>
+                    <h5 class="mb-0">Сума: @Model.TotalPrice.ToString("C")</h5>
                 </div>
             </div>
         </div>
 
         <div class="card-body">
-            <h5>Страви:</h5>
-            @if (Model.Products != null && Model.Products.Any())
-            {
-                <ul class="list-group">
-                    @foreach (var dish in Model.Products.Where(d => d != null))
-                    {
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6>@dish.Name</h6>
-                                <small class="text-muted">@dish.Description</small>
+            <div class="mb-4">
+                <h5>Страви у замовленні:</h5>
+                @if (Model.Items?.Any() == true)
+                {
+                    <div class="list-group">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">@item.Dish?.Name</h6>
+                                        <small class="text-muted">@item.Dish?.Description</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-secondary me-2">@item.Quantity шт.</span>
+                                        <span class="text-nowrap">@((item.Dish?.Price * item.Quantity)?.ToString("C"))</span>
+                                    </div>
+                                </div>
                             </div>
-                            <span class="badge bg-primary rounded-pill">@dish.Price.ToString("C")</span>
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <div class="alert alert-warning mt-3">Немає інформації про страви</div>
-            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">Замовлення не містить страв</div>
+                }
+            </div>
 
-            <div class="mt-4">
-                <h5>Інформація про доставку:</h5>
-                <div class="row mt-3">
+            <div class="border-top pt-3">
+                <h5>Додаткова інформація:</h5>
+                <div class="row mt-2">
                     <div class="col-md-6">
-                        <p><strong>Адреса:</strong> @Model.User.Address</p>
+                        <p class="mb-1"><strong>Клієнт:</strong> @Model.User?.Name</p>
+                        <p class="mb-1"><strong>Адреса:</strong> @(Model.User?.Address ?? "не вказано")</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Дата замовлення:</strong> @Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</p>
+                        <p class="mb-1"><strong>Дата замовлення:</strong> @Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <a asp-action="Orders" class="btn btn-secondary mt-4">Назад до списку замовлень</a>
+    <div class="mt-4">
+        <a asp-action="Orders" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>До списку замовлень
+        </a>
+    </div>
 </div>
+
+@functions {
+    string GetStatusClass(Status status) => status switch
+    {
+        Status.Pending => "bg-warning",
+        Status.Completed => "bg-success",
+        Status.Cancelled => "bg-danger",
+        _ => "bg-secondary"
+    };
+}

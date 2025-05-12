@@ -1,38 +1,40 @@
-﻿@model FoodDrive.Models.Customer
+﻿@using FoodDrive.Entities
+@model Customer
 <div class="container mt-4">
     <div class="card shadow">
-        <div class="card-header bg-info text-white">
+        <div class="card-header bg-primary text-white">
             <h3><i class="fas fa-user-edit me-2"></i>Редагування клієнта</h3>
         </div>
         <div class="card-body">
             <form asp-action="EditCustomer" method="post">
-                <input type="hidden" asp-for="id" />
+                <input type="hidden" asp-for="Id" />
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">Ім'я</label>
-                        <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" placeholder="Введіть ім'я" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Новий пароль</label>
-                        <input asp-for="Password" type="password" class="form-control" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <label asp-for="PasswordHash" class="form-label"></label>
+                        <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Введіть новий пароль" />
+                        <span asp-validation-for="PasswordHash" class="text-danger small"></span>
                     </div>
-                    <div class="form-group">
-                        <label>Баланс</label>
-                        <input type="number" asp-for="Balance" class="form-control" />
-                        <span asp-validation-for="Balance" class="text-danger"></span>
+                    <div class="col-md-6">
+                        <label asp-for="Balance" class="form-label"></label>
+                        <input asp-for="Balance" type="number" step="0.01" class="form-control" />
+                        <span asp-validation-for="Balance" class="text-danger small"></span>
                     </div>
-                    <div class="col-12">
-                        <label class="form-label">Адреса</label>
-                        <input asp-for="Address" class="form-control" />
+                    <div class="col-md-6">
+                        <label asp-for="Address" class="form-label"></label>
+                        <input asp-for="Address" class="form-control" placeholder="Введіть адресу" />
+                        <span asp-validation-for="Address" class="text-danger small"></span>
                     </div>
                     <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save me-2"></i>Оновити
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="fas fa-save me-2"></i>Зберегти
                         </button>
-                        <a href="@Url.Action("List")" class="btn btn-secondary">
-                            <i class="fas fa-undo me-2"></i>Назад
+                        <a href="@Url.Action("List")" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-arrow-left me-2"></i>Назад
                         </a>
                     </div>
                 </div>

@@ -1,82 +1,82 @@
-﻿using FoodDrive.Interfaces;
+﻿using FoodDrive.Entities;
+using FoodDrive.Interfaces;
 using FoodDrive.Models;
 using FoodDrive.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Transactions;
 
 [Authorize(Roles = "Customer")]
 public class CustomerController : Controller
 {
-    private readonly IRepository<Dish> _dishRepository;
-    private readonly IRepository<Order> _orderRepository;
-    private readonly CartRepository _cartRepository;
-    private readonly UserRepository _userRepository;
-    private readonly CustomerRepository _customerRepository;
-    private readonly UserService _userService;
+    private readonly AppDbContext _context;
+    private readonly UserManager<User> _userManager;
 
-    public CustomerController(
-        IRepository<Dish> dishRepository,
-        IRepository<Order> orderRepository,
-        CartRepository cartRepository,
-        CustomerRepository customerRepository,
-        UserRepository userRepository,
-        UserService userService)
+    public CustomerController(AppDbContext context, UserManager<User> userManager)
     {
-        _dishRepository = dishRepository;
-        _orderRepository = orderRepository;
-        _cartRepository = cartRepository;
-        _customerRepository = customerRepository;
-        _userRepository = userRepository;
-        _userService = userService;
+        _context = context;
+        _userManager = userManager;
     }
-
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var menu = _dishRepository.GetAll();
+        var menu = await _context.Dishes.ToListAsync();
         return View(menu);
     }
 
-    public IActionResult Orders()
+    public async Task<IActionResult> Orders()
     {
         var userId = GetCurrentUserId();
-        var orders = _orderRepository.GetAll()
+        var orders = await _context.Orders
+            .Include(o => o.Items)
+            .ThenInclude(i => i.Dish)
             .Where(o => o.UserId == userId)
             .OrderByDescending(o => o.OrderDate)
-            .ToList();
+            .ToListAsync();
 
         return View(orders);
     }
 
-    public IActionResult OrderDetails(int id)
+    public async Task<IActionResult> OrderDetails(int id)
     {
-        var order = _orderRepository.GetById(id);
-        if (order == null || order.UserId != int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)))
+        var userId = GetCurrentUserId();
+        var order = await _context.Orders
+            .Include(o => o.Items)
+            .ThenInclude(i => i.Dish)
+            .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
+
+        if (order == null)
         {
             return NotFound();
         }
         return View(order);
     }
 
+
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult AddToCart(int dishId, int quantity = 1)
+    public async Task<IActionResult> AddToCart(int dishId, int quantity = 1)
     {
-        if (quantity < 1) quantity = 1;
+        var userId = GetCurrentUserId();
+        var cart = await _context.Carts
+            .Include(c => c.Items)
+            .FirstOrDefaultAsync(c => c.UserId == userId);
 
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var dish = _dishRepository.GetById(dishId);
-
-        if (dish == null)
+        var dish = await _context.Dishes.FindAsync(dishId);
+        if (dish == null || dish.Stock < quantity)
         {
-            TempData["ErrorMessage"] = "Страва не знайдена";
+            TempData["Error"] = "Страва недоступна";
             return RedirectToAction("Index");
         }
 
-        var cart = _cartRepository.GetByUserId(userId) ?? new Cart { UserId = userId };
-        var existingItem = cart.Items.FirstOrDefault(i => i.DishId == dishId);
+        if (cart == null)
+        {
+            cart = new Cart { UserId = userId };
+            await _context.Carts.AddAsync(cart);
+        }
 
+        var existingItem = cart.Items.FirstOrDefault(i => i.DishId == dishId);
         if (existingItem != null)
         {
             existingItem.Quantity += quantity;
@@ -91,29 +91,27 @@ public class CustomerController : Controller
             });
         }
 
-        _cartRepository.Update(cart);
-        TempData["SuccessMessage"] = "Страву додано до кошика";
-        return RedirectToAction("Index");
+        await _context.SaveChangesAsync();
+        return RedirectToAction("ViewCart");
     }
 
     [HttpGet]
     [Authorize(Roles = "Customer")]
-    public IActionResult Checkout()
+    public async Task<IActionResult> Checkout()
     {
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-        {
-            return RedirectToAction("Login", "Account");
-        }
+        var userId = GetCurrentUserId();
+        var cart = await _context.Carts
+            .Include(c => c.Items)
+            .ThenInclude(i => i.Dish)
+            .FirstOrDefaultAsync(c => c.UserId == userId);
 
-        var cart = _cartRepository.GetByUserId(userId);
         if (cart == null || !cart.Items.Any())
         {
             TempData["Error"] = "Кошик порожній";
             return RedirectToAction("Index", "Cart");
         }
 
-        var customer = _customerRepository.GetById(userId);
+        var customer = await _userManager.FindByIdAsync(userId.ToString()) as Customer;
         if (customer == null)
         {
             TempData["Error"] = "Користувача не знайдено";
@@ -123,16 +121,20 @@ public class CustomerController : Controller
         var model = new CheckoutViewModel
         {
             Items = cart.Items,
-            TotalPrice = cart.Total,
+            TotalPrice = cart.Items.Sum(i => i.Dish.Price * i.Quantity),
             CustomerName = customer.Name,
             CustomerAddress = customer.Address
         };
 
         return View(model);
     }
-    public IActionResult DishDetails(int id)
+
+    public async Task<IActionResult> DishDetails(int id)
     {
-        var dish = _dishRepository.GetById(id);
+        var dish = await _context.Dishes
+            .Include(d => d.Reviews)
+            .FirstOrDefaultAsync(d => d.Id == id);
+
         if (dish == null)
         {
             TempData["ErrorMessage"] = "Страва не знайдена";
@@ -141,105 +143,128 @@ public class CustomerController : Controller
         return View(dish);
     }
     [HttpPost]
-    public IActionResult ConfirmOrder()
+    public async Task<IActionResult> ConfirmOrder()
     {
-        var userId = GetCurrentUserId();
-        
-        var user = _userRepository.GetById(userId);
-        var customer = _customerRepository.GetById(userId);
-        var cart = _cartRepository.GetByUserId(userId);
-        if (cart == null || !cart.Items.Any() || user == null)
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        try
         {
-            TempData["Error"] = "Помилка. Спробуйте ще раз.";
-            return RedirectToAction("Index", "Cart");
-        }
+            var userId = GetCurrentUserId();
+            var cart = await _context.Carts
+                .Include(c => c.Items)
+                .ThenInclude(i => i.Dish)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
 
-        using (var transaction = new TransactionScope()) // Додано транзакцію
-        {
-            try
+            if (cart == null || !cart.Items.Any())
             {
-                // Перевірка балансу
-                if (customer.Balance < cart.Total)
-                {
-                    TempData["Error"] = "Недостатньо коштів на рахунку.";
-                    return RedirectToAction("Checkout");
-                }
-
-                // Оновлення запасів страв
-                foreach (var item in cart.Items)
-                {
-                    var dish = _dishRepository.GetById(item.DishId);
-                    if (dish == null || dish.Stock < item.Quantity)
-                    {
-                        TempData["Error"] = $"Страва '{dish?.Name}' недоступна в потрібній кількості";
-                        return RedirectToAction("Checkout");
-                    }
-                    dish.Stock -= item.Quantity;
-                    _dishRepository.Update(dish);
-                }
-
-                // Створення замовлення
-                var order = new Order
-                {
-                    UserId = customer.id,
-                    User = customer,
-                    Products = cart.Items.Select(i => i.Dish).ToList(),
-                    TotalPrice = cart.Total,
-                    Status = Status.Pending,
-                    OrderDate = DateTime.Now
-                };
-                order.id = _orderRepository.GetAll().Any()
-                    ? _orderRepository.GetAll().Max(o => o.id) + 1
-                    : 1; // Фікс генерації ID
-                _orderRepository.Add(order);
-
-                // Оновлення балансу
-                customer.Balance -= cart.Total;
-                _customerRepository.Update(customer);
-
-                // Очищення кошика
-                _cartRepository.Remove(cart);
-
-                transaction.Complete(); // Підтвердження транзакції
-
-                TempData["Success"] = "Замовлення успішно оформлено!";
-                return RedirectToAction("Orders");
+                TempData["Error"] = "Кошик порожній";
+                return RedirectToAction("Index");
             }
-            catch (Exception ex)
+
+            var customer = await _userManager.FindByIdAsync(userId.ToString()) as Customer;
+            if (customer == null)
             {
-                TempData["Error"] = "Сталася помилка: " + ex.Message;
+                TempData["Error"] = "Користувача не знайдено";
+                return RedirectToAction("Error", "Home");
+            }
+
+            var totalPrice = cart.Items.Sum(i => i.Dish.Price * i.Quantity);
+            if (customer.Balance < totalPrice)
+            {
+                TempData["Error"] = "Недостатньо коштів на рахунку";
                 return RedirectToAction("Checkout");
             }
+
+            // Оновлення запасів страв
+            foreach (var item in cart.Items)
+            {
+                var dish = await _context.Dishes.FindAsync(item.DishId);
+                dish.Stock -= item.Quantity;
+                if (dish.Stock < 0)
+                {
+                    throw new InvalidOperationException("Недостатній запас страв");
+                }
+            }
+
+            // Створення замовлення
+            var order = new Order
+            {
+                UserId = userId,
+                TotalPrice = totalPrice,
+                Status = Status.Pending,
+                OrderDate = DateTime.UtcNow,
+                Items = cart.Items.Select(i => new OrderItem
+                {
+                    DishId = i.DishId,
+                    Quantity = i.Quantity
+                }).ToList()
+            };
+
+            customer.Balance -= totalPrice;
+
+            await _context.Orders.AddAsync(order);
+            _context.Carts.Remove(cart);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            TempData["Success"] = "Замовлення успішно оформлено!";
+            return RedirectToAction("Orders");
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            TempData["Error"] = $"Помилка: {ex.Message}";
+            return RedirectToAction("Checkout");
         }
     }
     [HttpGet]
-    public IActionResult EditProfile()
+    public async Task<IActionResult> EditProfile()
     {
-        var user = _userService.GetUserProfile(GetCurrentUserId());
+        var user = await _userManager.GetUserAsync(User) as Customer;
+        if (user == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
         var model = new EditProfileViewModel
         {
             Name = user.Name,
             Address = user.Address
         };
+
         return View(model);
     }
 
     [HttpPost]
-    public IActionResult EditProfile(EditProfileViewModel model)
+    public async Task<IActionResult> EditProfile(EditProfileViewModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        var user = _userService.GetUserProfile(GetCurrentUserId());
+        var user = await _userManager.GetUserAsync(User) as Customer;
+        if (user == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
 
-        // Перевірка поточного пароля
+        // Перевірка пароля
         if (!string.IsNullOrEmpty(model.NewPassword))
         {
-            if (!BCrypt.Net.BCrypt.Verify(model.CurrentPassword, user.Password))
+            var passwordCheck = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
+            if (!passwordCheck)
             {
                 ModelState.AddModelError("CurrentPassword", "Невірний поточний пароль");
+                return View(model);
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
                 return View(model);
             }
         }
@@ -248,19 +273,18 @@ public class CustomerController : Controller
         user.Name = model.Name;
         user.Address = model.Address;
 
-        if (!string.IsNullOrEmpty(model.NewPassword))
+        var updateResult = await _userManager.UpdateAsync(user);
+        if (!updateResult.Succeeded)
         {
-            user.Password = model.NewPassword; // Автоматичне хешування через сеттер
+            foreach (var error in updateResult.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View(model);
         }
 
-        if (_userService.UpdateUserProfile(user))
-        {
-            TempData["SuccessMessage"] = "Профіль успішно оновлено";
-            return RedirectToAction("Profile");
-        }
-
-        ModelState.AddModelError("", "Помилка при оновленні профілю");
-        return View(model);
+        TempData["SuccessMessage"] = "Профіль успішно оновлено";
+        return RedirectToAction("Profile", "Account");
     }
 
     private int GetCurrentUserId()

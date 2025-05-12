@@ -1,31 +1,33 @@
-﻿using FoodDrive.Interfaces;
-using FoodDrive.Models;
+﻿using FoodDrive.Entities;
+using FoodDrive.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 public class UserService
 {
-    private readonly IRepository<User> _userRepository;
+    private readonly AppDbContext _context;
 
-    public UserService(IRepository<User> userRepository)
+    public UserService(AppDbContext context)
     {
-        _userRepository = userRepository;
+        _context = context;
     }
 
-    public bool UpdateUserProfile(User user)
+    public async Task<bool> UpdateUserProfile(int userId, EditProfileViewModel model)
     {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return false;
+
         try
         {
-            var existingUser = _userRepository.GetById(user.id);
-            if (existingUser == null) return false;
+            user.Name = model.Name;
+            user.Address = model.Address;
 
-            existingUser.Name = user.Name;
-            existingUser.Address = user.Address;
-
-            if (!string.IsNullOrEmpty(user.Password))
+            if (!string.IsNullOrEmpty(model.NewPassword))
             {
-                existingUser.Password = user.Password; // Хешування відбувається автоматично
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
             }
 
-            _userRepository.Update(existingUser);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
             return true;
         }
         catch
@@ -34,8 +36,10 @@ public class UserService
         }
     }
 
-    public User GetUserProfile(int userId)
+    public async Task<User?> GetUserProfile(int userId)
     {
-        return _userRepository.GetById(userId);
+        return await _context.Users
+            .Include(u => (u as Customer).Orders)
+            .FirstOrDefaultAsync(u => u.Id == userId);
     }
 }

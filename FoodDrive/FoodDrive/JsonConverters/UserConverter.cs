@@ -1,6 +1,6 @@
-﻿using FoodDrive.Models;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using System.Text.Json;
+using FoodDrive.Entities;
 
 public class UserConverter : JsonConverter<User>
 {

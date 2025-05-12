@@ -23,7 +23,7 @@
                         <td>@(item.Dish.Price * item.Quantity) грн</td>
                         <td>
                             <form asp-action="RemoveFromCart" method="post">
-                                <input type="hidden" name="itemId" value="@item.id" />
+                                <input type="hidden" name="itemId" value="@item.Id" />
                                 <button type="submit" class="btn btn-danger btn-sm">
                                     <i class="fas fa-trash"></i>
                                 </button>

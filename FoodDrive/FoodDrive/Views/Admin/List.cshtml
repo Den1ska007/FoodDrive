@@ -1,4 +1,5 @@
-﻿@model IEnumerable<FoodDrive.Models.Customer>
+﻿@using FoodDrive.Entities
+@model IEnumerable<Customer>
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-info text-white">
@@ -27,7 +28,7 @@
                         @foreach (var customer in Model)
                         {
                             <tr>
-                                <td>#@customer.id</td>
+                                <td>#@customer.Id</td>
                                 <td>@customer.Name</td>
                                 <td>@customer.Address</td>
                                 <td>
@@ -35,12 +36,12 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="@Url.Action("EditCustomer", new { id = customer.id })"
+                                        <a href="@Url.Action("EditCustomer", new { id = customer.Id })"
                                            class="btn btn-sm btn-outline-warning">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form asp-action="DeleteCustomer" method="post">
-                                            <input type="hidden" name="id" value="@customer.id" />
+                                            <input type="hidden" name="id" value="@customer.Id" />
                                             <button type="submit"
                                                     class="btn btn-sm btn-outline-danger"
                                                     onclick="return confirm('Видалити клієнта?')">
