@@ -1,14 +1,15 @@
 ﻿using FoodDrive.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 
-namespace FoodDrive.DB.Configuration;
-
-public class AdminConfiguration : IEntityTypeConfiguration<Admin>
+namespace FoodDrive.DB.Configuration
 {
-    public void Configure(EntityTypeBuilder<Admin> builder)
+    public class AdminConfiguration : IEntityTypeConfiguration<Admin>
     {
-        
-        builder.ToTable("Admins");
+        public void Configure(EntityTypeBuilder<Admin> builder)
+        {
+            builder.ToTable("Admins");
+            builder.Property(a => a.PermissionLevel).HasDefaultValue(1);
+        }
     }
 }

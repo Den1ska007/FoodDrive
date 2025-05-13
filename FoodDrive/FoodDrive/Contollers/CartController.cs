@@ -14,104 +14,47 @@ public class CartController : Controller
         _context = context;
     }
 
-    [Authorize]
     public async Task<IActionResult> Index()
     {
-        var userId = GetCurrentUserId();
-        if (userId == null)
-        {
-            return RedirectToAction("Login", "Account");
-        }
-
-        var cart = await _context.Carts
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        return View(await _context.Carts
             .Include(c => c.Items)
             .ThenInclude(i => i.Dish)
-            .FirstOrDefaultAsync(c => c.UserId == userId);
-
-        return View(cart ?? new Cart { UserId = userId.Value });
+            .FirstOrDefaultAsync(c => c.UserId == userId) ?? new Cart { UserId = userId });
     }
 
     [HttpPost]
-    [Authorize]
     public async Task<IActionResult> AddToCart(int dishId, int quantity = 1)
     {
-        if (quantity < 1) quantity = 1;
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        var userId = GetCurrentUserId();
-        if (userId == null)
-        {
-            return RedirectToAction("Login", "Account");
-        }
-
+        var cart = await GetOrCreateCart(userId);
         var dish = await _context.Dishes.FindAsync(dishId);
-        if (dish == null || dish.Stock < quantity)
+
+        if (dish?.Stock < quantity)
         {
-            TempData["Error"] = "Страва недоступна";
-            return RedirectToAction("Index", "Dish");
+            TempData["Error"] = "Недостатня кількість";
+            return RedirectToAction("Index", "Menu");
         }
 
-        var cart = await _context.Carts
-            .Include(c => c.Items)
-            .FirstOrDefaultAsync(c => c.UserId == userId);
-
-        if (cart == null)
-        {
-            cart = new Cart { UserId = userId.Value };
-            await _context.Carts.AddAsync(cart);
-        }
-
-        var existingItem = cart.Items.FirstOrDefault(i => i.DishId == dishId);
-        if (existingItem != null)
-        {
-            existingItem.Quantity += quantity;
-        }
-        else
-        {
-            cart.Items.Add(new CartItem
-            {
-                DishId = dishId,
-                Quantity = quantity
-            });
-        }
+        var item = cart.Items.FirstOrDefault(i => i.DishId == dishId);
+        if (item != null) item.Quantity += quantity;
+        else cart.Items.Add(new CartItem { DishId = dishId, Quantity = quantity });
 
         await _context.SaveChangesAsync();
-        return RedirectToAction("Index");
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> RemoveFromCart(int itemId)
+    private async Task<Cart> GetOrCreateCart(int userId)
     {
-        var userId = GetCurrentUserId();
-        if (userId == null)
-        {
-            return RedirectToAction("Login", "Account");
-        }
-
         var cart = await _context.Carts
             .Include(c => c.Items)
             .FirstOrDefaultAsync(c => c.UserId == userId);
 
-        if (cart != null)
-        {
-            var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
-            if (item != null)
-            {
-                cart.Items.Remove(item);
-                await _context.SaveChangesAsync();
-            }
-        }
+        if (cart != null) return cart;
 
-        return RedirectToAction("Index");
-    }
-
-    private int? GetCurrentUserId()
-    {
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (int.TryParse(userIdClaim, out int userId))
-        {
-            return userId;
-        }
-        return null;
+        cart = new Cart { UserId = userId };
+        await _context.Carts.AddAsync(cart);
+        return cart;
     }
 }

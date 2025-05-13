@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FoodDrive.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250512220549_Initial")]
-    partial class Initial
+    [Migration("20250513092916_StartOfProject")]
+    partial class StartOfProject
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -126,7 +126,7 @@ namespace FoodDrive.Migrations
                     b.Property<string>("TypeOfDish")
                         .IsRequired()
                         .HasMaxLength(24)
-                        .HasColumnType("nvarchar(24)")
+                        .HasColumnType("character varying(24)")
                         .HasColumnName("type_of_dish");
 
                     b.HasKey("Id");

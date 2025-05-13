@@ -16,12 +16,13 @@ class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")),
+            options.UseNpgsql(builder.Configuration.GetConnectionString("postgres")),
             ServiceLifetime.Scoped);
         builder.Services.Configure<JsonSerializerOptions>(options =>
         {
             options.Converters.Add(new UserConverter());
         });
+        builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<OrderService>();
         builder.Services.AddScoped<AuthService>();
@@ -29,8 +30,8 @@ class Program
         .AddCookie("CookieAuth", options =>
         {
             options.Cookie.Name = "AuthCookie";
-            options.LoginPath = "/Account/Login";  // Перенаправлення на сторінку входу
-            options.AccessDeniedPath = "/Account/AccessDenied"; // Якщо немає доступу
+            options.LoginPath = "/Account/Login";
+            options.AccessDeniedPath = "/Account/AccessDenied";
         });
 
 

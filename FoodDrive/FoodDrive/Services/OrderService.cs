@@ -11,71 +11,58 @@ public class OrderService
         _context = context;
     }
 
-    public async Task<OrderResult> PlaceOrder(Cart cart)
+    public async Task<OrderResult> PlaceOrder(int cartId)
     {
         using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
-            // Перевірка кошика
-            var dbCart = await _context.Carts
+            var cart = await _context.Carts
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Dish)
-                .FirstOrDefaultAsync(c => c.Id == cart.Id);
+                .FirstOrDefaultAsync(c => c.Id == cartId);
 
-            if (dbCart == null || !dbCart.Items.Any())
-            {
+            if (cart == null || cart.Items.Count == 0)
                 return new OrderResult { Success = false, Message = "Кошик порожній" };
+
+            var customer = await _context.Customers.FindAsync(cart.UserId);
+            if (customer == null)
+                return new OrderResult { Success = false, Message = "Клієнта не знайдено" };
+
+            foreach (var item in cart.Items)
+            {
+                if (item.Dish.Stock < item.Quantity)
+                    return new OrderResult { Success = false, Message = $"Недостатньо '{item.Dish.Name}' на складі" };
             }
 
-            // Перевірка запасів
-            foreach (var item in dbCart.Items)
-            {
-                var dish = await _context.Dishes.FindAsync(item.DishId);
-                if (dish == null || dish.Stock < item.Quantity)
-                {
-                    return new OrderResult
-                    {
-                        Success = false,
-                        Message = $"Недостатньо '{dish?.Name}' на складі"
-                    };
-                }
-            }
+            var total = cart.Items.Sum(i => i.Dish.Price * i.Quantity);
 
-            // Перевірка балансу
-            var customer = await _context.Users.OfType<Customer>()
-                .FirstOrDefaultAsync(c => c.Id == dbCart.UserId);
-
-            var totalPrice = dbCart.Items.Sum(i => i.Dish.Price * i.Quantity);
-            if (customer == null || customer.Balance < totalPrice)
-            {
+            if (customer.Balance < total)
                 return new OrderResult { Success = false, Message = "Недостатньо коштів" };
-            }
-
-            // Оновлення балансу
-            customer.Balance -= totalPrice;
 
             // Оновлення запасів
-            foreach (var item in dbCart.Items)
-            {
+            foreach (var item in cart.Items)
                 item.Dish.Stock -= item.Quantity;
-            }
 
             // Створення замовлення
             var order = new Order
             {
                 UserId = customer.Id,
-                TotalPrice = totalPrice,
+                TotalPrice = total,
                 Status = Status.Pending,
-                Items = dbCart.Items.Select(i => new OrderItem
+                Items = cart.Items.Select(i => new OrderItem
                 {
                     DishId = i.DishId,
                     Quantity = i.Quantity
                 }).ToList()
             };
 
-            // Видалення кошика
-            _context.Carts.Remove(dbCart);
+            // Оновлення балансу
+            customer.Balance -= total;
 
+            // Видалення кошика
+            _context.Carts.Remove(cart);
+
+            await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 

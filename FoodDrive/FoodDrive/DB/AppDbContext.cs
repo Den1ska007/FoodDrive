@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using FoodDrive.DB.Configuration;
 
 using Microsoft.AspNetCore.Identity;
+using System.Reflection;
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
@@ -13,15 +14,19 @@ public class AppDbContext : DbContext
     public DbSet<Dish> Dishes { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
-    public DbSet<User> Users { get; set; }
     public DbSet<Review> Reviews { get; set; }
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Admin> Admins => Set<Admin>();
+    public DbSet<Customer> Customers => Set<Customer>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Customer>().ToTable("Customers");
+        modelBuilder.Entity<Admin>().ToTable("Admins");
         modelBuilder.Entity<User>()
-        .HasDiscriminator<string>("UserType")
-        .HasValue<User>("user")
-        .HasValue<Customer>("customer")
-        .HasValue<Admin>("admin");
+        .HasDiscriminator<string>("Discriminator")
+        .HasValue<User>("User")
+        .HasValue<Admin>("Admin")
+        .HasValue<Customer>("Customer");
         modelBuilder.ApplyConfiguration(new AdminConfiguration());
         modelBuilder.ApplyConfiguration(new CartConfiguration());
         modelBuilder.ApplyConfiguration(new CartItemConfiguration());
@@ -29,7 +34,7 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new DishConfiguration());
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
         modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
-        
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
     }
 }

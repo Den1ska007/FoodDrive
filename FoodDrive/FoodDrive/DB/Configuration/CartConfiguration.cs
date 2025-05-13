@@ -11,7 +11,10 @@ public class CartConfiguration : IEntityTypeConfiguration<Cart>
         builder.ToTable("Carts");
 
         builder.HasKey(c => c.Id);
-
+        builder.HasOne(c => c.Customer)
+            .WithMany(c => c.Carts)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         builder.HasMany(c => c.Items)
             .WithOne()
             .HasForeignKey(i => i.CartId)

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FoodDrive.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class StartOfProject : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,7 +23,7 @@ namespace FoodDrive.Migrations
                     price = table.Column<decimal>(type: "numeric(10,2)", precision: 10, scale: 2, nullable: false),
                     stock = table.Column<int>(type: "integer", nullable: false),
                     rating = table.Column<int>(type: "integer", nullable: false),
-                    type_of_dish = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false)
+                    type_of_dish = table.Column<string>(type: "character varying(24)", maxLength: 24, nullable: false)
                 },
                 constraints: table =>
                 {

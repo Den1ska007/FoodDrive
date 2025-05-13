@@ -39,7 +39,7 @@ namespace FoodDrive.Entities
         public int Rating { get; set; }
 
         // Додано нову властивість
-        [Column("type_of_dish", TypeName = "nvarchar(24)")]
+        [Column("type_of_dish")]
         [Required(ErrorMessage = "Тип кухні обов'язковий")]
         public TypeOfDish TypeOfDish { get; set; }
 

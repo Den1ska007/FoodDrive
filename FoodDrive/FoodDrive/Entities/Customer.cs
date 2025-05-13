@@ -15,10 +15,9 @@ namespace FoodDrive.Entities
 
         [Column("balance")]
         [Precision(10, 2)]
-        public decimal Balance { get; set; } = 0;
-        
-        public List<Order> Orders { get; set; } = new List<Order>();
-        public List<Cart> Carts { get; set; } = new List<Cart>();
+        public decimal Balance { get; set; }
+        public List<Order> Orders { get; set; } = new();
+        public List<Cart> Carts { get; set; } = new();
     }
 
 }

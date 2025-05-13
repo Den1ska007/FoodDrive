@@ -12,13 +12,13 @@ public class Cart
     public int Id { get; set; }
 
     [Column("user_id")]
-    [ForeignKey("User")]
+    [ForeignKey("Customer")]
     public int UserId { get; set; }
 
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public Customer Customer { get; set; }
     public decimal Total { get; set; } = 0;
-    public List<CartItem> Items { get; set; } = new List<CartItem>();
+    public List<CartItem> Items { get; set; } = new();
 }
 
