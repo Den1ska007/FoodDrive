@@ -1,61 +1,129 @@
 ﻿@using FoodDrive.Entities
-@using FoodDrive.Models
 @model IEnumerable<Order>
+@{
+    ViewData["Title"] = "Список замовлень";
+}
+
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-danger text-white">
-            <!-- Залишаємо заголовок без змін -->
+            <div class="d-flex justify-content-between align-items-center">
+                <h3><i class="fas fa-clipboard-list me-2"></i>Управління замовленнями</h3>
+                <div class="input-group w-25">
+                    <select class="form-select" id="statusFilter" aria-label="Фільтр статусів">
+                        <option value="">Всі статуси</option>
+                        @foreach (var status in Enum.GetValues(typeof(Status)))
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </select>
+                </div>
+            </div>
         </div>
+
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-dark">
-                        <!-- Залишаємо заголовки стовпців -->
-                    </thead>
-                    <tbody>
-                        @foreach (var order in Model)
-                        {
-                            <tr data-status="@order.Status.ToString()">
-                                <!-- Виправляємо статус для фільтрації -->
-                                <td>#@order.Id</td>
-                                <td>@(order.User?.Name ?? "Невідомий користувач")</td>
-                                <td>
-                                    <div class="d-flex flex-wrap gap-2">
-                                        @foreach (var item in order.Items ?? Enumerable.Empty<OrderItem>())
-                                        {
-                                            var dishName = item.Dish?.Name ?? "Невизначена страва";
-                                            <span class="badge bg-primary">@dishName</span>
-                                        }
-                                    </div>
-                                </td>
-                                <!-- Залишаємо інші стовпці без змін -->
+                @if (Model.Any())
+                {
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Клієнт</th>
+                                <th>Страви</th>
+                                <th>Сума</th>
+                                <th>Статус</th>
+                                <th>Дії</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model)
+                            {
+                                <tr data-status="@order.Status">
+                                    <td>#@order.Id</td>
+                                    <td>@order.User?.Name</td>
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            @foreach (var item in order.Items ?? new List<OrderItem>())
+                                            {
+                                                <span class="badge bg-primary">
+                                                    @item.Dish?.Name × @item.Quantity
+                                                </span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>@order.TotalPrice.ToString("C")</td>
+                                    <td>
+                                        <span class="badge @GetStatusBadgeClass(order.Status) p-2">
+                                            @GetStatusName(order.Status)
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="EditOrder"
+                                               asp-route-id="@order.Id"
+                                               class="btn btn-sm btn-outline-warning"
+                                               title="Редагувати">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form asp-action="DeleteOrder" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@order.Id" />
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-danger"
+                                                        title="Видалити"
+                                                        onclick="return confirm('Ви впевнені, що хочете видалити замовлення #@order.Id?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-info">Замовлень не знайдено</div>
+                }
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    document.getElementById('statusFilter').addEventListener('change', function() {
-        const status = this.value;
-        document.querySelectorAll('tbody tr').forEach(row => {
-            row.style.display = (!status || row.dataset.status === status) ? '' : 'none';
+@section Scripts {
+    <script>
+        // Фільтрація за статусом
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            const status = this.value;
+            document.querySelectorAll('tbody tr').forEach(row => {
+                row.style.display = (!status || row.dataset.status === status)
+                    ? ''
+                    : 'none';
+            });
         });
-    });
-</script>
+    </script>
+}
 
 @functions {
-    string GetStatusBadgeClass(Status status)
+    // Стилі для статусів
+    string GetStatusBadgeClass(Status status) => status switch
     {
-        return status switch
-        {
-            Status.Pending => "bg-warning",
-            Status.Completed => "bg-success",
-            Status.Cancelled => "bg-danger",
-            _ => "bg-secondary"
-        };
-    }
+        Status.Pending => "bg-warning",
+        Status.InProgress => "bg-info",
+        Status.Completed => "bg-success",
+        Status.Cancelled => "bg-danger",
+        _ => "bg-secondary"
+    };
+
+    // Локалізація назв статусів
+    string GetStatusName(Status status) => status switch
+    {
+        Status.Pending => "Очікує обробки",
+        Status.InProgress => "В обробці",
+        Status.Completed => "Виконано",
+        Status.Cancelled => "Скасовано",
+        _ => "Невідомий статус"
+    };
 }

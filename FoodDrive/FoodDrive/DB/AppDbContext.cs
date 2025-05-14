@@ -20,13 +20,18 @@ public class AppDbContext : DbContext
     public DbSet<Customer> Customers => Set<Customer>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Customer>().ToTable("Customers");
-        modelBuilder.Entity<Admin>().ToTable("Admins");
         modelBuilder.Entity<User>()
         .HasDiscriminator<string>("Discriminator")
         .HasValue<User>("User")
         .HasValue<Admin>("Admin")
         .HasValue<Customer>("Customer");
+        modelBuilder.Entity<Cart>()
+        .HasMany(c => c.Items)
+        .WithOne(i => i.Cart)
+        .HasForeignKey(i => i.CartId)
+        .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Customer>();
+        modelBuilder.Entity<Admin>();
         modelBuilder.ApplyConfiguration(new AdminConfiguration());
         modelBuilder.ApplyConfiguration(new CartConfiguration());
         modelBuilder.ApplyConfiguration(new CartItemConfiguration());

@@ -1,84 +1,87 @@
 ﻿@using FoodDrive.Entities
-@model Order
+@model FoodDrive.Entities.Order
 @{
-    ViewData["Title"] = "Деталі замовлення";
+    ViewData["Title"] = $"Замовлення #{Model.Id}";
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4">Деталі замовлення #@Model.Id</h2>
-
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h5 class="mb-0">
-                        Статус:
-                        <span class="badge @GetStatusClass(Model.Status)">
-                            @Model.Status
-                        </span>
-                    </h5>
-                </div>
-                <div class="col-md-6 text-end">
-                    <h5 class="mb-0">Сума: @Model.TotalPrice.ToString("C")</h5>
-                </div>
-            </div>
+            <h3>
+                <i class="fas fa-file-invoice me-2"></i>
+                Деталі замовлення #@Model.Id
+            </h3>
         </div>
 
         <div class="card-body">
-            <div class="mb-4">
-                <h5>Страви у замовленні:</h5>
-                @if (Model.Items?.Any() == true)
-                {
-                    <div class="list-group">
-                        @foreach (var item in Model.Items)
-                        {
-                            <div class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1">@item.Dish?.Name</h6>
-                                        <small class="text-muted">@item.Dish?.Description</small>
-                                    </div>
-                                    <div class="text-end">
-                                        <span class="badge bg-secondary me-2">@item.Quantity шт.</span>
-                                        <span class="text-nowrap">@((item.Dish?.Price * item.Quantity)?.ToString("C"))</span>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class="alert alert-warning">Замовлення не містить страв</div>
-                }
-            </div>
-
-            <div class="border-top pt-3">
-                <h5>Додаткова інформація:</h5>
-                <div class="row mt-2">
-                    <div class="col-md-6">
-                        <p class="mb-1"><strong>Клієнт:</strong> @Model.User?.Name</p>
-                        <p class="mb-1"><strong>Адреса:</strong> @(Model.User?.Address ?? "не вказано")</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p class="mb-1"><strong>Дата замовлення:</strong> @Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</p>
-                    </div>
+            <!-- Інформація про замовлення -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p><strong>Клієнт:</strong> @Model.User?.Name</p>
+                    <p><strong>Дата:</strong> @Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</p>
+                </div>
+                <div class="col-md-6">
+                    <p>
+                        <strong>Статус:</strong>
+                        <span class="badge @GetStatusBadgeClass(Model.Status)">
+                            @Model.Status
+                        </span>
+                    </p>
+                    <p><strong>Сума:</strong> @Model.TotalPrice.ToString("C")</p>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="mt-4">
-        <a asp-action="Orders" class="btn btn-outline-primary">
-            <i class="fas fa-arrow-left me-2"></i>До списку замовлень
-        </a>
+            <!-- Список страв -->
+            <h5 class="mb-3">Страви:</h5>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Страва</th>
+                            <th>Кількість</th>
+                            <th>Ціна за одиницю</th>
+                            <th>Сума</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.Dish?.Name</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Dish?.Price.ToString("C")</td>
+                                <td>@((item.Quantity * item.Dish?.Price ?? 0).ToString("C"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            @if (Model.Status == Status.Pending || Model.Status == Status.InProgress)
+            {
+                <form asp-action="CancelOrder" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit"
+                            class="btn btn-danger"
+                            onclick="return confirm('Ви впевнені, що хочете скасувати це замовлення?')">
+                        <i class="fas fa-ban me-2"></i> Скасувати замовлення
+                    </button>
+                </form>
+            }
+            <a asp-action="Orders" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Назад до списку
+            </a>
+        </div>
     </div>
 </div>
 
 @functions {
-    string GetStatusClass(Status status) => status switch
+    string GetStatusBadgeClass(Status status) => status switch
     {
         Status.Pending => "bg-warning",
+        Status.InProgress => "bg-info",
         Status.Completed => "bg-success",
         Status.Cancelled => "bg-danger",
         _ => "bg-secondary"

@@ -5,7 +5,7 @@ namespace FoodDrive.Models.ViewModels
 {
     public class CheckoutViewModel
     {
-        public List<CartItem> Items { get; set; } = new List<CartItem>();
+        public List<CartItemViewModel> Items { get; set; }
         public decimal TotalPrice { get; set; }
         public string CustomerName { get; set; }
         public string CustomerAddress { get; set; }

@@ -8,15 +8,16 @@
         <div class="card-body">
             <form asp-action="CreateCustomer" method="post">
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="Name" class="form-label"></label>
-                        <input asp-for="Name" class="form-control" placeholder="Введіть ім'я" />
-                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
-                    <div class="col-md-6">
-                        <label asp-for="PasswordHash" class="form-label"></label>
-                        <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Введіть пароль" />
-                        <span asp-validation-for="PasswordHash" class="text-danger small"></span>
+
+                    <div class="form-group">
+                        <label asp-for="PasswordHash"></label>
+                        <input asp-for="PasswordHash" type="password" class="form-control" />
+                        <span asp-validation-for="PasswordHash" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="Address" class="form-label"></label>

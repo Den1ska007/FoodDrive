@@ -1,10 +1,12 @@
 ﻿namespace FoodDrive.Models
 {
-        public enum TypeOfDish
-        {
-            Italian,
-            Asian,
-            American,
-            Ukrainian
-        }
+    public enum TypeOfDish
+    {
+        Italian,
+        Asian,
+        American,
+        Ukrainian,
+        Japanese,
+        Mexican
+    }
 }
