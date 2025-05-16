@@ -1,35 +1,153 @@
-﻿<div class="container mt-5">
-    <div class="row g-4">
-        <div class="col-12 text-center mb-4">
-            <h1 class="display-4"><i class="fas fa-tachometer-alt me-3"></i>Панель управління</h1>
-        </div>
-
-        <!-- Картки швидкого доступу -->
-        <div class="col-md-4">
-            <div class="card bg-primary text-white h-100 shadow">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-users me-2"></i>Користувачі</h5>
-                    <a href="@Url.Action("List")" class="stretched-link"></a>
+﻿<div class="admin-dashboard">
+    <div class="container-fluid">
+        <div class="row g-4">
+            <!-- Заголовок -->
+            <div class="col-12">
+                <div class="dashboard-header p-4 bg-dark rounded-3">
+                    <h1 class="text-white mb-0">
+                        <i class="fas fa-user-shield me-3"></i>Адмін-панель
+                    </h1>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="card bg-success text-white h-100 shadow">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-utensils me-2"></i>Страви</h5>
-                    <a href="@Url.Action("ListDishes")" class="stretched-link"></a>
+            <!-- Статистика -->
+            <div class="col-12">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="card stat-card users-card gradient-1">
+                            <div class="card-body">
+                                <i class="stat-icon fas fa-users"></i>
+                                <h2>@ViewBag.TotalUsers</h2>
+                                <p class="mb-0">Користувачів</p>
+                                <a asp-action="List" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card stat-card dishes-card gradient-2">
+                            <div class="card-body">
+                                <i class="stat-icon fas fa-utensils"></i>
+                                <h2>@ViewBag.TotalDishes</h2>
+                                <p class="mb-0">Страв</p>
+                                <a asp-action="ListDishes" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card stat-card orders-card gradient-3">
+                            <div class="card-body">
+                                <i class="stat-icon fas fa-shopping-cart"></i>
+                                <h2>@ViewBag.TotalOrders</h2>
+                                <p class="mb-0">Замовлень</p>
+                                <a asp-action="ListOrders" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card stat-card reviews-card gradient-4">
+                            <div class="card-body">
+                                <i class="stat-icon fas fa-star"></i>
+                                <h2>@ViewBag.TotalReviews</h2>
+                                <p class="mb-0">Відгуків</p>
+                                <a asp-action="ListReviews" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="card bg-info text-white h-100 shadow">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-clipboard-list me-2"></i>Замовлення</h5>
-                    <a href="@Url.Action("ListOrders")" class="stretched-link"></a>
+            <!-- Швидкий доступ -->
+            <div class="col-12">
+                <div class="card quick-actions-card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Швидкі дії</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <a asp-action="CreateDish" class="btn btn-action">
+                                    <i class="fas fa-plus-circle me-2"></i>Додати страву
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a asp-action="CreateAdmin" class="btn btn-action">
+                                    <i class="fas fa-user-plus me-2"></i>Додати адміна
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a asp-action="ListOrders" class="btn btn-action">
+                                    <i class="fas fa-search me-2"></i>Перевірити замовлення
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a asp-action="ListReviews" class="btn btn-action">
+                                    <i class="fas fa-comments me-2"></i>Модерувати відгуки
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .admin-dashboard {
+        padding: 2rem 0;
+    }
+
+    .stat-card {
+        border: none;
+        color: white;
+        transition: transform 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .gradient-1 { background: linear-gradient(45deg, #3f51b5, #2196f3); }
+    .gradient-2 { background: linear-gradient(45deg, #4caf50, #8bc34a); }
+    .gradient-3 { background: linear-gradient(45deg, #ff5722, #ff9800); }
+    .gradient-4 { background: linear-gradient(45deg, #9c27b0, #e91e63); }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        opacity: 0.8;
+    }
+
+    .btn-action {
+        width: 100%;
+        padding: 1rem;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        text-align: left;
+        transition: all 0.3s;
+    }
+
+    .btn-action:hover {
+        background: #e9ecef;
+        transform: translateX(5px);
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+    }
+</style>

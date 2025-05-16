@@ -22,7 +22,15 @@ namespace FoodDrive.Controllers
 
         public IActionResult Contacts() => View();
 
-        public IActionResult Index() => View();
+        public async Task<IActionResult> Index()
+        {
+            ViewBag.TotalUsers = await _context.Users.CountAsync();
+            ViewBag.TotalDishes = await _context.Dishes.CountAsync();
+            ViewBag.TotalOrders = await _context.Orders.CountAsync();
+            ViewBag.TotalReviews = await _context.Reviews.CountAsync();
+
+            return View();
+        }
 
         // 🟢 Admins CRUD
         public async Task<IActionResult> ListAdmin() =>

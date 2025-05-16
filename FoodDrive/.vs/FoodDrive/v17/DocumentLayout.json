@@ -3,12 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}|FoodDrive\\FoodDrive.csproj|c:\\users\\anatoloii\\fooddrive\\fooddrive\\fooddrive\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}|FoodDrive\\FoodDrive.csproj|solutionrelative:fooddrive\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}|FoodDrive\\FoodDrive.csproj|c:\\users\\anatoloii\\fooddrive\\fooddrive\\fooddrive\\contollers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}|FoodDrive\\FoodDrive.csproj|solutionrelative:fooddrive\\contollers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}|FoodDrive\\FoodDrive.csproj|c:\\users\\anatoloii\\fooddrive\\fooddrive\\fooddrive\\views\\customer\\dishdetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}|FoodDrive\\FoodDrive.csproj|solutionrelative:fooddrive\\views\\customer\\dishdetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{51C12FCF-7340-4C3C-9C9D-31644DAAF0B5}|FoodDrive\\FoodDrive.csproj|c:\\users\\anatoloii\\fooddrive\\fooddrive\\fooddrive\\contollers\\customercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -47,32 +43,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\Views\\Admin\\Index.cshtml",
-              "RelativeDocumentMoniker": "FoodDrive\\Views\\Admin\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\Views\\Admin\\Index.cshtml",
-              "RelativeToolTip": "FoodDrive\\Views\\Admin\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAASAAAAAAAAAA==",
+              "Title": "DishDetails.cshtml",
+              "DocumentMoniker": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\Views\\Customer\\DishDetails.cshtml",
+              "RelativeDocumentMoniker": "FoodDrive\\Views\\Customer\\DishDetails.cshtml",
+              "ToolTip": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\Views\\Customer\\DishDetails.cshtml",
+              "RelativeToolTip": "FoodDrive\\Views\\Customer\\DishDetails.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-14T05:42:42.742Z",
+              "WhenOpened": "2025-05-14T06:47:21.763Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\Contollers\\AdminController.cs",
-              "RelativeDocumentMoniker": "FoodDrive\\Contollers\\AdminController.cs",
-              "ToolTip": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\Contollers\\AdminController.cs",
-              "RelativeToolTip": "FoodDrive\\Contollers\\AdminController.cs",
-              "ViewState": "AgIAAAUBAAAAAAAAAAAAACIBAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T05:27:18.907Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "OrderDetails.cshtml",
               "DocumentMoniker": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\Views\\Customer\\OrderDetails.cshtml",
               "RelativeDocumentMoniker": "FoodDrive\\Views\\Customer\\OrderDetails.cshtml",
@@ -80,12 +63,11 @@
               "RelativeToolTip": "FoodDrive\\Views\\Customer\\OrderDetails.cshtml",
               "ViewState": "AgIAADEAAAAAAAAAAAAAAEsAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-14T05:10:21.684Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-14T05:10:21.684Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "ListOrders.cshtml",
               "DocumentMoniker": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\Views\\Admin\\ListOrders.cshtml",
               "RelativeDocumentMoniker": "FoodDrive\\Views\\Admin\\ListOrders.cshtml",
@@ -93,12 +75,11 @@
               "RelativeToolTip": "FoodDrive\\Views\\Admin\\ListOrders.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAHAAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-14T05:02:57.53Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-14T05:02:57.53Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "CustomerController.cs",
               "DocumentMoniker": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\Contollers\\CustomerController.cs",
               "RelativeDocumentMoniker": "FoodDrive\\Contollers\\CustomerController.cs",
@@ -106,12 +87,11 @@
               "RelativeToolTip": "FoodDrive\\Contollers\\CustomerController.cs",
               "ViewState": "AgIAADUAAAAAAAAAAAAvwD4AAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T05:14:20.989Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-14T05:14:20.989Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\DB\\AppDbContext.cs",
               "RelativeDocumentMoniker": "FoodDrive\\DB\\AppDbContext.cs",
@@ -119,12 +99,11 @@
               "RelativeToolTip": "FoodDrive\\DB\\AppDbContext.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAowB4AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T04:48:38.019Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-14T04:48:38.019Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "CartController.cs",
               "DocumentMoniker": "C:\\Users\\Anatoloii\\FoodDrive\\FoodDrive\\FoodDrive\\Contollers\\CartController.cs",
               "RelativeDocumentMoniker": "FoodDrive\\Contollers\\CartController.cs",
@@ -132,8 +111,7 @@
               "RelativeToolTip": "FoodDrive\\Contollers\\CartController.cs",
               "ViewState": "AgIAADwAAAAAAAAAAAAAAFMAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T04:48:01.507Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-14T04:48:01.507Z"
             }
           ]
         }

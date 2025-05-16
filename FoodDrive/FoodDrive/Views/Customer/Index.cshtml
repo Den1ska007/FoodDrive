@@ -8,12 +8,43 @@
     @foreach (var dish in Model)
     {
         <div class="dish-card">
-            <a asp-action="DishDetails" asp-route-id="@dish.Id" class="dish-link">
-                <h3>@dish.Name</h3>
-                <img src="~/images/dishes/@(dish.Id).jpg" alt="@dish.Name" class="dish-thumbnail" />
-            </a>
+            <div class="dish-image-wrapper">
+                <img src="~/images/dishes/@(dish.Id).jpg"
+                     alt="@dish.Name"
+                     class="dish-thumbnail"
+                     loading="lazy">
+                <div class="dish-overlay">
+                    <a asp-action="DishDetails"
+                       asp-route-id="@dish.Id"
+                       class="btn btn-view-details">
+                        <i class="fas fa-search-plus me-2"></i>Деталі
+                    </a>
+                </div>
+            </div>
 
-            <div class="price">@dish.Price.ToString("C")</div>
+            <div class="dish-info">
+                <h3 class="dish-title">@dish.Name</h3>
+                <div class="dish-footer">
+                    <span class="price">@dish.Price.ToString("C")</span>
+                    <form asp-controller="Cart"
+                          asp-action="AddToCart"
+                          method="post"
+                          class="add-to-cart-form">
+                        <input type="hidden" name="dishId" value="@dish.Id">
+                        <div class="input-group">
+                            <input type="number"
+                                   name="quantity"
+                                   value="1"
+                                   min="1"
+                                   class="form-control quantity-input">
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     }
 </div>
@@ -21,73 +52,104 @@
 <style>
     .menu-container {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-        padding: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+        padding: 25px;
     }
 
-    .dish-link {
-        text-decoration: none;
-        color: inherit;
+    .dish-card {
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+        .dish-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .dish-image-wrapper {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
     }
 
     .dish-thumbnail {
         width: 100%;
-        height: 200px;
+        height: 100%;
         object-fit: cover;
-        border-radius: 8px;
-        margin: 10px 0;
+        transition: transform 0.3s ease;
     }
-    .dish-card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 15px;
-        background: white;
+
+    .dish-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        opacity: 0;
         display: flex;
-        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease;
+    }
+
+    .dish-card:hover .dish-overlay {
+        opacity: 1;
+    }
+
+    .dish-info {
+        padding: 15px;
+    }
+
+    .dish-title {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        height: 50px;
+        overflow: hidden;
+    }
+
+    .dish-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .price {
-        color: #2ecc71;
-        font-weight: bold;
-        margin: 10px 0;
+        color: #27ae60;
+        font-weight: 700;
+        font-size: 1.2rem;
     }
 
-    .add-to-cart {
-        background: #3498db;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-top: auto;
+    .add-to-cart-form .input-group {
+        width: 140px;
     }
 
     .quantity-input {
-        width: 60px;
-        padding: 5px;
-        margin-right: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        border-radius: 20px 0 0 20px;
     }
 
-    form {
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
+    .add-to-cart-form .btn {
+        border-radius: 0 20px 20px 0;
+        padding: 8px 15px;
     }
 </style>
 
+<!-- Секція повідомлень -->
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 
 @if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
         @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
