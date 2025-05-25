@@ -1,68 +1,314 @@
 ﻿@using FoodDrive.Entities
 @model Dish
-
 @{
     ViewData["Title"] = Model.Name;
 }
 
-<div class="dish-details">
-    <div class="dish-image">
-        <img src="~/images/dishes/@(Model.Id).jpg" alt="@Model.Name" />
-    </div>
+<div class="dish-page">
+    <!-- Хлібні крихти -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Меню</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
 
-    <div class="dish-info">
-        <h1>@Model.Name</h1>
-        <p class="description">@Model.Description</p>
+    <div class="dish-container">
+        <!-- Зображення страви -->
+        <div class="dish-media">
+            <div class="image-wrapper">
+                <img src="~/images/dishes/@(Model.Id).jpg"
+                     alt="@Model.Name"
+                     class="dish-image"
+                     loading="lazy">
+                <div class="image-overlay">
+                    <span class="rating-badge">
+                        <i class="fas fa-star"></i> @Model.Rating/5
+                    </span>
+                </div>
+            </div>
+        </div>
 
-        <div class="price">@Model.Price.ToString("C")</div>
+        <!-- Інформація про страву -->
+        <div class="dish-content">
+            <h1 class="dish-title">@Model.Name</h1>
 
-        <form asp-controller="Cart" asp-action="AddToCart" method="post">
-            <input type="hidden" name="dishId" value="@Model.Id" />
-
-            <div class="quantity-selector">
-                <label>Кількість:</label>
-                <input type="number" name="quantity" value="1" min="1" class="form-control" />
+            <div class="dish-meta">
+                <span class="type-badge">@Model.TypeOfDish</span>
+                <span class="stock-status @(Model.Stock > 0 ? "in-stock" : "out-of-stock")">
+                    @(Model.Stock > 0 ? "Є в наявності" : "Немає в наявності")
+                </span>
             </div>
 
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-cart-plus"></i> Додати в кошик
-            </button>
-        </form>
+            <p class="dish-description">@Model.Description</p>
+
+            <div class="dish-footer">
+                <div class="price-wrapper">
+                    <div class="price">@Model.Price.ToString("C")</div>
+                    <small class="text-muted">(включно з податками)</small>
+                </div>
+
+                <form class="add-to-cart-form"
+                      asp-controller="Cart"
+                      asp-action="AddToCart"
+                      method="post">
+                    <input type="hidden" name="dishId" value="@Model.Id" />
+
+                    <div class="input-group">
+                        <button type="button"
+                                class="btn btn-quantity minus"
+                                onclick="adjustQuantity(-1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+
+                        <input type="number"
+                               name="quantity"
+                               value="1"
+                               min="1"
+                               max="@Model.Stock"
+                               class="form-control quantity-input"
+                               id="quantityInput">
+
+                        <button type="button"
+                                class="btn btn-quantity plus"
+                                onclick="adjustQuantity(1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-add-to-cart"
+                    @(Model.Stock < 1 ? "disabled" : "")>
+                        <i class="fas fa-cart-plus me-2"></i>
+                        @(Model.Stock > 0 ? "Додати в кошик" : "Немає в наявності")
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="ratings-section mt-5">
+            <h4>Середній рейтинг: @Model.AverageRating.ToString("0.0")/5</h4>
+
+            <!-- Форма для відгуку -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form asp-controller="Customer" asp-action="AddReview" method="post">
+                    <input type="hidden" name="DishId" value="@Model.Id" />
+
+                    <div class="form-group">
+                        <label>Ваш рейтинг (1-5):</label>
+                        <select name="Rating" class="form-control">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Текст відгуку:</label>
+                        <textarea name="Text" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-2">Залишити відгук</button>
+                </form>
+            }
+            else
+            {
+                <p>Увійдіть, щоб залишити відгук.</p>
+            }
+
+            <!-- Список відгуків -->
+            <div class="reviews-list mt-4">
+                @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt))
+                {
+                    <div class="review-card mb-3 p-3 border rounded">
+                        <div class="review-header">
+                            <strong>@review.User.Name</strong>
+                            <span class="text-muted">@review.CreatedAt.ToString("dd.MM.yyyy")</span>
+                        </div>
+                        <div class="review-rating">
+                            Рейтинг: @review.Rating/5
+                        </div>
+                        <div class="review-text">
+                            @review.Text
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        function adjustQuantity(change) {
+            const input = document.getElementById('quantityInput');
+            let value = parseInt(input.value) + change;
+            value = Math.max(parseInt(input.min), Math.min(value, parseInt(input.max)));
+            input.value = value;
+        }
+    </script>
+}
+
 <style>
-    .dish-details {
+    .dish-page {
+        padding: 2rem 0;
+    }
+
+    .dish-container {
         display: grid;
-        grid-template-columns: 300px 1fr;
-        gap: 40px;
-        padding: 30px;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 1rem;
     }
 
-    .dish-image img {
+    .image-wrapper {
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .dish-image {
         width: 100%;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        height: 400px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
     }
 
-    .dish-info {
-        max-width: 600px;
+    .image-wrapper:hover .dish-image {
+        transform: scale(1.03);
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .rating-badge {
+        background: rgba(255, 193, 7, 0.9);
+        color: #000;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 500;
+    }
+
+    .dish-content {
+        padding: 1rem;
+    }
+
+    .dish-title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+    }
+
+    .dish-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .type-badge {
+        background: #3498db;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.9rem;
+    }
+
+    .stock-status {
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.9rem;
+    }
+
+    .in-stock {
+        background: #27ae60;
+        color: white;
+    }
+
+    .out-of-stock {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .dish-description {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #7f8c8d;
+        margin-bottom: 2rem;
+    }
+
+    .dish-footer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .price-wrapper {
+        text-align: center;
     }
 
     .price {
-        font-size: 28px;
-        color: #27ae60;
-        margin: 20px 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2ecc71;
     }
 
-    .quantity-selector {
-        margin: 25px 0;
+    .add-to-cart-form {
         display: flex;
+        gap: 1rem;
         align-items: center;
-        gap: 15px;
     }
 
-        .quantity-selector input {
-            width: 100px;
+    .input-group {
+        width: 180px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-radius: 2rem;
+    }
+
+    .btn-quantity {
+        background: #f8f9fa;
+        border: none;
+        padding: 0.75rem 1.25rem;
+    }
+
+    .quantity-input {
+        text-align: center;
+        border: none;
+        background: #fff;
+        font-weight: 500;
+    }
+
+    .btn-add-to-cart {
+        background: #2ecc71;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 2rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-add-to-cart:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(46, 204, 113, 0.3);
         }
+
+        .btn-add-to-cart:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+    @@media (min-width: 992px) {
+        .dish-container {
+            grid-template-columns: 500px 1fr;
+        }
+    }
 </style>

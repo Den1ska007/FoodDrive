@@ -6,10 +6,10 @@ namespace FoodDrive.Models.ViewModels
     public class CreateReviewViewModel
     {
         [Required(ErrorMessage = "Оберіть користувача")]
-        public int SelectedUserId { get; set; }
+        public int UserId { get; set; }
 
         [Required(ErrorMessage = "Оберіть страву")]
-        public int SelectedDishId { get; set; }
+        public int DishId { get; set; }
 
         [Required(ErrorMessage = "Вкажіть оцінку")]
         [Range(1, 5, ErrorMessage = "Оцінка має бути від 1 до 5")]

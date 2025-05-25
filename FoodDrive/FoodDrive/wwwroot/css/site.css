@@ -35,3 +35,27 @@ body {
     border-bottom: 1px solid #eee;
     padding: 10px 0;
 }
+.review-card {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.review-rating {
+    color: #ffc107;
+    font-weight: bold;
+}
+.dish-rating {
+    margin: 8px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.fa-star {
+    margin-right: 5px;
+}

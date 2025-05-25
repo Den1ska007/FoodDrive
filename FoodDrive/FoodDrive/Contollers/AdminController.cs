@@ -132,24 +132,40 @@ namespace FoodDrive.Controllers
             View(await _context.Customers.FindAsync(id));
 
         [HttpPost]
-        public async Task<IActionResult> EditCustomer(Customer customer)
+        public async Task<IActionResult> EditCustomer(Customer model)
         {
-            if (!ModelState.IsValid) return View(customer);
+            if (!ModelState.IsValid)
+                return View(model);
 
-            var existing = await _context.Customers.FindAsync(customer.Id);
-            if (existing == null) return NotFound();
+            try
+            {
+                // Знаходимо клієнта через DbSet<Customer>
+                var existing = await _context.Customers.FindAsync(model.Id);
+                if (existing == null)
+                    return NotFound();
 
-            existing.Name = customer.Name;
-            existing.Address = customer.Address;
-            existing.Balance = customer.Balance;
+                // Оновлюємо основні поля
+                existing.Name = model.Name;
+                existing.Address = model.Address;
+                existing.Balance = model.Balance;
 
-            if (!string.IsNullOrEmpty(customer.PasswordHash))
-                existing.PasswordHash = _passwordHasher.HashPassword(existing, customer.PasswordHash);
+                // Оновлюємо пароль ТІЛЬКИ якщо введено новий
+                if (!string.IsNullOrEmpty(model.PasswordHash))
+                {
+                    existing.PasswordHash = _passwordHasher.HashPassword(existing, model.PasswordHash);
+                }
 
-            _context.Customers.Update(existing);
-            await _context.SaveChangesAsync();
+                _context.Customers.Update(existing);
+                await _context.SaveChangesAsync();
 
-            return RedirectToAction("List");
+                return RedirectToAction("List");
+            }
+            catch (Exception ex)
+            {
+                // Додайте логування помилки
+                ModelState.AddModelError("", "Помилка при збереженні змін.");
+                return View(model);
+            }
         }
 
         [HttpPost]
@@ -342,8 +358,8 @@ namespace FoodDrive.Controllers
 
             var review = new Review
             {
-                UserId = model.SelectedUserId,
-                DishId = model.SelectedDishId,
+                UserId = model.UserId,
+                DishId = model.DishId,
                 Rating = model.Rating,
                 Text = model.Text,
                 CreatedAt = DateTime.UtcNow

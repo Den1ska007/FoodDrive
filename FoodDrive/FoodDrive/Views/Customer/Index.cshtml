@@ -21,7 +21,11 @@
                     </a>
                 </div>
             </div>
-
+            <div class="dish-rating">
+                <i class="fas fa-star text-warning"></i>
+                @dish.AverageRating.ToString("0.0")/5
+                <small>(@dish.Reviews.Count відгуків)</small>
+            </div>
             <div class="dish-info">
                 <h3 class="dish-title">@dish.Name</h3>
                 <div class="dish-footer">

@@ -30,6 +30,11 @@ public class AppDbContext : DbContext
         .WithOne(i => i.Cart)
         .HasForeignKey(i => i.CartId)
         .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Review>()
+        .HasOne(r => r.Dish)
+        .WithMany(d => d.Reviews)
+        .HasForeignKey(r => r.DishId)
+        .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Customer>();
         modelBuilder.Entity<Admin>();
         modelBuilder.ApplyConfiguration(new AdminConfiguration());

@@ -124,26 +124,25 @@ public class AccountController : Controller
         return RedirectToAction("Login");
     }
 
-    [Authorize]
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> EditProfile(ProfileViewModel model)
     {
-        if (!ModelState.IsValid) return View(model);
+        if (!ModelState.IsValid)
+            return View(model);
 
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var user = await _context.Users.FindAsync(userId);
+        var user = await _context.Users
+            .OfType<Customer>()
+            .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null) return RedirectToAction("Login");
+        if (user == null)
+            return RedirectToAction("Login");
 
         user.Name = model.Name;
         user.Address = model.Address;
+        user.Balance = model.Balance;
 
-        if (user is Customer customer)
-        {
-            customer.Balance = model.Balance;
-        }
-
-        _context.Users.Update(user);
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Profile");

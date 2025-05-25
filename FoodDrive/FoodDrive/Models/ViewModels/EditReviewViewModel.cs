@@ -7,11 +7,11 @@ namespace FoodDrive.Models.ViewModels
         public int Id { get; set; }
 
         [Required]
-        public int SelectedUserId { get; set; }
+        public int UserId { get; set; }
         public List<SelectListItem> Users { get; set; } = new();
 
         [Required]
-        public int SelectedDishId { get; set; }
+        public int DishId { get; set; }
         public List<SelectListItem> Dishes { get; set; } = new();
 
         [Required]

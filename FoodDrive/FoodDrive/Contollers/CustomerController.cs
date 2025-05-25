@@ -21,7 +21,9 @@ public class CustomerController : Controller
     }
     public async Task<IActionResult> Index()
     {
-        var dishes = await _context.Dishes.ToListAsync();
+        var dishes = await _context.Dishes
+        .Include(d => d.Reviews)
+        .ToListAsync();
         return View(dishes);
     }
     [HttpGet]
@@ -103,8 +105,9 @@ public class CustomerController : Controller
     public async Task<IActionResult> DishDetails(int id)
     {
         var dish = await _context.Dishes
-            .Include(d => d.Reviews)
-            .FirstOrDefaultAsync(d => d.Id == id);
+        .Include(d => d.Reviews)
+            .ThenInclude(r => r.User)
+        .FirstOrDefaultAsync(d => d.Id == id);
 
         if (dish == null)
         {
@@ -272,7 +275,40 @@ public class CustomerController : Controller
         await _context.Orders.AddAsync(order);
         await _context.SaveChangesAsync();
     }
+    [Authorize(Roles = "Customer")]
+    [HttpPost]
+    public async Task<IActionResult> AddReview(CreateReviewViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            // Повернення на сторінку страви з помилками
+            return RedirectToAction("DishDetails", new { id = model.DishId });
+        }
 
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var dish = await _context.Dishes
+            .Include(d => d.Reviews)
+            .FirstOrDefaultAsync(d => d.Id == model.DishId);
+
+        if (dish == null)
+        {
+            return NotFound();
+        }
+
+        var review = new Review
+        {
+            UserId = userId,
+            DishId = model.DishId,
+            Text = model.Text,
+            Rating = (byte)model.Rating, // Конвертація в byte
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.Reviews.Add(review);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("DishDetails", new { id = model.DishId });
+    }
     private IActionResult RedirectToCart() =>
         RedirectToAction("Index", "Cart");
 

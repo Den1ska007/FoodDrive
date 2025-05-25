@@ -37,7 +37,12 @@ namespace FoodDrive.Entities
         [Column("rating")]
         [Range(1, 5, ErrorMessage = "Рейтинг має бути від 1 до 5")]
         public int Rating { get; set; }
+        [NotMapped]
+        public double AverageRating =>
+        Reviews?.Count > 0 ? Reviews.Average(r => r.Rating) : 0;
 
+        [NotMapped]
+        public int RoundedRating => (int)Math.Round(AverageRating);
         // Додано нову властивість
         [Column("type_of_dish")]
         [Required(ErrorMessage = "Тип кухні обов'язковий")]

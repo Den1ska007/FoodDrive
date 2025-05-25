@@ -122,7 +122,7 @@ namespace FoodDrive.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("dishes");
+                    b.ToTable("dishes", (string)null);
                 });
 
             modelBuilder.Entity("FoodDrive.Entities.Order", b =>
@@ -226,7 +226,7 @@ namespace FoodDrive.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("reviews");
+                    b.ToTable("reviews", (string)null);
                 });
 
             modelBuilder.Entity("FoodDrive.Entities.User", b =>
@@ -266,7 +266,7 @@ namespace FoodDrive.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.UseTptMappingStrategy();
                 });
