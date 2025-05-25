@@ -180,7 +180,29 @@ public class CustomerController : Controller
             return RedirectToCart();
         }
     }
+    [Authorize(Roles = "Customer")]
+    [HttpGet]
+    public IActionResult TopUpBalance() => View();
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> TopUpBalance(decimal amount)
+    {
+        if (amount <= 0)
+        {
+            ModelState.AddModelError("", "Сума має бути більше нуля");
+            return View();
+        }
+
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var customer = await _context.Customers.FindAsync(userId);
+
+        customer.Balance += amount;
+        await _context.SaveChangesAsync();
+
+        TempData["SuccessMessage"] = $"Баланс успішно поповнено на {amount} грн!";
+        return RedirectToAction("Profile", "Account");
+    }
     public async Task<IActionResult> Orders()
     {
         try

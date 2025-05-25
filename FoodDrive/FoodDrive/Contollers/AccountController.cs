@@ -123,28 +123,47 @@ public class AccountController : Controller
 
         return RedirectToAction("Login");
     }
-
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult EditProfile() => View(new EditProfileViewModel());
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> EditProfile(ProfileViewModel model)
+    public async Task<IActionResult> EditProfile(EditProfileViewModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
 
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var user = await _context.Users
-            .OfType<Customer>()
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _context.Customers.FindAsync(userId);
 
         if (user == null)
             return RedirectToAction("Login");
 
+        // Оновлення імені та адреси
         user.Name = model.Name;
         user.Address = model.Address;
-        user.Balance = model.Balance;
+
+        // Зміна пароля (якщо введено новий)
+        if (!string.IsNullOrEmpty(model.NewPassword))
+        {
+            // Перевірка поточного пароля
+            if (string.IsNullOrEmpty(model.CurrentPassword))
+            {
+                ModelState.AddModelError("CurrentPassword", "Введіть поточний пароль");
+                return View(model);
+            }
+
+            if (_passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.CurrentPassword) != PasswordVerificationResult.Success)
+            {
+                ModelState.AddModelError("CurrentPassword", "Поточний пароль невірний");
+                return View(model);
+            }
+
+            // Оновлення пароля
+            user.PasswordHash = _passwordHasher.HashPassword(user, model.NewPassword);
+        }
 
         await _context.SaveChangesAsync();
-
         return RedirectToAction("Profile");
     }
 

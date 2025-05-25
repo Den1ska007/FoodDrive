@@ -131,6 +131,7 @@ namespace FoodDrive.Controllers
         public async Task<IActionResult> EditCustomer(int id) =>
             View(await _context.Customers.FindAsync(id));
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> EditCustomer(Customer model)
         {
@@ -140,30 +141,28 @@ namespace FoodDrive.Controllers
             try
             {
                 // Знаходимо клієнта через DbSet<Customer>
-                var existing = await _context.Customers.FindAsync(model.Id);
-                if (existing == null)
+                var customer = await _context.Customers.FindAsync(model.Id);
+                if (customer == null)
                     return NotFound();
 
                 // Оновлюємо основні поля
-                existing.Name = model.Name;
-                existing.Address = model.Address;
-                existing.Balance = model.Balance;
+                customer.Name = model.Name;
+                customer.Address = model.Address;
+                customer.Balance = model.Balance;
 
                 // Оновлюємо пароль ТІЛЬКИ якщо введено новий
                 if (!string.IsNullOrEmpty(model.PasswordHash))
                 {
-                    existing.PasswordHash = _passwordHasher.HashPassword(existing, model.PasswordHash);
+                    customer.PasswordHash = _passwordHasher.HashPassword(customer, model.PasswordHash);
                 }
 
-                _context.Customers.Update(existing);
                 await _context.SaveChangesAsync();
-
+                TempData["SuccessMessage"] = "Зміни успішно збережено!";
                 return RedirectToAction("List");
             }
             catch (Exception ex)
             {
-                // Додайте логування помилки
-                ModelState.AddModelError("", "Помилка при збереженні змін.");
+                TempData["ErrorMessage"] = "Помилка при збереженні змін.";
                 return View(model);
             }
         }

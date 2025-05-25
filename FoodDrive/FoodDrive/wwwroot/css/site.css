@@ -59,3 +59,15 @@ body {
 .fa-star {
     margin-right: 5px;
 }
+.balance-card {
+    background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.balance-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+}

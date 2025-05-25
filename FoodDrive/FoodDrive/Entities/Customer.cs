@@ -13,8 +13,8 @@ namespace FoodDrive.Entities
     public class Customer : User
     {
 
-        [Column("balance")]
-        [Precision(10, 2)]
+        [Column(TypeName = "decimal(18,2)")]
+        [Range(0, 1000000, ErrorMessage = "Баланс не може бути від'ємним")]
         public decimal Balance { get; set; }
         public List<Order> Orders { get; set; } = new();
         public List<Cart> Carts { get; set; } = new();

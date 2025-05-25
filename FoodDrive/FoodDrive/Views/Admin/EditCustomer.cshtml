@@ -1,43 +1,34 @@
 ﻿@using FoodDrive.Entities
 @model Customer
 
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h3>Редагування клієнта #@Model.Id</h3>
-        </div>
-        <div class="card-body">
-            <form asp-action="EditCustomer" method="post">
-                @Html.AntiForgeryToken() <!-- CSRF-токен -->
+<form asp-action="EditCustomer" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
 
-                <input type="hidden" asp-for="Id" />
-
-                <div class="form-group mb-3">
-                    <label asp-for="Name"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="Address"></label>
-                    <input asp-for="Address" class="form-control" />
-                    <span asp-validation-for="Address" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="Balance"></label>
-                    <input asp-for="Balance" class="form-control" />
-                    <span asp-validation-for="Balance" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label>Новий пароль (залишіть порожнім, щоб не змінювати)</label>
-                    <input type="password" name="PasswordHash" class="form-control" />
-                </div>
-
-                <button type="submit" class="btn btn-success">Зберегти</button>
-                <a asp-action="List" class="btn btn-secondary">Скасувати</a>
-            </form>
-        </div>
+    <!-- Основні поля -->
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-</div>
+
+    <div class="form-group">
+        <label asp-for="Address"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Balance"></label>
+        <input asp-for="Balance" class="form-control" />
+        <span asp-validation-for="Balance" class="text-danger"></span>
+    </div>
+
+    <!-- Поле для нового пароля (необов'язкове) -->
+    <div class="form-group">
+        <label>Новий пароль (залишіть порожнім, щоб не змінювати)</label>
+        <input type="password" name="PasswordHash" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Зберегти</button>
+</form>
