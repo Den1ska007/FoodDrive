@@ -64,6 +64,10 @@
               "target": "Package",
               "version": "[8.0.11, )"
             },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[8.0.11, )"
+            },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
               "version": "[8.0.11, )"
@@ -73,6 +77,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.11, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",

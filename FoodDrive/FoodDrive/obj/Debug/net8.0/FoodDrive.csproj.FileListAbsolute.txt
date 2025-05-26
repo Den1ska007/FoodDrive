@@ -61,7 +61,6 @@ C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\staticwebasset
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.FoodDrive.props
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.FoodDrive.props
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\staticwebassets.pack.json
-C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\FoodDrive.dll
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\refint\FoodDrive.dll
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\obj\Debug\net8.0\FoodDrive.pdb
@@ -159,3 +158,6 @@ C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\ru\Microsoft.C
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\Castle.Core.dll
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
+C:\Users\Anatoloii\FoodDrive\FoodDrive\FoodDrive\bin\Debug\net8.0\Moq.dll
